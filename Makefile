@@ -6,6 +6,7 @@ SRCS =                  \
 	part1-zilch.tex     \
 	part2-nstar.tex     \
 	part3-stdlib.tex    \
+	glossary.tex        \
 	toc.tex
 MAIN = main.tex
 

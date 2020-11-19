@@ -35,3 +35,18 @@
 
 \setminted{breaklines=true, mathescape=true, breaksymbolleft={}}
 \makesavenoteenv{minted}
+
+\defglsentryfmt{\glsgenentryfmt
+  \ifglsused{\glslabel}{}{$^*$}}
+
+\renewcommand{\glossarysection}[2][\theglstoctitle]{%
+ \def\theglstoctitle{#2}%
+ \chapter{#2}%
+}
+
+\makeglossaries{}
+\input{glossary}
+
+\hypersetup{
+  colorlinks=false
+}
