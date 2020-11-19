@@ -8,3 +8,8 @@
 _minted-main
 *.ptc
 *.toc
+*.gls
+*.glo
+*.glg
+*.glsdefs
+*.ist
