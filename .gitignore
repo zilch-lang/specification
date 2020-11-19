@@ -6,3 +6,5 @@
 *.out
 *.pdf
 _minted-main
+*.ptc
+*.toc
