@@ -9,32 +9,11 @@
   {\large \@author}
 }
 
-\def\@makechapterhead#1{%
-  \vspace*{50\p@}% <----------------- Space from top of page to Chapter #
-  {\parindent \z@ \raggedright \normalfont
-    \ifnum \c@secnumdepth >\m@ne
-        {\huge\bfseries Chapter \thechapter\hskip1em}\\% <-- Chapter #
-    \fi
-    \interlinepenalty\@M
-    \bigskip
-    {\Huge \bfseries #1\par\nobreak}% <------------------ Chapter title
-    \vskip 100\p@% <------------------ Space between chapter title and first paragraph
-
-    \begin{minipage}{.8\linewidth}
-      \startcontents[chapters]
-    \printcontents[chapters]{}{1}{}
-    \end{minipage}
-
-    \titlepagedecoration
-
-    \clearpage
-  }
-}
-
-\makeatother
-
 \setminted{breaklines=true, mathescape=true, breaksymbolleft={}}
 \makesavenoteenv{minted}
+
+\setcounter{tocdepth}{4}
+\setcounter{secnumdepth}{4}
 
 \defglsentryfmt{\glsgenentryfmt
   \ifglsused{\glslabel}{}{$^*$}}
