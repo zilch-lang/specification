@@ -3,7 +3,6 @@
 \renewcommand{\part}[1]{\oldpart{#1}\renewcommand{\partmark}{#1}}
 
 
-
 \pagestyle{fancy}
 \fancyhf{}
 \renewcommand{\chaptermark}[1]{\markboth{#1}{#1}}
@@ -14,6 +13,12 @@
 \patchcmd{\chapter}{\thispagestyle{plain}}{\thispagestyle{fancy}}{}{}
 \patchcmd{\oldpart}{\thispagestyle{plain}}{\thispagestyle{empty}}{}{}
 
+
+\setlength{\cftpartindent}{0em}
+\setlength{\cftchapindent}{2em}
+\setlength{\cftsecindent}{4em}
+\setlength{\cftsubsecindent}{6em}
+\setlength{\cftsubsubsecindent}{8em}
 
 
 
