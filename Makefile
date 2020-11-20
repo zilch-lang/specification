@@ -1,12 +1,13 @@
 PDF = magical-zilch-book.pdf
-SRCS =                  \
-	config.tex          \
-	cover.tex           \
-	index.tex           \
-	part1-zilch.tex     \
-	part2-nstar.tex     \
-	part3-stdlib.tex    \
-	glossary.tex        \
+SRCS =                      \
+	config.tex              \
+	cover.tex               \
+	index.tex               \
+	part0-introduction.tex  \
+	part1-zilch.tex         \
+	part2-nstar.tex         \
+	part3-stdlib.tex        \
+	glossary.tex            \
 	toc.tex
 MAIN = main.tex
 
