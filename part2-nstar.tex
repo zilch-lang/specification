@@ -20,22 +20,3 @@ But before even being a usable programming language, N* aims at being a compiler
 \vspace{\baselineskip}
 
 Because N* supports compiling to multiple architectures, using different grammars, describing N* will at first be platform-agnostic, treating common aspects between all CPU architectures, and then will be divided into multiple categories, explaining in more details some features on a per-architecture basis\footnote{Note that the target executable format (ELF, PE, \ldots) is also considered as an architecture-specific thing.}.
-
-
-\chapter{Target: ELF x86/amd64}\label{chap:elfx86amd64}
-
-The first target of N* is the ELF executable file format, for either x86 or amd64 (amd64 is simply an extension of x86 for 64-bits architectures).
-
-\section{Data section}\label{sec:elf86amd64-data}
-
-The \texttt{data} section in N* is the section where you can bind any value to an address (refered to by a label) that will be used during runtime.
-This is most commonly done for static data.
-
-\subsection{Grammar}\label{subsec:elf86amd64-data-grammar}
-
-\begin{figure}[h]
-  \centering
-  \scalebox{.5}{
-    \includegraphics{elf86-amd64-data-grammar-data-section}
-  }
-\end{figure}
