@@ -1,12 +1,26 @@
 \part{The backend}\label{part:nstar}
 
 
-\chapter{Abstract}\label{chap:nstar-abstract}
+\chapter{Introduction}\label{chap:nstar-abstract}
 
-N* is a \gls{tal} used as a compiler backend (in the same spirit as LLVM, but LLVM is a bit higher level and has concepts like scopes, functions, variables, etc).
-Much like any assembly language, files are structured as sections, each containing different types of data.
-Each section will be described in details, along with what can be put inside all of them.
-They will be studied depending on the target architecture and the target operating system.
+Assembly languages are the lowest level of humanly-possible programming there exists nowadays. They were used back in the days for very performance-critical tasks, or even just for fun, as there weren't many other programming languages available. Nowadays, with all the existing ones, most people have never used any assembly language.
+
+Despite their apparent simplicity, and the small amount of work you need to put into creating assembly languages, those are in fact very hard to use. At that low level, there is no such thing as Java's exceptions keeping you from doing dumb things, Rust's linear types keeping you from leaking memory nor even Garbage Collectors. The nice things preventing you from having segfaults simply do not exist, and you are expected to either provide all those things yourself (creating a language runtime) or be very careful about what you are doing each time you write a single instruction (even a simple \texttt{mov} can have undesirable side-effects).
+
+Doing dumb things is something that we must prevent directly when using the language. That way, we do not need to rely on external verification tools or debuggers, trying to know why a program segfaults at a specific point.
+This is where a type system can become handy. Typed assembly languages are assembly languages augmented with simple yet powerful type system. Among the most famous typed assembly languages are TALx86~\cite{TALx86} and DTAL~\cite{DTAL}.
+
+TALx86 is basically NASM with a type system, targetting only the x86 architecture. DTAL is much more complicated and embeds a completely dependent type system.
+
+\vspace{\baselineskip}
+
+N*'s goal is to assist users with a simple but powerful type system, as well as other features like what I call ``branch-checking'' which prevents from leaking the control flow of the program, and thus makes a part of the type-checking process meaningful.
+But before even being a usable programming language, N* aims at being a compiler backend (much like for example LLVM), and is used as is in the Zilch project. Differences with other compiler backends are mostly the type-system, allowing the compilation of Zilch source code into type-safe instructions.
+
+\vspace{\baselineskip}
+
+Because N* supports compiling to multiple architectures, using different grammars, describing N* will at first be platform-agnostic, treating common aspects between all CPU architectures, and then will be divided into multiple categories, explaining in more details some features on a per-architecture basis\footnote{Note that the target executable format (ELF, PE, \ldots) is also considered as an architecture-specific thing.}.
+
 
 \chapter{Target: ELF x86/amd64}\label{chap:elfx86amd64}
 
