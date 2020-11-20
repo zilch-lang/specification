@@ -8,7 +8,8 @@ SRCS =                      \
 	part2-nstar.tex         \
 	part3-stdlib.tex        \
 	glossary.tex            \
-	toc.tex
+	toc.tex                 \
+	main.bib
 MAIN = main.tex
 
 TEXFLAGS =                        \
