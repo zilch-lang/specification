@@ -13,3 +13,7 @@ _minted-main
 *.glg
 *.glsdefs
 *.ist
+*.bbl
+*.bcf
+*.blg
+main.run.xml
