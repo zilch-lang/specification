@@ -6,7 +6,7 @@
 \pagestyle{fancy}
 \fancyhf{}
 \renewcommand{\chaptermark}[1]{\markboth{#1}{#1}}
-\fancyhead[L]{\textsc{\thetitle\ -- \partmark}}
+\fancyhead[L]{\textsc{\thetitle\ -- \partmark\ -- \leftmark}}
 \fancyhead[R]{\textsc{Page \thepage}}
 \renewcommand{\headrulewidth}{0.4pt}
 
@@ -32,6 +32,9 @@
 \def\printauthor{%
   {\large \@author}
 }
+
+
+\@addtoreset{chapter}{part}
 \makeatother
 
 \setminted{breaklines=true, mathescape=true, breaksymbolleft={}}
