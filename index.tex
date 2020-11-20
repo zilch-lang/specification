@@ -1,10 +1,3 @@
-\pagestyle{fancy}
-\fancyhf{}
-\renewcommand{\chaptermark}[1]{\markboth{#1}{#1}}
-\fancyhead[L]{\textsc{\thetitle\ -- \leftmark}}
-\fancyhead[R]{\textsc{Page \thepage}}
-\renewcommand{\headrulewidth}{0.4pt}
-
 \pagenumbering{gobble}
 
 \thispagestyle{empty}
@@ -23,6 +16,11 @@
 
 \clearpage
 
+\pagenumbering{arabic}
+\input{part0-introduction}
+
+\clearpage
+
 \input{part1-zilch}
 
 \clearpage
@@ -38,5 +36,7 @@
 \null
 
 \clearpage
+
+\part{Glossary}
 
 \printglossary[style=longragged3col-booktabs]

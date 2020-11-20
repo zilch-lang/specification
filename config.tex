@@ -1,3 +1,22 @@
+\let\oldpart\part
+\renewcommand{\partmark}{}
+\renewcommand{\part}[1]{\oldpart{#1}\renewcommand{\partmark}{#1}}
+
+
+
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\chaptermark}[1]{\markboth{#1}{#1}}
+\fancyhead[L]{\textsc{\thetitle\ -- \partmark}}
+\fancyhead[R]{\textsc{Page \thepage}}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\patchcmd{\chapter}{\thispagestyle{plain}}{\thispagestyle{fancy}}{}{}
+\patchcmd{\oldpart}{\thispagestyle{plain}}{\thispagestyle{empty}}{}{}
+
+
+
+
 \renewcommand\epigraphflush{flushright}
 \renewcommand\epigraphsize{\normalsize}
 \setlength\epigraphwidth{0.7\textwidth}
@@ -8,6 +27,7 @@
 \def\printauthor{%
   {\large \@author}
 }
+\makeatother
 
 \setminted{breaklines=true, mathescape=true, breaksymbolleft={}}
 \makesavenoteenv{minted}
@@ -20,7 +40,6 @@
 
 \renewcommand{\glossarysection}[2][\theglstoctitle]{%
  \def\theglstoctitle{#2}%
- \chapter{#2}%
 }
 
 \makeglossaries{}
@@ -31,3 +50,8 @@
 }
 
 \graphicspath{{./res/}}
+
+\titleformat{\chapter}[block]{\normalfont\LARGE\bfseries}{\thechapter.}{1em}{}
+\titlespacing*{\chapter}{0pt}{-19pt}{19pt}
+
+% \lhead{\thetitle -- \partmark}
