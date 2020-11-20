@@ -1,1 +1,12 @@
 \part{Introduction}\label{part:intro}
+
+Haskell is a great programming language. It has a great type system preventing many potential bugs, and a nice runtime system making debugging really hard. It also comes with several performance drawbacks like having every value boxed by default (unless using the \texttt{MagicHash}, \texttt{UnboxedTuples} and \texttt{UnboxedSums} language extensions, which lets you use unboxed types). GHC (the most commonly used Haskell compiler) is known to be a very ``smart'' compiler, and knows how to optimise away many things. However this isn't quite as good as the language itself could perform.
+
+This is what Zilch is all about: a low-level functional programming language with a complete type system with full support for features with row types, unboxed and boxed values as well as many zero-cost abstractions (abstractions with no performance overhead at all, or so little that it can be considered nothing).
+
+While the goal is obviously to reach such kind of programming language, and to rewrite the whole project in Zilch afterwards, this is definitely not easy and takes a lot of time.
+
+\vspace{\baselineskip}
+
+This current specification aims at providing intel about the language features, how those can be implemented and the entire ecosystem around Zilch.
+The goal is to deeply describe every feature that is supposed to be in the language at some point, describe the syntax chosen for each of those, how they interact with each other, etc.
