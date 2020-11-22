@@ -25,4 +25,6 @@ all: $(PDF)
 .PHONY: clean
 clean: $(MAIN) $(SRCS)
 	latexmk $(TEXFLAGS) -C $<
-	@rm $(PDF)
+	-@rm -r _minted-main
+	-@rm $(PDF)
+	-@rm *.ptc *.run.xml *.bbl     # Clean latexmk left-overs
