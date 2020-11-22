@@ -49,6 +49,8 @@ The grammar is described in figure~\ref{fig:nstar-common-ts-records-syntax}.
 
 Context types are used to represent data contexts where any mapping is some sort of a proof that some data of some type is accessible through some register.
 
+\vspace{\baselineskip}
+
 \textbf{Note:} In the context of label types, a context type can be augmented by a \texttt{forall} generic type variable binder.
 The grammar is described in figure~\ref{fig:nstar-common-ts-label-types-syntax}.
 The type variable binder is used to abstract away some details of the type through an opaque variable specialized at the call site.
@@ -61,6 +63,22 @@ The type variable binder is used to abstract away some details of the type throu
   \caption{Grammar for label context types.}
   \label{fig:nstar-common-ts-label-types-syntax}
 \end{figure}
+
+The example code given in listing~\ref{lst:nstar-common-ts-records-stackmask} shows a use for type variables.
+The stack is abstracted away, meaning that we can call this function from anywhere, given any stack (as long as it is \texttt{call}ed).
+The type variable \texttt{s} is specialized at the call site.
+
+\begin{listing}[htb]
+  \centering
+  \begin{minipage}{0.80\textwidth}
+    \begin{minted}[]{haskell}
+      label: forall (s: Ts). { %rsp: sptr *{ %rsp: sptr s }::s }
+          ret
+    \end{minted}
+  \end{minipage}
+  \caption{Stack masking using a type variable binder.}
+  \label{lst:nstar-common-ts-records-stackmask}
+\end{listing}
 
 \section{File sections}\label{sec:nstar-common-sections}
 
