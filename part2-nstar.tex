@@ -1,4 +1,4 @@
-\part{The backend}\label{part:nstar}
+\part{The back end}\label{part:nstar}
 
 
 \chapter{Introduction}\label{chap:nstar-abstract}
@@ -25,6 +25,43 @@ Because N* supports compiling to multiple architectures, using different grammar
 
 \section{Types}\label{sec:nstar-common-ts}
 
+One of the differences between classical assembly languages and N* is its type system.
+Compared to other higher level programming languages like Java, C++, etc, N* has a very simple yet powerful and expressive enough type system.
+
+In programming, types are used mostly to prove at compile-time that a given program should behave well if it type-checks. While this works for more elaborated programming languages like Haskell, Idris, etc, most type systems aren't expressive enough to absolutely guarantee that everything will work at run-time (in fact, there is no possible way of doing this, because for example a memory allocation may fail, and this cannot be endorsed at compile-time). However, we can try to guarantee as much as possible.
+
+N* doesn't try to solve this issue, because it would be really hard to target a dependently typed assembly language from a non-dependently typed programming language. But where all used assembly languages do not even consider types (only numbers, in fact), N* embeds a powerful type system used to remove the possibility of bugs (like incorrect structure addresses passed as a parameter function, or incoherent types in some instructions).
+
+\subsection{Context types}\label{subsec:nstar-common-ts-records}
+
+Record types (or contexts) are mappings from registers to types.
+They are used to indicate that a register is bound to a value of a given type at a certain point in the program.
+The grammar is described in figure~\ref{fig:nstar-common-ts-records-syntax}.
+
+\begin{figure}[htb]
+  \centering
+  \scalebox{.5}{
+    \includegraphics{nstar-records-syntax}
+  }
+  \caption{Grammar for context types.}
+  \label{fig:nstar-common-ts-records-syntax}
+\end{figure}
+
+Context types are used to represent data contexts where any mapping is some sort of a proof that some data of some type is accessible through some register.
+
+\textbf{Note:} In the context of label types, a context type can be augmented by a \texttt{forall} generic type variable binder.
+The grammar is described in figure~\ref{fig:nstar-common-ts-label-types-syntax}.
+The type variable binder is used to abstract away some details of the type through an opaque variable specialized at the call site.
+
+\begin{figure}[htb]
+  \centering
+  \scalebox{.5}{
+    \includegraphics{nstar-label-types-syntax}
+  }
+  \caption{Grammar for label context types.}
+  \label{fig:nstar-common-ts-label-types-syntax}
+\end{figure}
+
 \section{File sections}\label{sec:nstar-common-sections}
 
 Sections in N* serve the exact same purpose as in other assembly languages. They divide a file into multiple parts depending on what the semantics of the current section is supposed to be (code, data, etc).
@@ -42,7 +79,7 @@ Each label is assigned a type, describing the context needed to branch to it.
 If a label has the type \texttt{\{reg:s64\}} then there needs to be the register \texttt{reg} bound to a value of type \texttt{s64} in the current context, in order to branch to it.
 However, some restrictions apply to labels in order to make the type-checking meaningful (or at least handle some aspects that cannot be handled with types only). See more about that in section~\ref{sec:nstar-common-bs} ``\nameref{sec:nstar-common-bs}''.
 
-\begin{figure}[hb]
+\begin{figure}[htb]
   \centering
   \scalebox{.5}{
     \includegraphics{nstar-code-section-1}
