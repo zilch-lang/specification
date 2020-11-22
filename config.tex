@@ -37,8 +37,12 @@
 \@addtoreset{chapter}{part}
 \makeatother
 
-\setminted{breaklines=true, mathescape=true, breaksymbolleft={}, autogobble=true}
+\definecolor{mintedbg}{rgb}{.96,.96,.96}
+
+\setminted{breaklines=true, mathescape=true, breaksymbolleft={}, autogobble=true, bgcolor=mintedbg, xleftmargin=\parindent, xrightmargin=\parindent}
 \makesavenoteenv{minted}
+
+\def\nstarlexer{lexer/nstar.py:NStarLexer -x}
 
 \setcounter{tocdepth}{4}
 \setcounter{secnumdepth}{4}
