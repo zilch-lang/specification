@@ -29,18 +29,21 @@ class NStarLexer(RegexLexer):
         'registers': [
             (r'(%(rax|rbx|rcx|rdx|rbp|rsp|rdi|rsi))\b', Name.Constant)
         ],
+        'types': [
+            (r'(Ts|Ta|T4|T8|s8|s16|s32|s64|u8|u16|u32|u64)\b', Keyword.Type)
+        ],
         'root': [
             include('commentsandwhitespace'),
             include('keywords'),
             include('instructions'),
             include('literals'),
             include('registers'),
+            include('types'),
 
             (r'(\*|\:\:)', Operator),
             (r'(\{|\}|\.|\:)', Punctuation),
 
             (r'^([a-zA-Z]*)\:', Name.Variable),
-            (r'(Ts|Ta|T4|T8)\b', Keyword.Type),
             (r'.', Text)
         ]
     }
