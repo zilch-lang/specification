@@ -32,6 +32,26 @@ In programming, types are used mostly to prove at compile-time that a given prog
 
 N* doesn't try to solve this issue, because it would be really hard to target a dependently typed assembly language from a non-dependently typed programming language. But where all used assembly languages do not even consider types (only numbers, in fact), N* embeds a powerful type system used to remove the possibility of bugs (like incorrect structure addresses passed as a parameter function, or incoherent types in some instructions).
 
+\subsection{Integer types}\label{subsec:nstar-common-ts-integer}
+
+Numbers are the building block of any assembly language. Most of data manipulated is manipulated as numbers, e.g. addresses, characters, strings, enumerations, etc.
+This is not the case in N*, where ``integer''  only really means ``number''.
+The syntax for the types of integers is given in figure~\ref{fig:nstar-common-ts-integer-syntax}.
+
+\begin{figure}[htb]
+  \centering
+  \scalebox{.5}{
+    \includegraphics{nstar-integers-types-syntax}
+  }
+  \caption{Grammar for integer types.}
+  \label{fig:nstar-common-ts-integer-syntax}
+\end{figure}
+
+Integers have two varying parameters: their sign and sizes.
+According to the sign (i.e. signed or unsigned), some operations may not perform the same (for example \texttt{mul} does not behave the same).
+The size is nothing more than the number of bits occupied by the integer (in N*, those are restricted to multiples of $8$ smaller or equal to $64$).
+Most operations should perform the same no matter the integer size, however it is recommended to search in the target architecture manual for further reference.
+
 \subsection{Context types}\label{subsec:nstar-common-ts-records}
 
 Record types (or contexts) are mappings from registers to types.
