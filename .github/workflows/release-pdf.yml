@@ -14,11 +14,15 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       
+      - name: Install required dependencies
+        run: |
+          sudo apt install texlive make
+      
       - name: Build
         run: |
           make
           
-      - name: Read package.json
+      - name: Read version file
         id: get-version
         uses: juliangruber/read-file-action@v1
         with:
