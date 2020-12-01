@@ -16,7 +16,8 @@ jobs:
       
       - name: Install required dependencies
         run: |
-          sudo apt install texlive make
+          sudo apt upgrade
+          sudo apt install -y texlive
       
       - name: Build
         run: |
