@@ -64,6 +64,9 @@ Stack pointers are covered in Subsection~\ref{subsec:nstar-common-ts-stack}~``\n
 Data pointers simply represent an address where we know (or not, see the Subsection~\ref{subsec:nstar-common-unsafe-derefliteraladdr}~``\nameref{subsec:nstar-common-unsafe-derefliteraladdr}'') that there is a value of the given pointed type.
 
 They support two common operations: offsetting (see the Subsection~\ref{subsec:nstar-common-unsafe-ptroffset}~``\nameref{subsec:nstar-common-unsafe-ptroffset}'') and dereferencing (taking the value pointed by the pointer).
+Dereferencing is considered a safe operation, unless trying to on a literal address.
+There is no notion of ``null'' pointers, like \texttt{NULL} in C.
+However, it is possible to use the literal \texttt{\$0} (which represents a pointer to the address $0$).
 
 \begin{figure}[htb]
   \centering
