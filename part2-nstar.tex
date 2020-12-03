@@ -130,7 +130,27 @@ The type variable \texttt{s} is specialized at the call site.
 
 \subsection{Stack types}\label{subsec:nstar-common-ts-stack}
 
-% TODO
+There are mainly two stack types in N*: the stack pointer \texttt{sptr} and the stack constructor \texttt{::}.
+Note that there is no ``empty stack'' type as would be the case with e.g. lists in Haskell.
+The reason is that it forces the developer to abstract the stack to be able to have a ``stack tail'' (the part of the stack on the right of the stack constructor \texttt{::}) at some point.\footnote{It also serves the purpose to ensure that we cannot construct a stack from nothing, and that it should always be given to us, to e.g. the \texttt{main} function.}
+An example is given in Listing~\ref{lst:nstar-common-ts-records-stackmask}.
+
+The grammar for stack types is given in Figure~\ref{fig:nstar-common-ts-stack-types-syntax}.
+
+Stack types are of kind \texttt{Ts}, whereas stack pointer types are of kind \texttt{T8} or \texttt{T4} (depending on if the target is a 64-bit or a 32-bit executable).
+
+\begin{figure}[htb]
+  \centering
+  \scalebox{.5}{
+    \includegraphics{nstar-stack-pointer-syntax}
+  }
+  \\
+  \scalebox{.5}{
+    \includegraphics{nstar-stack-cons-syntax}
+  }
+  \caption{Grammar for stack types.}
+  \label{fig:nstar-common-ts-stack-types-syntax}
+\end{figure}
 
 \subsection{Enumeration types}\label{subsec:nstar-common-ts-enums}
 
