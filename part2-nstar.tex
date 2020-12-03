@@ -200,7 +200,7 @@ An example is given in Listing~\ref{lst:nstar-common-ts-records-stackmask}.
 
 The grammar for stack types is given in Figure~\ref{fig:nstar-common-ts-stack-types-syntax}.
 
-Stack types are of kind \texttt{Ts}, whereas stack pointer types are of kind \texttt{T8} or \texttt{T4} (depending on if the target is a 64-bit or a 32-bit executable).
+Inference rules for kinds of stack types are written in Figure~\ref{fig:nstar-common-ts-stack-types-kindrules}
 
 \begin{figure}[htb]
   \centering
@@ -213,6 +213,29 @@ Stack types are of kind \texttt{Ts}, whereas stack pointer types are of kind \te
   }
   \caption{Grammar for stack types.}
   \label{fig:nstar-common-ts-stack-types-syntax}
+\end{figure}
+
+\begin{figure}[htb]
+  \centering
+
+  \begin{prooftree}
+    \Hypo{$s : Ts$}
+    \Infer1[32-bits pointers]{$sptr s : T4$}
+  \end{prooftree}
+  \hspace{3em}
+  \begin{prooftree}
+    \Hypo{$s : Ts$}
+    \Infer1[64-bits pointers]{$sptr s : T8$}
+  \end{prooftree}
+  \hspace{3em}
+  \begin{prooftree}
+    \Hypo{$t sized$}
+    \Hypo{$s : Ts$}
+    \Infer2{$t :: s : Ts$}
+  \end{prooftree}
+
+  \caption{Kind inference rules for stack types}
+  \label{fig:nstar-common-ts-stack-types-kindrules}
 \end{figure}
 
 \subsection{Enumeration types}\label{subsec:nstar-common-ts-enums}
