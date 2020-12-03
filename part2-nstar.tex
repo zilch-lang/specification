@@ -52,6 +52,47 @@ According to the sign (i.e. signed or unsigned), some operations may not perform
 The size is nothing more than the number of bits occupied by the integer (in N*, those are restricted to multiples of $8$ smaller or equal to $64$).
 Most operations should perform the same no matter the integer size, however it is recommended to search in the target architecture manual for further reference.
 
+Kinds of integers are written under the form of inference rules in Figure~\ref{fig:nstar-common-ts-integer-kindrules}.
+
+\begin{figure}[htb]
+  \centering
+
+  \begin{prooftree}
+    \Infer0{$u64 : T8$}
+  \end{prooftree}
+  \hspace{3em}
+  \begin{prooftree}
+    \Infer0{$s64 : T8$}
+  \end{prooftree}
+  \hspace{3em}
+  \begin{prooftree}
+    \Infer0{$u32 : T4$}
+  \end{prooftree}
+  \hspace{3em}
+  \begin{prooftree}
+    \Infer0{$s32 : T4$}
+  \end{prooftree}
+  \\\vspace{\baselineskip}
+  \begin{prooftree}
+    \Infer0{$u16 : T2$}
+  \end{prooftree}
+  \hspace{3em}
+  \begin{prooftree}
+    \Infer0{$s16 : T2$}
+  \end{prooftree}
+  \hspace{3em}
+  \begin{prooftree}
+    \Infer0{$u8 : T1$}
+  \end{prooftree}
+  \hspace{3em}
+  \begin{prooftree}
+    \Infer0{$s8 : T1$}
+  \end{prooftree}
+
+  \caption{Kind inference rules for integers.}
+  \label{fig:nstar-common-ts-integer-kindrules}
+\end{figure}
+
 \subsection{Other atomic types}\label{subsec:nstar-common-ts-otheratomic}
 
 There are two other atomic types that we did not talk about, but refered to in the introduction of the type system: characters and pointers. Their respective syntax is given in Figure~\ref{fig:nstar-common-ts-atomic-syntax}.
