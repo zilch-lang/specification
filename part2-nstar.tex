@@ -19,7 +19,7 @@ But before even being a usable programming language, N* aims at being a compiler
 
 \vspace{\baselineskip}
 
-Because N* supports compiling to multiple architectures, using different grammars, describing N* will at first be platform-agnostic, treating common aspects between all CPU architectures, and then will be divided into multiple categories, explaining in more details some features on a per-architecture basis\footnote{Note that the target executable format (ELF, PE, \ldots) is also considered as an architecture-specific thing.}.
+Because N* supports compiling to multiple architectures, using different grammars, describing N* will at first be platform-agnostic, treating common aspects between all CPU architectures, and then will be divided into multiple categories, explaining in more details some features on a per-architecture basis\footnote{Note that the target executable format (ELF, PE, \ldots) is also considered as an architecture-specific thing, but should not influence N* much.}.
 
 \chapter{Non platform-specific features}\label{chap:nstar-common}
 
@@ -36,7 +36,7 @@ N* doesn't try to solve this issue, because it would be really hard to target a 
 
 Numbers are the building block of any assembly language. Most of data manipulated is manipulated as numbers, e.g. addresses, characters, strings, enumerations, etc.
 This is not the case in N*, where ``integer''  only really means ``number''.
-The syntax for the types of integers is given in figure~\ref{fig:nstar-common-ts-integer-syntax}.
+The syntax for the types of integers is given in Figure~\ref{fig:nstar-common-ts-integer-syntax}.
 
 \begin{figure}[htb]
   \centering
@@ -54,13 +54,34 @@ Most operations should perform the same no matter the integer size, however it i
 
 \subsection{Other atomic types}\label{subsec:nstar-common-ts-otheratomic}
 
-% TODO
+There are two other atomic types that we did not talk about, but refered to in the introduction of the type system: characters and pointers. Their respective syntax is given in Figure~\ref{fig:nstar-common-ts-atomic-syntax}.
+
+In all assembly languages, characters are merely syntactic sugar for their ASCII code. This is how their are put in the machine code anyway, so it is not a huge problem (it might even not be at all).
+
+Pointers, on the other hand, are unabstracted memory addresses.
+In N*, there are two types of pointers: data pointers and stack pointers.
+Stack pointers are covered in Subsection~\ref{subsec:nstar-common-ts-stack}~``\nameref{subsec:nstar-common-ts-stack}''.
+Data pointers simply represent an address where we know (or not, see the Subsection~\ref{subsec:nstar-common-unsafe-derefliteraladdr}~``\nameref{subsec:nstar-common-unsafe-derefliteraladdr}'') that there is a value of the given pointed type.
+
+They support two common operations: offsetting (see the Subsection~\ref{subsec:nstar-common-unsafe-ptroffset}~``\nameref{subsec:nstar-common-unsafe-ptroffset}'') and dereferencing (taking the value pointed by the pointer).
+
+\begin{figure}[htb]
+  \centering
+  \scalebox{.5}{
+    \includegraphics{nstar-ptr-type-syntax}
+  } \\
+  \scalebox{.5}{
+    \includegraphics{nstar-char-type-syntax}
+  }
+  \caption{Grammar for character and pointer types}
+  \label{fig:nstar-common-ts-atomic-syntax}
+\end{figure}
 
 \subsection{Context types}\label{subsec:nstar-common-ts-records}
 
 Record types (or contexts) are mappings from registers to types.
 They are used to indicate that a register is bound to a value of a given type at a certain point in the program.
-The grammar is described in figure~\ref{fig:nstar-common-ts-records-syntax}.
+The grammar is described in Figure~\ref{fig:nstar-common-ts-records-syntax}.
 
 \begin{figure}[htb]
   \centering
@@ -76,7 +97,7 @@ Context types are used to represent data contexts where any mapping is some sort
 \vspace{\baselineskip}
 
 \textbf{Note:} In the context of label types, a context type can be augmented by a \texttt{forall} generic type variable binder.
-The grammar is described in figure~\ref{fig:nstar-common-ts-label-types-syntax}.
+The grammar is described in Figure~\ref{fig:nstar-common-ts-label-types-syntax}.
 The type variable binder is used to abstract away some details of the type through an opaque variable specialized at the call site.
 
 \begin{figure}[htb]
@@ -88,8 +109,8 @@ The type variable binder is used to abstract away some details of the type throu
   \label{fig:nstar-common-ts-label-types-syntax}
 \end{figure}
 
-The example code given in listing~\ref{lst:nstar-common-ts-records-stackmask} shows a use for type variables.
-The stack is abstracted away, meaning that we can call this function from anywhere, given any stack (as long as it is \texttt{call}ed).
+The example code given in Listing~\ref{lst:nstar-common-ts-records-stackmask} shows a use for type variables.
+The stack is abstracted away, meaning that we can call this function from anywhere, given any stack (as long as it is \texttt{call}ed, or \texttt{jmp}ed to from a \texttt{call}ed function).
 The type variable \texttt{s} is specialized at the call site.
 
 \begin{listing}[htb]
@@ -104,6 +125,22 @@ The type variable \texttt{s} is specialized at the call site.
   \label{lst:nstar-common-ts-records-stackmask}
 \end{listing}
 
+\subsection{Stack types}\label{subsec:nstar-common-ts-stack}
+
+% TODO
+
+\subsection{Enumeration types}\label{subsec:nstar-common-ts-enums}
+
+% TODO
+
+\subsection{Structure types}\label{subsec:nstar-common-ts-structs}
+
+% TODO
+
+\subsection{Union types}\label{subsec:nstar-common-ts-unions}
+
+% TODO
+
 \section{File sections}\label{sec:nstar-common-sections}
 
 Sections in N* serve the exact same purpose as in other assembly languages. They divide a file into multiple parts depending on what the semantics of the current section is supposed to be (code, data, etc).
@@ -115,11 +152,11 @@ Sections in N* can be named ``\texttt{data}'', ``\texttt{code}'' or ``\texttt{ro
 
 \subsection{The \texttt{code} section}\label{subsec:nstar-common-sections-code}
 
-The \texttt{code} section is the section containing all executable instructions (basically, as the name implies, code). Its syntax is defined in figure~\ref{fig:nstar-common-sections-code-grammar}.
+The \texttt{code} section is the section containing all executable instructions (basically, as the name implies, code). Its syntax is defined in Figure~\ref{fig:nstar-common-sections-code-grammar}.
 
 Each label is assigned a type, describing the context needed to branch to it.
 If a label has the type \texttt{\{reg:s64\}} then there needs to be the register \texttt{reg} bound to a value of type \texttt{s64} in the current context, in order to branch to it.
-However, some restrictions apply to labels in order to make the type-checking meaningful (or at least handle some aspects that cannot be handled with types only). See more about that in section~\ref{sec:nstar-common-bs} ``\nameref{sec:nstar-common-bs}''.
+However, some restrictions apply to labels in order to make the type-checking meaningful (or at least handle some aspects that cannot be handled with types only). See more about that in Section~\ref{sec:nstar-common-bs}~``\nameref{sec:nstar-common-bs}''.
 
 \begin{figure}[htb]
   \centering
@@ -140,3 +177,9 @@ Every assembly instruction makes the current context vary in some way, either by
 \subsection{The \texttt{data} and \texttt{rodata} sections}\label{subsec:nstar-common-sections-data}
 
 \section{Restrictions applied to branching}\label{sec:nstar-common-bs}
+
+\section{Unsafe operations}\label{sec:nstar-common-unsafe}
+
+\subsection{Dereferencing literal addresses}\label{subsec:nstar-common-unsafe-derefliteraladdr}
+
+\subsection{Pointer offsetting}\label{subsec:nstar-common-unsafe-ptroffset}
