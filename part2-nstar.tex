@@ -97,18 +97,6 @@ Kinds of integers are written under the form of inference rules in Figure~\ref{f
 
 There are two other atomic types that we did not talk about, but refered to in the introduction of the type system: characters and pointers. Their respective syntax is given in Figure~\ref{fig:nstar-common-ts-atomic-syntax}.
 
-In all assembly languages, characters are merely syntactic sugar for their ASCII code. This is how their are put in the machine code anyway, so it is not a huge problem (it might even not be at all).
-
-Pointers, on the other hand, are unabstracted memory addresses.
-In N*, there are two types of pointers: data pointers and stack pointers.
-Stack pointers are covered in Subsection~\ref{subsec:nstar-common-ts-stack}~``\nameref{subsec:nstar-common-ts-stack}''.
-Data pointers simply represent an address where we know (or not, see the Subsection~\ref{subsec:nstar-common-unsafe-derefliteraladdr}~``\nameref{subsec:nstar-common-unsafe-derefliteraladdr}'') that there is a value of the given pointed type.
-
-They support two common operations: offsetting (see the Subsection~\ref{subsec:nstar-common-unsafe-ptroffset}~``\nameref{subsec:nstar-common-unsafe-ptroffset}'') and dereferencing (taking the value pointed by the pointer).
-Dereferencing is considered a safe operation, unless trying to on a literal address.
-There is no notion of ``null'' pointers, like \texttt{NULL} in C.
-However, it is possible to use the literal \texttt{\$0} (which represents a pointer to the address $0$).
-
 \begin{figure}[htb]
   \centering
   \scalebox{.5}{
@@ -119,6 +107,40 @@ However, it is possible to use the literal \texttt{\$0} (which represents a poin
   }
   \caption{Grammar for character and pointer types}
   \label{fig:nstar-common-ts-atomic-syntax}
+\end{figure}
+
+In all assembly languages, characters are merely syntactic sugar for their ASCII code. This is how their are put in the machine code anyway, so it is not a huge problem (it might even not be at all).
+
+Pointers, on the other hand, are unabstracted memory addresses.
+In N*, there are two types of pointers: data pointers and stack pointers.
+Stack pointers are covered in Subsection~\ref{subsec:nstar-common-ts-stack}~``\nameref{subsec:nstar-common-ts-stack}''.
+Data pointers simply represent an address where we know (or not, see the Subsection~\ref{subsec:nstar-common-unsafe-derefliteraladdr}~``\nameref{subsec:nstar-common-unsafe-derefliteraladdr}'') that there is a value of the given pointed type.
+
+Kind inference is given in Figure~\ref{fig:nstar-common-ts-atomic-kindrules}.
+
+They support two common operations: offsetting (see the Subsection~\ref{subsec:nstar-common-unsafe-ptroffset}~``\nameref{subsec:nstar-common-unsafe-ptroffset}'') and dereferencing (taking the value pointed by the pointer).
+Dereferencing is considered a safe operation, unless trying to on a literal address.
+There is no notion of ``null'' pointers, like \texttt{NULL} in C.
+However, it is possible to use the literal \texttt{\$0} (which represents a pointer to the address $0$).
+
+\begin{figure}[htb]
+  \centering
+  \begin{prooftree}
+    \Infer0{$char : T1$}
+  \end{prooftree}
+  \hspace{3em}
+  \begin{prooftree}
+    \Hypo{$t : Ta$}
+    \Infer1[64-bits pointers]{$*t : T8$}
+  \end{prooftree}
+  \hspace{3em}
+  \begin{prooftree}
+    \Hypo{$t : Ta$}
+    \Infer1[32-bits pointers]{$*t : T4$}
+  \end{prooftree}
+
+  \caption{Kind inference rules for other atomic types.}
+  \label{fig:nstar-common-ts-atomic-kindrules}
 \end{figure}
 
 \subsection{Context types}\label{subsec:nstar-common-ts-records}
