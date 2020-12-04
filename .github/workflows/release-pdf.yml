@@ -31,18 +31,12 @@ jobs:
           
       - name: Fetch release by tag
         id: fetch-release
-        uses: pdamianik/release-tag-to-upload-url-action@v1.0.1
+        uses: jonfriesen/get-release-by-tag@v1.0.0
         env: 
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag: v${{ steps.get-version.outputs.content }}
-          token: ${{ github.token }}
+          tag_name: v${{ steps.get-version.outputs.content }}
         continue-on-error: true
-        
-      - name: "Test upload url"
-        run: |
-          echo "${{ steps.fetch-release.outputs }}"
-        if: steps.fetch-release.outcome == 'success'
                     
       - name: Create release
         id: create-release
@@ -62,7 +56,7 @@ jobs:
         uses: haya14busa/action-cond@v1
         with:
           cond: ${{ steps.fetch_release.outcome == 'success' }}
-          if_true: ${{ steps.fetch-release.outputs.uploadUrl }}
+          if_true: ${{ steps.fetch-release.outputs.release.data.upload_url }}
           if_false: ${{ steps.create-release.outputs.upload_url }} 
         
       - name: Upload pdf book
