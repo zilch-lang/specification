@@ -40,9 +40,10 @@ jobs:
         continue-on-error: true
         
       - uses: dev-drprasad/delete-tag-and-release@v0.1.2
+        name: Delete release if already existing
         with:
           delete_release: true 
-          tag_name: v${{ steps.get-version.outputs.content }} 
+          tag_name: "v${{ steps.get-version.outputs.content }}"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         if: steps.fetch-release.outcome == 'success'
