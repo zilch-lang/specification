@@ -30,7 +30,7 @@ jobs:
           path: ./version.txt
           
       - name: Fetch release by tag
-        id: fetch_release
+        id: fetch-release
         uses: pdamianik/release-tag-to-upload-url-action@v1.0.1
         env: 
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -38,11 +38,16 @@ jobs:
           tag: v${{ steps.get-version.outputs.content }}
           token: ${{ github.token }}
         continue-on-error: true
+        
+      - name: "Test upload url"
+        run: |
+          echo "${{ steps.fetch-release.outputs }}"
+        if: steps.fetch-release.outcome == 'success'
                     
       - name: Create release
-        id: create_release
+        id: create-release
         uses: avakar/tag-and-release@v1
-        if: steps.fetch_release.outcome != 'success'
+        if: steps.fetch-release.outcome != 'success'
         with:
           tag_name: v${{ steps.get-version.outputs.content }}
           release_name: the Magical Zilch book ─ Preview
@@ -52,12 +57,13 @@ jobs:
         env: 
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         
-      - id: upload_url
+      - id: get-upload-url
+        name: Get release upload url
         uses: haya14busa/action-cond@v1
         with:
           cond: ${{ steps.fetch_release.outcome == 'success' }}
-          if_true: ${{ steps.fetch_release.outputs.uploadUrl }}
-          if_false: ${{ steps.create_release.outputs.upload_url }} 
+          if_true: ${{ steps.fetch-release.outputs.uploadUrl }}
+          if_false: ${{ steps.create-release.outputs.upload_url }} 
         
       - name: Upload pdf book
         id: upload-release-asset 
@@ -65,7 +71,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.upload_url.outputs.value }} 
+          upload_url: ${{ steps.get-upload-url.outputs.value }} 
           asset_path: ./magical-zilch-book.pdf
           asset_name: magical-zilch-book.pdf
           asset_content_type: application/pdf
