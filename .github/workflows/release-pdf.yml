@@ -61,7 +61,7 @@ jobs:
         name: Get release upload url
         uses: haya14busa/action-cond@v1
         with:
-          cond: ${{ steps.fetch_release.outcome == 'success' }}
+          cond: ${{ steps.fetch-release.outcome == 'success' }}
           if_true: ${{ steps.fetch-release.outputs.uploadUrl }}
           if_false: ${{ steps.create-release.outputs.upload_url }} 
         
