@@ -25,7 +25,7 @@ jobs:
           
       - name: Read version file
         id: get-version
-        uses: pCYSl5EDgo/cat@1.0.0
+        uses: pCYSl5EDgo/cat@master
         with:
           path: ./version.txt
           trim: true
