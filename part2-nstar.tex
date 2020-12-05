@@ -227,11 +227,12 @@ Inference rules for kinds of stack types are written in Figure~\ref{fig:nstar-co
     \Hypo{$s : Ts$}
     \Infer1[64-bits pointers]{$sptr s : T8$}
   \end{prooftree}
-  \hspace{3em}
+  \\\vspace{\baselineskip}
   \begin{prooftree}
-    \Hypo{$t sized$}
+    \Hypo{$n : $\mathbb{N}$ $}
+    \Hypo{$t : Tn$}
     \Hypo{$s : Ts$}
-    \Infer2{$t :: s : Ts$}
+    \Infer3{$t :: s : Ts$}
   \end{prooftree}
 
   \caption{Kind inference rules for stack types}
