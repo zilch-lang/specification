@@ -265,7 +265,32 @@ Inference rules for kinds of stack types are written in Figure~\ref{fig:nstar-co
 
 \subsection{Structure types}\label{subsec:nstar-common-ts-structs}
 
-% TODO
+Structure types are packed sets of unnamed types (compared to context types, each field does not have a name, only a type) that can be indexed from a pointer only to a full field (so if you have two \texttt{u64}s, you can only offset to $0$ and $8$, respectively for the first and second field).
+
+Grammar is described in Figure~\ref{fig:nstar-common-ts-structs-syntax} and kind inference rules are given in Figure~\ref{fig:nstar-common-ts-structs-kindrules}.
+
+\begin{figure}[htb]
+  \centering
+  \scalebox{.5}{
+    \includegraphics{nstar-struct-types-syntax}
+  }
+
+  \caption{Grammar for structure types.}
+  \label{fig:nstar-common-ts-structs-syntax}
+\end{figure}
+
+\begin{figure}[htb]
+  \centering
+  \begin{prooftree}
+    \Hypo{$n$_0$, n$_1$, $\ldots$, n$_p$ : $\mathbb{N}}
+    \Hypo{$t$_0$ : Tn$_0$, t$_1$ : Tn$_1$, $\ldots$, t$_p$ : Tn$_p}
+    \Hypo{$m = $\sum_{i = 0}^{p}{n_i}}
+    \Infer3{$(t$_0$, t$_1$, $\ldots$, t$_n$) : Tm$}
+  \end{prooftree}
+
+  \caption{Kind inference rule for structures.}
+  \label{fig:nstar-common-ts-structs-kindrules}
+\end{figure}
 
 \subsection{Union types}\label{subsec:nstar-common-ts-unions}
 
