@@ -32,6 +32,26 @@ In programming, types are used mostly to prove at compile-time that a given prog
 
 N* doesn't try to solve this issue, because it would be really hard to target a dependently typed assembly language from a non-dependently typed programming language. But where all used assembly languages do not even consider types (only numbers, in fact), N* embeds a powerful type system used to remove the possibility of bugs (like incorrect structure addresses passed as a parameter function, or incoherent types in some instructions).
 
+\subsection{Kinds}\label{subsec:nstar-common-ts-kinds}
+
+Kinds (also known as types of types) mainly serve the purpose of indicating type sizes.
+There are three type of kinds in N*:
+\begin{itemize}
+  \item Stack kind, denotating stack-like types, which can be safely offsetted
+  \item Kinds whose size is abstracted away, useful to ask for any sized type
+  \item Kinds whose size is already known
+\end{itemize}
+The grammar is given in Figure~\ref{fig:nstar-common-ts-kinds-syntax}.
+
+\begin{figure}[htb]
+  \centering
+  \scalebox{.5}{
+    \includegraphics{nstar-kinds-syntax}
+  }
+  \caption{Grammar for kinds.}
+  \label{fig:nstar-common-ts-kinds-syntax}
+\end{figure}
+
 \subsection{Integer types}\label{subsec:nstar-common-ts-integer}
 
 Numbers are the building block of any assembly language. Most of data manipulated is manipulated as numbers, e.g. addresses, characters, strings, enumerations, etc.
