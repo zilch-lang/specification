@@ -259,15 +259,13 @@ Inference rules for kinds of stack types are written in Figure~\ref{fig:nstar-co
   \label{fig:nstar-common-ts-stack-types-kindrules}
 \end{figure}
 
-\subsection{Enumeration types}\label{subsec:nstar-common-ts-enums}
-
-% TODO
-
 \subsection{Structure types}\label{subsec:nstar-common-ts-structs}
 
 Structure types are packed sets of unnamed types (compared to context types, each field does not have a name, only a type) that can be indexed from a pointer only to a full field (so if you have two \texttt{u64}s, you can only offset to $0$ and $8$, respectively for the first and second field).
 
 Grammar is described in Figure~\ref{fig:nstar-common-ts-structs-syntax} and kind inference rules are given in Figure~\ref{fig:nstar-common-ts-structs-kindrules}.
+
+Structures take as much space as all their fields, thus can mainly be put on the stack (unless being less than 8 bytes, which is the upper limit for register sizes in current architectures).
 
 \begin{figure}[htb]
   \centering
@@ -294,7 +292,38 @@ Grammar is described in Figure~\ref{fig:nstar-common-ts-structs-syntax} and kind
 
 \subsection{Union types}\label{subsec:nstar-common-ts-unions}
 
-% TODO
+Union types simply are overlapping data bits, which can be given meaning depending on what type you decide to access.
+Grammar for union types is given in Figure~\ref{fig:nstar-common-ts-unions-syntax}.
+
+\begin{figure}[htb]
+  \centering
+  \scalebox{.5}{
+    \includegraphics{nstar-union-types-syntax}
+  }
+
+  \caption{Grammar for union types.}
+  \label{fig:nstar-common-ts-unions-syntax}
+\end{figure}
+
+Unions are sized depending on the types they unite: their sizes will be the maximum of all the sizes of all the components.
+This is more clear in the kind inference rule given in Figure~\ref{fig:nstar-common-ts-unions-kindrules}.
+
+\begin{figure}[htb]
+  \centering
+
+  \begin{prooftree}
+    \Hypo{$n$_0$, n$_1$, $\ldots$, n$_p$ : $\mathbb{N}}
+    \Hypo{$t$_0$ : n$_0$, t$_1$ : n$_1$, $\ldots$, t$_p$ : n$_p}
+    \Hypo{$m = $\max_{i = 0}^{p}{n_i}}
+    \Infer3{$<t$_0$, t$_1$, $\ldots$, t$_p$> : Tm$}
+  \end{prooftree}
+
+  \caption{Kind inference rules for union types.}
+  \label{fig:nstar-common-ts-unions-kindrules}
+\end{figure}
+
+Note that unlike structure types, you will most likely be storing union types in registers, unless working with very big unions.
+Also, accessing a union's field is considered an unsafe operation, but this will be more detailed in another section on expressions.
 
 \section{File sections}\label{sec:nstar-common-sections}
 
