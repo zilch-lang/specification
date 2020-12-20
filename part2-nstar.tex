@@ -201,7 +201,7 @@ The type variable \texttt{s} is specialized at the call site.
 
 \begin{listing}[htb]
   \centering
-  \begin{minipage}{0.80\textwidth}
+  \begin{minipage}{0.90\textwidth}
     \begin{minted}[]{\nstarlexer}
       label: forall (s: Ts). { %rsp: sptr *{ %rsp: sptr s }::s }
           ret
@@ -361,6 +361,77 @@ Every assembly instruction makes the current context vary in some way, either by
 \subsection{The \texttt{data} and \texttt{rodata} sections}\label{subsec:nstar-common-sections-data}
 
 \section{Restrictions applied to branching}\label{sec:nstar-common-bs}
+
+Branching ((un-)conditional jumps, calls, etc) is restricted in N* in order to prevent stack leaks, unknown caller address return or even missing return values.
+It also is restricted not to integrate some sort of scoping, which would add some (mostly useless) complexity when using/generating N*.
+
+\subsection{Returning to a known code-space address}\label{subsec:nstar-common-bs-ret}
+
+\subsection{Missing return values (a.k.a. registers not bound before return)}\label{subsec:nstar-common-bs-unboundregs}
+
+\subsection{Type-checking and scoping problems}\label{subsec:nstar-common-bs-tcscopes}
+
+The type system in N* cannot detect control flow leaks.
+One common idiom in assembly languages is the possibility of doing things like in Listing~\ref{lst:nstar-common-bs-labeljumping}.
+The idea is pretty simple: a label is just a way of naming a code-space address (or data-space address, but it is not the main concern here) which points to the next instruction after it.
+This works in plain assembly languages because of the lack of an advanced type system like the one N* has.
+
+\begin{listing}[htb]
+  \centering
+  \begin{minipage}{0.90\textwidth}
+    \begin{minted}[]{asm}
+    f:
+      cmp %rax, $0
+      je r
+    tmp:
+      mov $0, %rax
+    r:
+      ret
+    \end{minted}
+  \end{minipage}
+  \caption{A simple case of jumping through a label (here \texttt{tmp}) in the GNU Assembler.}
+  \label{lst:nstar-common-bs-labeljumping}
+\end{listing}
+
+In N*, however, because you must specify the branching context of a label, jumping through one cannot be allowed without some sort of scoping notion.
+Take the example in Listing~\ref{lst:nstar-common-bs-labeljumping2}.
+The instruction \texttt{jmp tmp<s>} seems unneeded (in fact, it can be optimized away), but it really is to ensure type-checking is correct, as per N*'s semantics.
+
+\begin{listing}[htb]
+  \centering
+  \begin{minipage}{0.90\textwidth}
+    \begin{minted}[]{\nstarlexer}
+      f: forall (s: Ts). { %rsp: sptr *{ %rsp: sptr s, %rax: u64 }::s, %rax: u64 }
+        cmp %rax, 0
+        je r<s>
+        jmp tmp<s>
+      tmp: forall (s: Ts). { %rsp: sptr *{ %rsp: sptr s, %rax: u64 }::s, %rax: u64 }
+        mov 0, %rax
+        jmp r<s>
+      r: forall (s: Ts). { %rsp: sptr *{ %rsp: sptr s, %rax: u64 }::s, %rax: u64 }
+        ret
+    \end{minted}
+  \end{minipage}
+  \caption{The same example as Listing~\ref{lst:nstar-common-bs-labeljumping}, but in N*.}
+  \label{lst:nstar-common-bs-labeljumping2}
+\end{listing}
+
+Trying to remove this instruction makes us question about type-checking: what solution do we have when type-checking the \texttt{tmp} label? (same reasoning can be applied for the \texttt{r} label)
+\begin{itemize}
+  \item
+        One way would be to try to unify \texttt{tmp}'s context type with the current context.
+        While this works for this specific example, there are plenty of examples where this would not work, for example trying to type-check \texttt{f} this way (which basically would fail because the current context is empty).
+
+        Also, how would we infer that the \texttt{s} stack type used in \texttt{tmp}'s type is the same as the one used in \texttt{f}'s type?
+        Going by name isn't the way, as we might want to do \texttt{jump tmp<sss>} (where \texttt{sss} is bound in \texttt{f}'s context but not \texttt{tmp}'s context).
+  \item
+        Another way is to introduce scopes, where \texttt{tmp} becomes a ``sub-label'' of \texttt{f}, being allowed to now use the rigid type variable \texttt{s} bound in its parent's context.
+        This obviously seems to work, but introduces quite a lot of complexity in the making of the code, for example how do we introduce a new block (indentation-based? with \texttt{\{\}}?), what are the semantics, will the syntax clash with types, etc.
+
+        This however solves the type variable specialization problem, but still leaves the type-checking of child labels unresolved.
+\end{itemize}
+
+Branch-checking is therefore used to guarantee that every label is branched to at some point in time, and that the control flow never leaks through a label.
 
 \section{Unsafe operations}\label{sec:nstar-common-unsafe}
 

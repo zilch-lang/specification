@@ -24,7 +24,7 @@ class NStarLexer(RegexLexer):
             (r'[0-9]+', Number.Integer)
         ],
         'instructions': [
-            (r'(ret|mov|jmp|call)\b', Name.Builtin)
+            (r'(ret|mov|jmp|call|cmp|je)\b', Name.Builtin)
         ],
         'registers': [
             (r'(%(rax|rbx|rcx|rdx|rbp|rsp|rdi|rsi))\b', Name.Constant)
