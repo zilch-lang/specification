@@ -367,6 +367,13 @@ It also is restricted not to integrate some sort of scoping, which would add som
 
 \subsection{Returning to a known code-space address}\label{subsec:nstar-common-bs-ret}
 
+Because the stack is given a type in N*, we can use it to make sure that we are returning to a code-space address.
+When we \texttt{call} a label, we are pushing the current instruction pointer on top of the stack (the stack pointer is \texttt{\%rip} on x86/x64, \texttt{\$ip} on MIPS, etc) before jumping to the callee address.
+
+Because of that, the type given to the stack for the context of a label contains at least a pointer to some context (\texttt{*\{ binds\ldots\ \}}) on the very top of it (unless this label is never meant to be \texttt{call}ed but rather \texttt{jmp}ed to).
+This is later used by \texttt{ret} in order to determine that returning from this function can be done safely, and \textit{should}\footnote{It should return to a valid address, but this cannot be checked nor endorsed when using, for example, the foreign function interface or when creating a \texttt{main} function.} return to a valid code-space address.
+If any other data-type is present on top of the stack (an integer, a pointer to something else than a context, a stack pointer, a structure, an union), \texttt{ret} \textit{must} fail to type-check, preserving the stack at runtime and preventing an undefined behavior.
+
 \subsection{Missing return values (a.k.a. registers not bound before return)}\label{subsec:nstar-common-bs-unboundregs}
 
 \subsection{Type-checking and scoping problems}\label{subsec:nstar-common-bs-tcscopes}
