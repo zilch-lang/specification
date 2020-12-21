@@ -376,6 +376,28 @@ If any other data-type is present on top of the stack (an integer, a pointer to 
 
 \subsection{Missing return values (a.k.a. registers not bound before return)}\label{subsec:nstar-common-bs-unboundregs}
 
+Along with checking that we are returning to a valid code-space address, we can also, thanks to the type of the stack, determine if returning from a function preserves the value in registers, and if after returning we have access to return values of a function.
+Consider the example given in Listing~\ref{lst:nstar-common-bs-returnvalues}.
+
+When \texttt{ret}urning from the \texttt{example} ``function'', we give access to the values of type \texttt{u64} in the \texttt{\%rax} and \texttt{\%rbx} registers.
+Note that if either of those registers were not bound before (not given as parameters, or bound using \texttt{mov}), type-checking \textit{must} fail to prevent undefined behavior when later accessing the ``value'' in either register.
+We can easily see that the return context contains \texttt{\%rax: u64} and \texttt{\%rbx: u64}, which means that both registers must have been bound before, and are accessible for reading later one, after the \texttt{call} that went until here.
+This gives a safe way of using return values, and guaranteeing that there are indeed return values stored in the target registers.
+
+\begin{listing}[htb]
+  \centering
+  \begin{minipage}{0.90\textwidth}
+    \begin{minted}[]{\nstarlexer}
+    example: forall (s: Ts). { %rsp: sptr *{ %rsp: sptr s, %rax: u64, %rbx: u64 } }
+      mov 0, %rax
+      mov 5, %rbx
+      ret
+    \end{minted}
+  \end{minipage}
+  \caption{An example of returning multiple values from a simple function.}
+  \label{lst:nstar-common-bs-returnvalues}
+\end{listing}
+
 \subsection{Type-checking and scoping problems}\label{subsec:nstar-common-bs-tcscopes}
 
 The type system in N* cannot detect control flow leaks.
