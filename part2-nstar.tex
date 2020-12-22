@@ -464,6 +464,22 @@ Branch-checking is therefore used to guarantee that every label is branched to a
 
 \section{Unsafe operations}\label{sec:nstar-common-unsafe}
 
+Unsafe operations are operations (sequence of zero or more instructions) whose safety cannot be determined from the current context, or whose evaluation cannot be determined as not UB-provoking (that is, the evaluation may put the application in an unknown state).
+Those kind of operations are essential to low-level programming, but we want to put an emphasis on them by separating them from the rest of the normal and safe operations using \texttt{unsafe} blocks.
+
 \subsection{Dereferencing literal addresses}\label{subsec:nstar-common-unsafe-derefliteraladdr}
 
 \subsection{Pointer offsetting}\label{subsec:nstar-common-unsafe-ptroffset}
+
+Stack pointers, because of their type, can be safely offset to point to a valid piece of data.
+However, ``normal'' pointers (for example \texttt{*u64}) cannot be safely offset.
+While a stack pointers describes the entire structure of the stack (or at least of piece of it), a regular pointer only describes the piece of data it points to.
+
+This is a common idiom in C to use pointers to represent arrays in a contiguous memory (so an array of 6 integers would basically be a $6 * sizeof(int)$ bytes wide chunk of memory, where each index points to a different integer).
+\texttt{Vec<T>} in Rust, \texttt{std::vector} in C++ and many other vector types are also implemented in terms of a pointer to a chunk of memory, but with an added container size, allowing to safely access elements of the vector without going out of bounds.
+But in Rust, we still need to have some \texttt{unsafe} blocks in your code, in order to use the container.
+
+There is the same problem in N*.
+Because there is no built-in array type, we have to rely on pointers to be able to achieve such thing, therefore needing a way to offset a pointer to access the various elements in the array.
+It would also be really hard to manipulate plain array types (because, for example, of the size to store with the type).
+As offsetting a pointer can lead to an invalid address dereferencing (or at least dereferencing an address which doesn't belong to the application memory, i.e. allocated by another process), it is considered an unsafe operation and therefore needs to be wrapped in an \texttt{unsafe} block.
