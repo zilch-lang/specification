@@ -469,6 +469,11 @@ Those kind of operations are essential to low-level programming, but we want to 
 
 \subsection{Dereferencing literal addresses}\label{subsec:nstar-common-unsafe-derefliteraladdr}
 
+Sometimes, one needs to be able to read from/write to literal addresses, such as \texttt{0xB8000} in kernel development (this is the console text buffer beginning address, used to output text to the basic 80×25 console).
+However, because you cannot guarantee that 1) the memory address exists on every machine the program is supposed to run on and 2) there always are some reconstitutable pieces of data of the specified type at the given address, those two operations are considered unsafe.
+Be aware that, despite not being restricted, trying to write to a protected memory address yields an undefined behavior.
+Also, if used, the code is no-longer considered platform-independendant\footnote{Platform independant code (PIC for short) is a type of code which should be runnable on all machines, no matter their specifications.}.
+
 \subsection{Pointer offsetting}\label{subsec:nstar-common-unsafe-ptroffset}
 
 Stack pointers, because of their type, can be safely offset to point to a valid piece of data.
