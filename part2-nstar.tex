@@ -23,6 +23,15 @@ Because N* supports compiling to multiple architectures, using different grammar
 
 \chapter{Non platform-specific features}\label{chap:nstar-common}
 
+\section{Introduction}\label{sec:nstar-common-introduction}
+
+Before describing every platform-independent feature, we need to define some notation regarding inference rules:
+\begin{itemize}
+  \item $\Vdash$ is used to denote the kind inference process;
+  \item $\Gamma$ is the kind typing context;
+  \item $\vdash_{data}$ denotes the type inference process in the \texttt{data} (and \texttt{rodata}) sections;
+\end{itemize}
+
 \section{Types}\label{sec:nstar-common-ts}
 
 One of the differences between classical assembly languages and N* is its type system.
@@ -78,35 +87,35 @@ Kinds of integers are written under the form of inference rules in Figure~\ref{f
   \centering
 
   \begin{prooftree}
-    \Infer0{$u64 : T8$}
+    \Infer0{\Gamma\Vdash$ u64 : T8$}
   \end{prooftree}
   \hspace{3em}
   \begin{prooftree}
-    \Infer0{$s64 : T8$}
+    \Infer0{\Gamma\Vdash$ s64 : T8$}
   \end{prooftree}
   \hspace{3em}
   \begin{prooftree}
-    \Infer0{$u32 : T4$}
+    \Infer0{\Gamma\Vdash$ u32 : T4$}
   \end{prooftree}
   \hspace{3em}
   \begin{prooftree}
-    \Infer0{$s32 : T4$}
+    \Infer0{\Gamma\Vdash$ s32 : T4$}
   \end{prooftree}
   \\\vspace{\baselineskip}
   \begin{prooftree}
-    \Infer0{$u16 : T2$}
+    \Infer0{\Gamma\Vdash$ u16 : T2$}
   \end{prooftree}
   \hspace{3em}
   \begin{prooftree}
-    \Infer0{$s16 : T2$}
+    \Infer0{\Gamma\Vdash$ s16 : T2$}
   \end{prooftree}
   \hspace{3em}
   \begin{prooftree}
-    \Infer0{$u8 : T1$}
+    \Infer0{\Gamma\Vdash$ u8 : T1$}
   \end{prooftree}
   \hspace{3em}
   \begin{prooftree}
-    \Infer0{$s8 : T1$}
+    \Infer0{\Gamma\Vdash$ s8 : T1$}
   \end{prooftree}
 
   \caption{Kind inference rules for integers.}
@@ -146,17 +155,17 @@ However, it is possible to use the literal \texttt{\$0} (which represents a poin
 \begin{figure}[htb]
   \centering
   \begin{prooftree}
-    \Infer0{$char : T1$}
+    \Infer0{\Gamma\Vdash$ char : T1$}
   \end{prooftree}
   \hspace{3em}
   \begin{prooftree}
-    \Hypo{$t : Ta$}
-    \Infer1[64-bits pointers]{$*t : T8$}
+    \Hypo{\Gamma\Vdash$ t : Ta$}
+    \Infer1[64-bits pointers]{\Gamma\Vdash$ *t : T8$}
   \end{prooftree}
   \hspace{3em}
   \begin{prooftree}
-    \Hypo{$t : Ta$}
-    \Infer1[32-bits pointers]{$*t : T4$}
+    \Hypo{\Gamma\Vdash$ t : Ta$}
+    \Infer1[32-bits pointers]{\Gamma\Vdash$ *t : T4$}
   \end{prooftree}
 
   \caption{Kind inference rules for other atomic types.}
@@ -239,20 +248,20 @@ Inference rules for kinds of stack types are written in Figure~\ref{fig:nstar-co
   \centering
 
   \begin{prooftree}
-    \Hypo{$s : Ts$}
-    \Infer1[32-bits pointers]{$sptr s : T4$}
+    \Hypo{\Gamma\Vdash$ s : Ts$}
+    \Infer1[32-bits pointers]{\Gamma\Vdash$ sptr s : T4$}
   \end{prooftree}
   \hspace{3em}
   \begin{prooftree}
-    \Hypo{$s : Ts$}
-    \Infer1[64-bits pointers]{$sptr s : T8$}
+    \Hypo{\Gamma\Vdash$ s : Ts$}
+    \Infer1[64-bits pointers]{\Gamma\Vdash$ sptr s : T8$}
   \end{prooftree}
   \\\vspace{\baselineskip}
   \begin{prooftree}
     \Hypo{$n : $\mathbb{N}$ $}
-    \Hypo{$t : Tn$}
-    \Hypo{$s : Ts$}
-    \Infer3{$t :: s : Ts$}
+    \Hypo{\Gamma\Vdash$ t : Tn$}
+    \Hypo{\Gamma\Vdash$ s : Ts$}
+    \Infer3{\Gamma\Vdash$ t :: s : Ts$}
   \end{prooftree}
 
   \caption{Kind inference rules for stack types}
@@ -281,9 +290,9 @@ Structures take as much space as all their fields, thus can mainly be put on the
   \centering
   \begin{prooftree}
     \Hypo{$n$_0$, n$_1$, $\ldots$, n$_p$ : $\mathbb{N}}
-    \Hypo{$t$_0$ : Tn$_0$, t$_1$ : Tn$_1$, $\ldots$, t$_p$ : Tn$_p}
+    \Hypo{\Gamma\Vdash$ t$_0$ : Tn$_0$, t$_1$ : Tn$_1$, $\ldots$, t$_p$ : Tn$_p}
     \Hypo{$m = $\sum_{i = 0}^{p}{n_i}}
-    \Infer3{$(t$_0$, t$_1$, $\ldots$, t$_p$) : Tm$}
+    \Infer3{\Gamma\Vdash$ (t$_0$, t$_1$, $\ldots$, t$_p$) : Tm$}
   \end{prooftree}
 
   \caption{Kind inference rule for structures.}
@@ -313,9 +322,9 @@ This is more clear in the kind inference rule given in Figure~\ref{fig:nstar-com
 
   \begin{prooftree}
     \Hypo{$n$_0$, n$_1$, $\ldots$, n$_p$ : $\mathbb{N}}
-    \Hypo{$t$_0$ : n$_0$, t$_1$ : n$_1$, $\ldots$, t$_p$ : n$_p}
+    \Hypo{\Gamma\Vdash$ t$_0$ : n$_0$, t$_1$ : n$_1$, $\ldots$, t$_p$ : n$_p}
     \Hypo{$m = $\max_{i = 0}^{p}{n_i}}
-    \Infer3{$<t$_0$, t$_1$, $\ldots$, t$_p$> : Tm$}
+    \Infer3{\Gamma\Vdash$ <t$_0$, t$_1$, $\ldots$, t$_p$> : Tm$}
   \end{prooftree}
 
   \caption{Kind inference rules for union types.}
