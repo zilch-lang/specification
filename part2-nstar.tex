@@ -426,6 +426,61 @@ The grammar for this section is given in Figure~\ref{fig:nstar-common-sections-e
   \label{fig:nstar-common-sections-extern-data-grammar}
 \end{figure}
 
+\section{Constant values}\label{sec:nstar-common-constvalue}
+
+Constant values are some kind of values that can be used in the \texttt{data} and \texttt{rodata} sections\footnote{See Section~\ref{subsec:nstar-common-sections-data}~``\nameref{subsec:nstar-common-sections-data}''.}.
+They come in 3 flavors: integers, characters and arrays.
+Their grammar is given in Figure~\ref{fig:nstar-common-constvalue-grammar} and the type inference rules are given in Figure~\ref{fig:nstar-common-constvalue-typerules}.
+
+\begin{figure}[htb]
+  \centering
+  \scalebox{.5}{
+    \includegraphics{nstar-integer-grammar}
+  }
+  \\
+  \scalebox{.5}{
+    \includegraphics{nstar-character-grammar}
+  }
+  \\
+  \scalebox{.5}{
+    \includegraphics{nstar-array-grammar}
+  }
+
+  \caption{Grammar for constant values.}
+  \label{fig:nstar-common-constvalue-grammar}
+\end{figure}
+
+\begin{figure}[htb]
+  \centering
+
+  \begin{prooftree}
+    \Hypo{$d is a signed integer constant$}
+    \Hypo{$t $\in\{$s8, s16, s32, s64$\}}
+    \Infer2{\vdash_{data}$ d : t$}
+  \end{prooftree}
+  \\\vspace{\baselineskip}
+  \begin{prooftree}
+    \Hypo{$d is an unsigned integer constant$}
+    \Hypo{$t $\in\{$u8, u16, u32, u64$\}}
+    \Infer2{\vdash_{data}$ d : t$}
+  \end{prooftree}
+  \\\vspace{\baselineskip}
+  \begin{prooftree}
+    \Hypo{$c is a character constant$}
+    \Infer1{\vdash_{data}$ c : char$}
+  \end{prooftree}
+  \\\vspace{\baselineskip}
+  \begin{prooftree}
+    \Hypo{$n : $\mathbb{N}}
+    \Hypo{\Gamma\Vdash$ t : Tn$}
+    \Hypo{\vdash_{data}$ c$_1$, c$_2$, \ldots, c$_n$ : t$}
+    \Infer3{\vdash_{data}$ [c$_1$, c$_2$, \ldots, c$_n$] : *t$}
+  \end{prooftree}
+
+  \caption{Type inference rules for constant values.}
+  \label{fig:nstar-common-constvalue-typerules}
+\end{figure}
+
 \section{Restrictions applied to branching}\label{sec:nstar-common-bs}
 
 Branching ((un-)conditional jumps, calls, etc) is restricted in N* in order to prevent stack leaks, unknown caller address return or even missing return values.
