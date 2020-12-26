@@ -14,8 +14,8 @@ TALx86 is basically NASM with a type system, targetting only the x86 architectur
 
 \vspace{\baselineskip}
 
-N*'s goal is to assist users with a simple but powerful type system, as well as other features like what I call ``branch-checking'' which prevents from leaking the control flow of the program, and thus makes a part of the type-checking process meaningful.
-But before even being a usable programming language, N* aims at being a compiler backend (much like for example LLVM), and is used as is in the Zilch project. Differences with other compiler backends are mostly the type-system, allowing the compilation of Zilch source code into type-safe instructions.
+N*'s goal is to assist users with a simple but powerful type system, as well as other features like what is called ``branch-checking'' which prevents from leaking the control flow of the program, and thus makes a part of the type-checking process meaningful.
+But before even being a usable programming language, N* aims at being a compiler backend (much like for example LLVM), and is used that way in the Zilch project. Differences with other compiler backends are mostly the type-system, allowing the compilation of Zilch source code into type-safe instructions.
 
 \vspace{\baselineskip}
 
@@ -28,7 +28,7 @@ Because N* supports compiling to multiple architectures, using different grammar
 One of the differences between classical assembly languages and N* is its type system.
 Compared to other higher level programming languages like Java, C++, etc, N* has a very simple yet powerful and expressive enough type system.
 
-In programming, types are used mostly to prove at compile-time that a given program should behave well if it type-checks. While this works for more elaborated programming languages like Haskell, Idris, etc, most type systems aren't expressive enough to absolutely guarantee that everything will work at run-time (in fact, there is no possible way of doing this, because for example a memory allocation may fail, and this cannot be endorsed at compile-time). However, we can try to guarantee as much as possible.
+In programming, types are used mostly to prove at compile-time that a given program should behave well if it type-checks. While this works for more elaborated programming languages like Haskell, Idris, etc, most type systems aren't expressive enough to absolutely guarantee that everything will work at run-time (in fact, there is no possible way of doing this, because for example a memory allocation may fail, and this cannot be checked at compile-time). However, we can try to guarantee as much as possible.
 
 N* doesn't try to solve this issue, because it would be really hard to target a dependently typed assembly language from a non-dependently typed programming language. But where all used assembly languages do not even consider types (only numbers, in fact), N* embeds a powerful type system used to remove the possibility of bugs (like incorrect structure addresses passed as a parameter function, or incoherent types in some instructions).
 
