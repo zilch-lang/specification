@@ -336,7 +336,8 @@ Sections in N* can be named ``\texttt{data}'', ``\texttt{code}'' or ``\texttt{ro
 
 \subsection{The \texttt{code} section}\label{subsec:nstar-common-sections-code}
 
-The \texttt{code} section is the section containing all executable instructions (basically, as the name implies, code). Its syntax is defined in Figure~\ref{fig:nstar-common-sections-code-grammar}.
+The \texttt{code} section is the section containing all executable instructions (basically, as the name implies, code).
+Its syntax is defined in Figure~\ref{fig:nstar-common-sections-code-grammar}.
 
 Each label is assigned a type, describing the context needed to branch to it.
 If a label has the type \texttt{\{reg:s64\}} then there needs to be the register \texttt{reg} bound to a value of type \texttt{s64} in the current context, in order to branch to it.
@@ -356,9 +357,26 @@ However, some restrictions apply to labels in order to make the type-checking me
   \label{fig:nstar-common-sections-code-grammar}
 \end{figure}
 
-Every assembly instruction makes the current context vary in some way, either by binding registers, forgetting about some bindings, changing register types, or some other way. The current context is just a record keeping track of the currently bound registers, along with the data type they contain. More on that in sections about instructions\footnote{Instructions are platform-specific, that's why we don't talk about them here.}.
+Every assembly instruction makes the current context vary in some way, either by binding registers, forgetting about some bindings, changing register types, or some other way. The current context is just a record keeping track of the currently bound registers, along with the data type they contain.
+More on that in sections about instructions\footnote{Instructions are platform-specific, that's why we don't talk about them here.}.
 
 \subsection{The \texttt{data} and \texttt{rodata} sections}\label{subsec:nstar-common-sections-data}
+
+The \texttt{data} and \texttt{rodata} sections are sections used to reference (read-only) literal data (much like constants in PHP).
+Each label in those sections is used as a pointer to the given value, but only the labels in the \texttt{data} section can be written to\footnote{The \texttt{rodata} section (read-only data) is read-only. While it is not necessary to prevent writing to it at compile-time, it is an undefined behavior at runtime.}.
+The grammar of those sections is given in Figure~\ref{fig:nstar-common-sections-data-grammar}.
+
+\begin{figure}[htb]
+  \centering
+  \scalebox{.5}{
+    \includegraphics{nstar-data-section-grammar}
+  }
+
+  \caption{Grammar for the \texttt{data} and \texttt{rodata} sections.}
+  \label{fig:nstar-common-sections-data-grammar}
+\end{figure}
+
+\noindent Note that, while the grammar allows labels in the \texttt{data} section to be pointers to context types, this cannot be typed because there is no such constant value referencing a code-space address.
 
 \section{Restrictions applied to branching}\label{sec:nstar-common-bs}
 
