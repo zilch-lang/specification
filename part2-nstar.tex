@@ -332,7 +332,7 @@ Section names obviously differ from one target format to another. As an example,
 
 N* tries to unify target formats section names (simplifying targetting N* as a compiler backend) by having a fixed set of section names, all with different meanings. While you can put anything anywhere in classical assembly languages, this is not the case in N*.
 
-Sections in N* can be named ``\texttt{data}'', ``\texttt{code}'' or ``\texttt{rodata}''. Each of them has defined semantics as described below.
+Sections in N* can be named ``\texttt{data}'', ``\texttt{code}'', ``\texttt{rodata}'' or ``\texttt{extern}''. Each of them has defined semantics as described below.
 
 \subsection{The \texttt{code} section}\label{subsec:nstar-common-sections-code}
 
@@ -377,6 +377,45 @@ The grammar of those sections is given in Figure~\ref{fig:nstar-common-sections-
 \end{figure}
 
 \noindent Note that, while the grammar allows labels in the \texttt{data} section to be pointers to context types, this cannot be typed because there is no such constant value referencing a code-space address.
+
+\subsection{The \texttt{extern} sections}\label{subsec:nstar-common-sections-extern}
+
+The \texttt{extern} sections contain information related to static and dynamic imports.
+They come in 2 flavors: function imports or data imports.
+
+\subsubsection{The \texttt{extern.code} section}\label{subsubsec:nstar-common-sections-extern-code}
+
+The \texttt{extern.code} section indicates that there are functions which, despite not being in the source file, should be accessible with the given context.
+Static imports are resolved during linking, preventing from using undefined function symbols at runtime, while dynamic imports are resolved at runtime by the dynamic linker.
+The two types of imports are indicated from the absence (or presence) of the \texttt{dyn} qualifier when importing.
+The grammar showing this is given in figure~\ref{fig:nstar-common-sections-extern-code-grammar}.
+
+\begin{figure}[htb]
+  \centering
+  \scalebox{.47}{
+    \includegraphics{nstar-externcode-section-grammar}
+  }
+
+  \caption{Grammar for the \texttt{extern.code} file section.}
+  \label{fig:nstar-common-sections-extern-code-grammar}
+\end{figure}
+
+\subsubsection{The \texttt{extern.data} and \texttt{extern.rodata} sections}\label{subsubsec:nstar-common-sections-extern-data}
+
+The \texttt{extern.data} and \texttt{extern.rodata} sections are used to import data addresses into the current scope.
+While it is possible to dynamically import a data address, it shouldn't really be useful (unless in specific cases like \texttt{static} variables).
+Same as for the \texttt{extern.code} section, the import type (dynamic or static) is given depending on the absence (or presence) of the \texttt{dyn} qualifier.
+The grammar for this section is given in Figure~\ref{fig:nstar-common-sections-extern-data-grammar}.
+
+\begin{figure}[htb]
+  \centering
+  \scalebox{.45}{
+    \includegraphics{nstar-externdata-section-grammar}
+  }
+
+  \caption{Grammar for the \texttt{extern.data} and \texttt{extern.rodata} sections.}
+  \label{fig:nstar-common-sections-extern-data-grammar}
+\end{figure}
 
 \section{Restrictions applied to branching}\label{sec:nstar-common-bs}
 
@@ -488,7 +527,7 @@ Those kind of operations are essential to low-level programming, but we want to 
 \subsection{Dereferencing literal addresses}\label{subsec:nstar-common-unsafe-derefliteraladdr}
 
 Sometimes, one needs to be able to read from/write to literal addresses, such as \texttt{0xB8000} in kernel development (this is the console text buffer beginning address, used to output text to the basic 80×25 console).
-However, because you cannot guarantee that 1) the memory address exists on every machine the program is supposed to run on and 2) there always are some reconstitutable pieces of data of the specified type at the given address, those two operations are considered unsafe.
+However, because you cannot guarantee that 1- the memory address exists on every machine the program is supposed to run on and 2- there always are some reconstitutable pieces of data of the specified type at the given address, those two operations are considered unsafe.
 Be aware that, despite not being restricted, trying to write to a protected memory address yields an undefined behavior.
 Also, if used, the code is no-longer considered platform-independendant\footnote{Platform independant code (PIC for short) is a type of code which should be runnable on all machines, no matter their specifications.}.
 
@@ -496,7 +535,7 @@ Also, if used, the code is no-longer considered platform-independendant\footnote
 
 Stack pointers, because of their type, can be safely offset to point to a valid piece of data.
 However, ``normal'' pointers (for example \texttt{*u64}) cannot be safely offset.
-While a stack pointers describes the entire structure of the stack (or at least of piece of it), a regular pointer only describes the piece of data it points to.
+While a stack pointers describes the entire structure of the stack (or at least a piece of it), a regular pointer only describes the piece of data it points to.
 
 This is a common idiom in C to use pointers to represent arrays in a contiguous memory (so an array of 6 integers would basically be a $6 * sizeof(int)$ bytes wide chunk of memory, where each index points to a different integer).
 \texttt{Vec<T>} in Rust, \texttt{std::vector} in C++ and many other vector types are also implemented in terms of a pointer to a chunk of memory, but with an added container size, allowing to safely access elements of the vector without going out of bounds.
