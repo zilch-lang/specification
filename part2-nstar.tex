@@ -63,7 +63,7 @@ The grammar is given in Figure~\ref{fig:nstar-common-ts-kinds-syntax}.
 
 \subsection{Integer types}\label{subsec:nstar-common-ts-integer}
 
-Numbers are the building block of any assembly language. Most of data manipulated is manipulated as numbers, e.g. addresses, characters, strings, enumerations, etc.
+Numbers are the building block of any assembly language. Most of data manipulated is manipulated as numbers, e.g.\ addresses, characters, strings, enumerations, etc.
 This is not the case in N*, where ``integer''  only really means ``number''.
 The syntax for the types of integers is given in Figure~\ref{fig:nstar-common-ts-integer-syntax}.
 
@@ -77,7 +77,7 @@ The syntax for the types of integers is given in Figure~\ref{fig:nstar-common-ts
 \end{figure}
 
 Integers have two varying parameters: their sign and sizes.
-According to the sign (i.e. signed or unsigned), some operations may not perform the same (for example \texttt{mul} does not behave the same).
+According to the sign (i.e.\ signed or unsigned), some operations may not perform the same (for example \texttt{mul} does not behave the same).
 The size is nothing more than the number of bits occupied by the integer (in N*, those are restricted to multiples of $8$ smaller or equal to $64$).
 Most operations should perform the same no matter the integer size, however it is recommended to search in the target architecture manual for further reference.
 
@@ -223,8 +223,8 @@ The type variable \texttt{s} is specialized at the call site.
 \subsection{Stack types}\label{subsec:nstar-common-ts-stack}
 
 There are mainly two stack types in N*: the stack pointer \texttt{sptr} and the stack constructor \texttt{::}.
-Note that there is no ``empty stack'' type as would be the case with e.g. lists in Haskell.
-The reason is that it forces the developer to abstract the stack to be able to have a ``stack tail'' (the part of the stack on the right of the stack constructor \texttt{::}) at some point.\footnote{It also serves the purpose to ensure that we cannot construct a stack from nothing, and that it should always be given to us, to e.g. the \texttt{main} function.}
+Note that there is no ``empty stack'' type as would be the case with e.g.\ lists in Haskell.
+The reason is that it forces the developer to abstract the stack to be able to have a ``stack tail'' (the part of the stack on the right of the stack constructor \texttt{::}) at some point.\footnote{It also serves the purpose to ensure that we cannot construct a stack from nothing, and that it should always be given to us, to e.g.\ the \texttt{main} function.}
 An example is given in Listing~\ref{lst:nstar-common-ts-records-stackmask}.
 
 The grammar for stack types is given in Figure~\ref{fig:nstar-common-ts-stack-types-syntax}.
@@ -485,7 +485,7 @@ Their grammar is given in Figure~\ref{fig:nstar-common-constvalue-grammar} and t
 
 \section{Restrictions applied to branching}\label{sec:nstar-common-bs}
 
-Branching ((un-)conditional jumps, calls, etc) is restricted in N* in order to prevent stack leaks, unknown caller address return or even missing return values.
+Branching ((un-)\ conditional jumps, calls, etc) is restricted in N* in order to prevent stack leaks, unknown caller address return or even missing return values.
 It also is restricted not to integrate some sort of scoping, which would add some (mostly useless) complexity when using/generating N*.
 
 \subsection{Returning to a known code-space address}\label{subsec:nstar-common-bs-ret}
@@ -497,7 +497,7 @@ Because of that, the type given to the stack for the context of a label contains
 This is later used by \texttt{ret} in order to determine that returning from this function can be done safely, and \textit{should}\footnote{It should return to a valid address, but this cannot be checked nor endorsed when using, for example, the foreign function interface or when creating a \texttt{main} function.} return to a valid code-space address.
 If any other data-type is present on top of the stack (an integer, a pointer to something else than a context, a stack pointer, a structure, an union), \texttt{ret} \textit{must} fail to type-check, preserving the stack at runtime and preventing an undefined behavior.
 
-\subsection{Missing return values (a.k.a. registers not bound before return)}\label{subsec:nstar-common-bs-unboundregs}
+\subsection{Missing return values (a.k.a.\ registers not bound before return)}\label{subsec:nstar-common-bs-unboundregs}
 
 Along with checking that we are returning to a valid code-space address, we can also, thanks to the type of the stack, determine if returning from a function preserves the value in registers, and if after returning we have access to return values of a function.
 Consider the example given in Listing~\ref{lst:nstar-common-bs-returnvalues}.
@@ -610,4 +610,4 @@ But in Rust, we still need to have some \texttt{unsafe} blocks in your code, in 
 There is the same problem in N*.
 Because there is no built-in array type, we have to rely on pointers to be able to achieve such thing, therefore needing a way to offset a pointer to access the various elements in the array.
 It would also be really hard to manipulate plain array types (because, for example, of the size to store with the type).
-As offsetting a pointer can lead to an invalid address dereferencing (or at least dereferencing an address which doesn't belong to the application memory, i.e. allocated by another process), it is considered an unsafe operation and therefore needs to be wrapped in an \texttt{unsafe} block.
+As offsetting a pointer can lead to an invalid address dereferencing (or at least dereferencing an address which doesn't belong to the application memory, i.e.\ allocated by another process), it is considered an unsafe operation and therefore needs to be wrapped in an \texttt{unsafe} block.
