@@ -341,7 +341,7 @@ Section names obviously differ from one target format to another. As an example,
 
 N* tries to unify target formats section names (simplifying targetting N* as a compiler backend) by having a fixed set of section names, all with different meanings. While you can put anything anywhere in classical assembly languages, this is not the case in N*.
 
-Sections in N* can be named ``\texttt{data}'', ``\texttt{code}'', ``\texttt{rodata}'' or ``\texttt{extern}''. Each of them has defined semantics as described below.
+Sections in N* can be named ``\texttt{data}'', ``\texttt{code}'', ``\texttt{rodata}'', ``\texttt{udata}'' or ``\texttt{extern}''. Each of them has defined semantics as described below.
 
 \subsection{The \texttt{code} section}\label{subsec:nstar-common-sections-code}
 
@@ -369,7 +369,7 @@ However, some restrictions apply to labels in order to make the type-checking me
 Every assembly instruction makes the current context vary in some way, either by binding registers, forgetting about some bindings, changing register types, or some other way. The current context is just a record keeping track of the currently bound registers, along with the data type they contain.
 More on that in sections about instructions\footnote{Instructions are platform-specific, that's why we don't talk about them here.}.
 
-\subsection{The \texttt{data} and \texttt{rodata} sections}\label{subsec:nstar-common-sections-data}
+\subsection{The \texttt{data}, \texttt{rodata} and \texttt{udata} sections}\label{subsec:nstar-common-sections-data}
 
 The \texttt{data} and \texttt{rodata} sections are sections used to reference (read-only) literal data (much like constants in PHP).
 Each label in those sections is used as a pointer to the given value, but only the labels in the \texttt{data} section can be written to\footnote{The \texttt{rodata} section (read-only data) is read-only. While it is not necessary to prevent writing to it at compile-time, it is an undefined behavior at runtime.}.
@@ -381,11 +381,13 @@ The grammar of those sections is given in Figure~\ref{fig:nstar-common-sections-
     \includegraphics{nstar-data-section-grammar}
   }
 
-  \caption{Grammar for the \texttt{data} and \texttt{rodata} sections.}
+  \caption{Grammar for the \texttt{data}, \texttt{rodata} and \texttt{udata} sections.}
   \label{fig:nstar-common-sections-data-grammar}
 \end{figure}
 
 \noindent Note that, while the grammar allows labels in the \texttt{data} section to be pointers to context types, this cannot be typed because there is no such constant value referencing a code-space address.
+
+While the \texttt{data} and \texttt{rodata} sections contain initialised values (that is, hardcoded bytes in the executable), the \texttt{udata} section does not contain any byte (it should be only $0$s, to reserve space for each entry).
 
 \subsection{The \texttt{extern} sections}\label{subsec:nstar-common-sections-extern}
 
