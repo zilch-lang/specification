@@ -18,6 +18,8 @@ TEXFLAGS =                        \
 
 all: $(PDF)
 
+rebuild: clean $(PDF)
+
 %.pdf: $(MAIN) $(SRCS)
 	latexmk $(TEXFLAGS) -pdf $<
 	@mv $(<:.tex=.pdf) $@
