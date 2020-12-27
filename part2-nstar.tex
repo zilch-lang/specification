@@ -604,7 +604,7 @@ However, ``normal'' pointers (for example \texttt{*u64}) cannot be safely offset
 While a stack pointers describes the entire structure of the stack (or at least a piece of it), a regular pointer only describes the piece of data it points to.
 
 This is a common idiom in C to use pointers to represent arrays in a contiguous memory (so an array of 6 integers would basically be a $6 * sizeof(int)$ bytes wide chunk of memory, where each index points to a different integer).
-\texttt{Vec<T>} in Rust, \texttt{std::vector} in C++ and many other vector types are also implemented in terms of a pointer to a chunk of memory, but with an added container size, allowing to safely access elements of the vector without going out of bounds.
+\texttt{Vec<T>} in Rust, \texttt{std::vector<T>} in C++, \texttt{ArrayList<T>} in Java, and many other vector types are also implemented in terms of a pointer to a chunk of memory, but with an added container size, allowing to safely access elements of the vector without going out of bounds.
 But in Rust, we still need to have some \texttt{unsafe} blocks in your code, in order to use the container.
 
 There is the same problem in N*.
