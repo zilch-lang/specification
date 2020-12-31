@@ -611,3 +611,64 @@ There is the same problem in N*.
 Because there is no built-in array type, we have to rely on pointers to be able to achieve such thing, therefore needing a way to offset a pointer to access the various elements in the array.
 It would also be really hard to manipulate plain array types (because, for example, of the size to store with the type).
 As offsetting a pointer can lead to an invalid address dereferencing (or at least dereferencing an address which doesn't belong to the application memory, i.e.\ allocated by another process), it is considered an unsafe operation and therefore needs to be wrapped in an \texttt{unsafe} block.
+
+\chapter{Instructions and target-dependent features}\label{chap:nstar-specific}
+
+\section{Introduction}\label{sec:nstar-specific-introduction}
+
+In addition to the special notation for inference rules introduced in the precedent chapter\footnote{See Section~\ref{sec:nstar-common-introduction}~``\nameref{sec:nstar-common-introduction}''}, there is:
+\begin{itemize}
+  \item $\vdash_{code}$, describing the inference process in a \texttt{code} section;
+  \item $\Delta$, which is the current typing environment (associating registers with the type of data they hold);
+\end{itemize}
+
+\section{x86, amd64}\label{sec:nstar-specific-x86amd64}
+
+\subsection{Available registers}\label{subsec:nstar-specific-x86amd64-registers}
+
+\begin{tabularx}{\textwidth}{*{8}{| >{\centering\arraybackslash}X} |}
+  \hline
+  \textbf{64} & \textbf{56} & \textbf{48} & \textbf{40} & \textbf{32} & \textbf{24} & \textbf{16} & \textbf{8} \\
+  \hline
+
+  \rowcolor{gray!30}%
+  \multicolumn{8}{|c|}{\textbf{General purpose registers: A, B, C and D}} \\
+  \hline
+
+  \multicolumn{8}{|c|}{R?X} \\
+  \hline
+  \multicolumn{4}{|c|}{\cellcolor{gray!10}} & \multicolumn{4}{c|}{E?X} \\
+  \hline
+  \multicolumn{6}{|c|}{\cellcolor{gray!10}} & \multicolumn{2}{c|}{?X} \\
+  \hline
+  \multicolumn{6}{|c|}{\cellcolor{gray!10}} & {?H} & {?L} \\
+  \hline
+
+  \rowcolor{gray!30}%
+  \multicolumn{8}{|c|}{\textbf{Index registers: S and D}} \\
+  \hline
+
+  \multicolumn{8}{|c|}{R?I} \\
+  \hline
+  \multicolumn{4}{|c|}{\cellcolor{gray!10}} & \multicolumn{4}{c|}{E?I} \\
+  \hline
+  \multicolumn{6}{|c|}{\cellcolor{gray!10}} & \multicolumn{2}{c|}{?I} \\
+  \hline
+  \multicolumn{7}{|c|}{\cellcolor{gray!10}} & {?IL} \\
+  \hline
+
+  \rowcolor{gray!30}%
+  \multicolumn{8}{|c|}{\textbf{Pointer registers: S and B\makebox[0pt][l]{$^{\ast}$} }} \\
+  \hline
+
+  \multicolumn{8}{|c|}{R?P} \\
+  \hline
+  \multicolumn{4}{|c|}{\cellcolor{gray!10}} & \multicolumn{4}{c|}{E?P} \\
+  \hline
+
+  \hline
+  \multicolumn{8}{|l|}{\textit{\footnotesize$^{\ast}$ RSP and RBP are only available in 64-bit mode, while ESP and EBP are only available in 32-bit mode.}} \\
+  \hline
+\end{tabularx}
+
+\subsection{Supported instructions}\label{subsec:nstar-specific-x86amd64-instructions}
