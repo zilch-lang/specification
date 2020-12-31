@@ -32,9 +32,14 @@ class NStarLexer(RegexLexer):
         'types': [
             (r'(Ts|Ta|T4|T8|s8|s16|s32|s64|u8|u16|u32|u64)\b', Keyword.Type)
         ],
+        'variables': [
+            (r'^([a-zA-Z]*)\:', Name.Variable),
+            (r'(jmp|call|je)( )([a-zA-Z]*)(\<.*?\>)?', bygroups(Keyword, Text, Name.Variable, Text))
+        ],
         'root': [
             include('commentsandwhitespace'),
             include('keywords'),
+            include('variables'),
             include('instructions'),
             include('literals'),
             include('registers'),
@@ -43,7 +48,6 @@ class NStarLexer(RegexLexer):
             (r'(\*|\:\:)', Operator),
             (r'(\{|\}|\.|\:)', Punctuation),
 
-            (r'^([a-zA-Z]*)\:', Name.Variable),
             (r'.', Text)
         ]
     }
