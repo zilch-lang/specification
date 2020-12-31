@@ -671,4 +671,52 @@ In addition to the special notation for inference rules introduced in the preced
   \hline
 \end{tabularx}
 
+\subsection{Expressions}\label{subsec:nstar-specific-x86amd64-exprs}
+
+There are four types of expressions in x86-N*.
+All of these can be used as the value operand of the \texttt{mov} instruction.
+
+\subsubsection{Immediate values}\label{subsubsec:nstar-specific-x86amd64-exprs-immediate}
+
+Immediate values are also known as ``hardcoded values''.
+These are values that you can directly read in the source file, and which do not come from e.g.\ registers.
+Grammar and inference rules are given respectively in Figure~\ref{fig:nstar-specific-x86amd64-exprs-immediate-grammar} and Figure~\ref{fig:nstar-specific-x86amd64-exprs-immediate-typerules}.
+
+\begin{figure}[htb]
+  \centering
+  \scalebox{.5}{
+    \includegraphics{nstar-imm-char-grammar}
+  }
+  \\
+  \scalebox{.5}{
+    \includegraphics{nstar-imm-int-grammar}
+  }
+  \caption{Grammar for immediate values in x86-N*.}
+  \label{fig:nstar-specific-x86amd64-exprs-immediate-grammar}
+\end{figure}
+
+\begin{figure}[htb]
+  \centering
+
+  \begin{prooftree}
+    \Hypo{$c is a character immediate$}
+    \Infer1{\Delta\vdash_{code}$ c : char$}
+  \end{prooftree}
+  \\\vspace{\baselineskip}
+  \begin{prooftree}
+    \Hypo{$i is an unsigned integer immediate$}
+    \Hypo{$t $\in\{$ u8, u16, u32, u64 $\}}
+    \Infer2{\Delta\vdash_{code}$ i : t$}
+  \end{prooftree}
+  \\\vspace{\baselineskip}
+  \begin{prooftree}
+    \Hypo{$i is a signed integer immediate$}
+    \Hypo{$t $\in\{$ s8, s16, s32, s64 $\}}
+    \Infer2{\Delta\vdash_{code}$ i : t$}
+  \end{prooftree}
+
+  \caption{Type inference rules for immediate values in x86-N*.}
+  \label{fig:nstar-specific-x86amd64-exprs-immediate-typerules}
+\end{figure}
+
 \subsection{Supported instructions}\label{subsec:nstar-specific-x86amd64-instructions}
