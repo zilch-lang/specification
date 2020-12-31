@@ -673,7 +673,7 @@ In addition to the special notation for inference rules introduced in the preced
 
 \subsection{Expressions}\label{subsec:nstar-specific-x86amd64-exprs}
 
-There are four types of expressions in x86-N*: immediate values, data labels, registers and offset pointers.
+There are four types of expressions in x86-N*: immediate values, data labels, registers and pointer offsets.
 All of these can be used as the value operand of the \texttt{mov} instruction.
 
 \subsubsection{Immediate values}\label{subsubsec:nstar-specific-x86amd64-exprs-immediate}
@@ -774,6 +774,54 @@ Grammar is given in Figure~\ref{fig:nstar-specific-x86amd64-exprs-registers-gram
 
   \caption{Inference rules for register values.}
   \label{fig:nstar-specific-x86amd64-exprs-registers-typerules}
+\end{figure}
+
+\subsubsection{Pointer offsets}\label{fig:nstar-specific-x86amd64-exprs-pointeroffsets}
+
+Pointer offsets allow accessing data that may be located relative to a given memory address.
+Grammar for pointer offsets is given in Figure~\ref{fig:nstar-specific-x86amd64-exprs-pointeroffsets-grammar} and type inference rules are given in Figure~\ref{fig:nstar-specific-x86amd64-exprs-pointeroffsets-typerules}.
+
+\begin{figure}[htb]
+  \centering
+
+  \scalebox{.5}{
+    \includegraphics{nstar-pointer-offset-grammar}
+  }
+
+  \caption{Grammar for pointer offsets.}
+  \label{fig:nstar-specific-x86amd64-exprs-pointeroffsets-grammar}
+\end{figure}
+
+\begin{figure}[htb]
+  \centering
+
+  \begin{prooftree}
+    \Hypo{$n$_1$, n$_2$, \ldots, n$_p$ $\in\mathbb{N}}
+    \Hypo{$m$_i$ = $-$n$_i}
+    \Infer[no rule, rule margin=1.0ex]2{\Gamma\Vdash$ t$_1$ : Tn$_1$, t$_2$ : Tn$_2$, \ldots, t$_p$ : Tn$_p$, s : Ts\hspace{1.5em}$%
+                                        \Delta\vdash_{code}$ e : sptr t$_1$::t$_2$::\ldots::t$_p$::s$}
+    \Infer1[Stack pointers]{\Delta\vdash_{code}$ m$_i$(e) : t$_i}
+    % small hack: makes all premises on top of each other
+  \end{prooftree}
+  \\\vspace{\baselineskip}
+  \begin{prooftree}
+    \Hypo{$n$_1$, n$_2$, \ldots, n$_p$ $\in\mathbb{N}}
+    \Infer[no rule, rule margin=1.0ex]1{\Gamma\Vdash$ t$_1$ : Tn$_1$, t$_2$ : Tn$_2$, \ldots, t$_p$ : Tn$_p$\hspace{1.5em}$%
+                                        \Delta\vdash_{code}$ e : *$ ($ t$_1$::t$_2$::\ldots::t$_p$ $)}
+    \Infer1[Structure pointers]{\Delta\vdash_{code}$ n$_i$(e) : t$_i}
+    % small hack: makes all premises on top of each other
+  \end{prooftree}
+  \\\vspace{\baselineskip}
+  \begin{prooftree}
+    \Hypo{$k, n $\in\mathbb{N}}
+    \Hypo{$m = k $\times$ n$}
+    \Hypo{\Gamma\Vdash$ t : Tn$}
+    \Hypo{\Delta\vdash_{code}$ e : *t$}
+    \Infer4[Raw pointers]{\Delta\vdash_{code}$ m(e) : t $}
+  \end{prooftree}
+
+  \caption{Type inference rules for pointer offsets.}
+  \label{fig:nstar-specific-x86amd64-exprs-pointeroffsets-typerules}
 \end{figure}
 
 \subsection{Supported instructions}\label{subsec:nstar-specific-x86amd64-instructions}
