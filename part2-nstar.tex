@@ -673,7 +673,7 @@ In addition to the special notation for inference rules introduced in the preced
 
 \subsection{Expressions}\label{subsec:nstar-specific-x86amd64-exprs}
 
-There are three types of expressions in x86-N*: immediate values, data labels and offset pointers.
+There are four types of expressions in x86-N*: immediate values, data labels, registers and offset pointers.
 All of these can be used as the value operand of the \texttt{mov} instruction.
 
 \subsubsection{Immediate values}\label{subsubsec:nstar-specific-x86amd64-exprs-immediate}
@@ -746,6 +746,34 @@ Grammar and inference rules are given respectively in Figure~\ref{fig:nstar-spec
 
   \caption{Type inference rules for data labels in x86-N*.}
   \label{fig:nstar-specific-x86amd64-exprs-labels-typerules}
+\end{figure}
+
+\subsubsection{Registers}\label{subsubsec:nstar-specific-x86amd64-exprs-registers}
+
+Registers are basically value containers.
+They can also be dereferenced and offset (applying those operations to the contained value).
+Grammar is given in Figure~\ref{fig:nstar-specific-x86amd64-exprs-registers-grammar} and type inference rules are given in Figure~\ref{fig:nstar-specific-x86amd64-exprs-registers-typerules}.
+
+\begin{figure}[htb]
+  \centering
+
+  \scalebox{.5}{
+    \includegraphics{nstar-register-x86-grammar}
+  }
+  \caption{Grammar for registers in x86-N*.}
+  \label{fig:nstar-specific-x86amd64-exprs-registers-grammar}
+\end{figure}
+
+\begin{figure}[htb]
+  \centering
+
+  \begin{prooftree}
+    \Hypo{$r is a register$}
+    \Infer1{\Delta$, r : t $\vdash_{code}$ r : t$}
+  \end{prooftree}
+
+  \caption{Inference rules for register values.}
+  \label{fig:nstar-specific-x86amd64-exprs-registers-typerules}
 \end{figure}
 
 \subsection{Supported instructions}\label{subsec:nstar-specific-x86amd64-instructions}
