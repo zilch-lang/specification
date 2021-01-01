@@ -839,3 +839,42 @@ Grammar for pointer offsets is given in Figure~\ref{fig:nstar-specific-x86amd64-
 \end{figure}
 
 \subsection{Supported instructions}\label{subsec:nstar-specific-x86amd64-instructions}
+
+There are a ton of instructions that can be used on x86/amd64.
+Because it would be a real pain to support every single one of them (and it would be really useless), we choose to only support a small subset, big enough to be used as a general compiler target language.
+
+\subsubsection{\texttt{mov}}\label{subsubsec:nstar-specific-x86amd64-instructions-mov}
+
+The \texttt{mov} instruction moves a value into a register or at a given address (literal address or pointer address).
+Grammar is given in Figure~\ref{fig:nstar-specific-x86amd64-instructions-mov-grammar}.
+Type inference rules are given in Figure~\ref{fig:nstar-specific-x86amd64-instructions-mov-typerules}.
+
+\begin{figure}[htb]
+  \centering
+  \scalebox{.5}{
+    \includegraphics{nstar-mov-x86-grammar}
+  }
+  \caption{Grammar of the \texttt{mov} instruction.}
+  \label{fig:nstar-specific-x86amd64-instructions-mov-grammar}
+\end{figure}
+
+\begin{figure}[htb]
+  \centering
+
+  \begin{prooftree}
+    \Hypo{\Delta\vdash^T_{code}$ e : t$}
+    \Hypo{$r is a register$}
+    \Infer2[\texttt{mov} to register]{\Delta\vdash^I$ mov e, r $\dashv\Delta\setminus$ r, r : t $}
+  \end{prooftree}
+  \\\vspace{\baselineskip}
+  \begin{prooftree}
+    \Hypo{$n, k $\in\mathbb{N}}
+    \Hypo{$m = $\pm$k $\times$ n$}
+    \Hypo{\Delta\vdash^T_{code}$ e : t$}
+    \Hypo{\Delta\vdash^T_{code}$ m(d) : t$}
+    \Infer4[\texttt{mov} to raw pointer offset]{\Delta\vdash^I$ mov e, m(d) $\dashv\Delta}
+  \end{prooftree}
+
+  \caption{Type inference rules for the \texttt{mov} instruction.}
+  \label{fig:nstar-specific-x86amd64-instructions-mov-typerules}
+\end{figure}
