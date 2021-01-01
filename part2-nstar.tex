@@ -37,6 +37,19 @@ Inference rules notation:
           \item $\vdash^{T}_{data}$ and $\vdash^{T}_{code}$ are the type inference judgements for expressions in their respective sections (\texttt{data} or \texttt{code});
           \item $\Delta\vdash^{I}instr\dashv\Delta'$ denotes that the inference of the instruction $instr$ in the current typing context $\Delta$ yields a new typing context $\Delta'$;
         \end{itemize}
+  \item Grammar
+        \begin{figure}[H]
+          \centering
+          \scalebox{.5}{
+            \includegraphics{grammar-template}
+          }
+        \end{figure}
+        \begin{itemize}
+          \item Normal rectangles describe other grammar rules (whose name is given in the shape);
+          \item Rounded rectangles describe terminal nodes, that is invariant string pieces;
+          \item The name of the grammar rule is given in the top-left corner of the diagram
+                For a rule to match, it must be possible to go from one end to the other while staying on the black rails;
+        \end{itemize}
 \end{itemize}
 
 \chapter{Non platform-specific features}\label{chap:nstar-common}
