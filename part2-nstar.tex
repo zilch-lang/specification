@@ -21,16 +21,25 @@ But before even being a usable programming language, N* aims at being a compiler
 
 Because N* supports compiling to multiple architectures, using different grammars, describing N* will at first be platform-agnostic, treating common aspects between all CPU architectures, and then will be divided into multiple categories, explaining in more details some features on a per-architecture basis\footnote{Note that the target executable format (ELF, PE, \ldots) is also considered as an architecture-specific thing, but should not influence N* much.}.
 
-\chapter{Non platform-specific features}\label{chap:nstar-common}
+\section*{Small notes on the notation used in the next chapters}\label{sec:nstar-abstract-notation}
 
-\section{Introduction}\label{sec:nstar-common-introduction}
-
-Before describing every platform-independent feature, we need to define some notation regarding inference rules:
+Inference rules notation:
 \begin{itemize}
-  \item $\Vdash$ is used to denote the kind inference process;
-  \item $\Gamma$ is the kind typing context;
-  \item $\vdash_{data}$ denotes the type inference process in the \texttt{data} (and \texttt{rodata}) sections;
+  \item Kind inference
+        \begin{itemize}
+          \item $\Gamma$ is the typing context, containing every bindings from names to type variables;
+          \item $\vdash^{K}$ is the kind inference judgement;
+        \end{itemize}
+  \item Type inference
+        \begin{itemize}
+          \item $\Delta$ is the typing context, containing bound registers along with their types.
+                An ``unbound'' register is a register holding some data we don't know about at a given point;
+          \item $\vdash^{T}_{data}$ and $\vdash^{T}_{code}$ are the type inference judgements for expressions in their respective sections (\texttt{data} or \texttt{code});
+          \item $\Delta\vdash^{I}instr\dashv\Delta'$ denotes that the inference of the instruction $instr$ in the current typing context $\Delta$ yields a new typing context $\Delta'$;
+        \end{itemize}
 \end{itemize}
+
+\chapter{Non platform-specific features}\label{chap:nstar-common}
 
 \section{Types}\label{sec:nstar-common-ts}
 
@@ -87,35 +96,35 @@ Kinds of integers are written under the form of inference rules in Figure~\ref{f
   \centering
 
   \begin{prooftree}
-    \Infer0{\Gamma\Vdash$ u64 : T8$}
+    \Infer0{\Gamma\vdash^K$ u64 : T8$}
   \end{prooftree}
   \hspace{3em}
   \begin{prooftree}
-    \Infer0{\Gamma\Vdash$ s64 : T8$}
+    \Infer0{\Gamma\vdash^K$ s64 : T8$}
   \end{prooftree}
   \hspace{3em}
   \begin{prooftree}
-    \Infer0{\Gamma\Vdash$ u32 : T4$}
+    \Infer0{\Gamma\vdash^K$ u32 : T4$}
   \end{prooftree}
   \hspace{3em}
   \begin{prooftree}
-    \Infer0{\Gamma\Vdash$ s32 : T4$}
+    \Infer0{\Gamma\vdash^K$ s32 : T4$}
   \end{prooftree}
   \\\vspace{\baselineskip}
   \begin{prooftree}
-    \Infer0{\Gamma\Vdash$ u16 : T2$}
+    \Infer0{\Gamma\vdash^K$ u16 : T2$}
   \end{prooftree}
   \hspace{3em}
   \begin{prooftree}
-    \Infer0{\Gamma\Vdash$ s16 : T2$}
+    \Infer0{\Gamma\vdash^K$ s16 : T2$}
   \end{prooftree}
   \hspace{3em}
   \begin{prooftree}
-    \Infer0{\Gamma\Vdash$ u8 : T1$}
+    \Infer0{\Gamma\vdash^K$ u8 : T1$}
   \end{prooftree}
   \hspace{3em}
   \begin{prooftree}
-    \Infer0{\Gamma\Vdash$ s8 : T1$}
+    \Infer0{\Gamma\vdash^K$ s8 : T1$}
   \end{prooftree}
 
   \caption{Kind inference rules for integers.}
@@ -155,17 +164,17 @@ However, it is possible to use the literal \texttt{\$0} (which represents a poin
 \begin{figure}[htb]
   \centering
   \begin{prooftree}
-    \Infer0{\Gamma\Vdash$ char : T1$}
+    \Infer0{\Gamma\vdash^K$ char : T1$}
   \end{prooftree}
   \hspace{3em}
   \begin{prooftree}
-    \Hypo{\Gamma\Vdash$ t : Ta$}
-    \Infer1[64-bits pointers]{\Gamma\Vdash$ *t : T8$}
+    \Hypo{\Gamma\vdash^K$ t : Ta$}
+    \Infer1[64-bits pointers]{\Gamma\vdash^K$ *t : T8$}
   \end{prooftree}
   \hspace{3em}
   \begin{prooftree}
-    \Hypo{\Gamma\Vdash$ t : Ta$}
-    \Infer1[32-bits pointers]{\Gamma\Vdash$ *t : T4$}
+    \Hypo{\Gamma\vdash^K$ t : Ta$}
+    \Infer1[32-bits pointers]{\Gamma\vdash^K$ *t : T4$}
   \end{prooftree}
 
   \caption{Kind inference rules for other atomic types.}
@@ -248,20 +257,20 @@ Inference rules for kinds of stack types are written in Figure~\ref{fig:nstar-co
   \centering
 
   \begin{prooftree}
-    \Hypo{\Gamma\Vdash$ s : Ts$}
-    \Infer1[32-bits pointers]{\Gamma\Vdash$ sptr s : T4$}
+    \Hypo{\Gamma\vdash^K$ s : Ts$}
+    \Infer1[32-bits pointers]{\Gamma\vdash^K$ sptr s : T4$}
   \end{prooftree}
   \hspace{3em}
   \begin{prooftree}
-    \Hypo{\Gamma\Vdash$ s : Ts$}
-    \Infer1[64-bits pointers]{\Gamma\Vdash$ sptr s : T8$}
+    \Hypo{\Gamma\vdash^K$ s : Ts$}
+    \Infer1[64-bits pointers]{\Gamma\vdash^K$ sptr s : T8$}
   \end{prooftree}
   \\\vspace{\baselineskip}
   \begin{prooftree}
     \Hypo{$n : $\mathbb{N}$ $}
-    \Hypo{\Gamma\Vdash$ t : Tn$}
-    \Hypo{\Gamma\Vdash$ s : Ts$}
-    \Infer3{\Gamma\Vdash$ t :: s : Ts$}
+    \Hypo{\Gamma\vdash^K$ t : Tn$}
+    \Hypo{\Gamma\vdash^K$ s : Ts$}
+    \Infer3{\Gamma\vdash^K$ t :: s : Ts$}
   \end{prooftree}
 
   \caption{Kind inference rules for stack types}
@@ -290,9 +299,9 @@ Structures take as much space as all their fields, thus can mainly be put on the
   \centering
   \begin{prooftree}
     \Hypo{$n$_0$, n$_1$, $\ldots$, n$_p$ : $\mathbb{N}}
-    \Hypo{\Gamma\Vdash$ t$_0$ : Tn$_0$, t$_1$ : Tn$_1$, $\ldots$, t$_p$ : Tn$_p}
+    \Hypo{\Gamma\vdash^K$ t$_0$ : Tn$_0$, t$_1$ : Tn$_1$, $\ldots$, t$_p$ : Tn$_p}
     \Hypo{$m = $\sum_{i = 0}^{p}{n_i}}
-    \Infer3{\Gamma\Vdash$ (t$_0$, t$_1$, $\ldots$, t$_p$) : Tm$}
+    \Infer3{\Gamma\vdash^K$ (t$_0$, t$_1$, $\ldots$, t$_p$) : Tm$}
   \end{prooftree}
 
   \caption{Kind inference rule for structures.}
@@ -322,9 +331,9 @@ This is more clear in the kind inference rule given in Figure~\ref{fig:nstar-com
 
   \begin{prooftree}
     \Hypo{$n$_0$, n$_1$, $\ldots$, n$_p$ : $\mathbb{N}}
-    \Hypo{\Gamma\Vdash$ t$_0$ : n$_0$, t$_1$ : n$_1$, $\ldots$, t$_p$ : n$_p}
+    \Hypo{\Gamma\vdash^K$ t$_0$ : n$_0$, t$_1$ : n$_1$, $\ldots$, t$_p$ : n$_p}
     \Hypo{$m = $\max_{i = 0}^{p}{n_i}}
-    \Infer3{\Gamma\Vdash$ $\langle$t$_0$, t$_1$, $\ldots$, t$_p\rangle$ : Tm$}
+    \Infer3{\Gamma\vdash^K$ $\langle$t$_0$, t$_1$, $\ldots$, t$_p\rangle$ : Tm$}
   \end{prooftree}
 
   \caption{Kind inference rules for union types.}
@@ -458,25 +467,25 @@ Their grammar is given in Figure~\ref{fig:nstar-common-constvalue-grammar} and t
   \begin{prooftree}
     \Hypo{$d is a signed integer constant$}
     \Hypo{$t $\in\{$s8, s16, s32, s64$\}}
-    \Infer2{\vdash_{data}$ d : t$}
+    \Infer2{\vdash^T_{data}$ d : t$}
   \end{prooftree}
   \\\vspace{\baselineskip}
   \begin{prooftree}
     \Hypo{$d is an unsigned integer constant$}
     \Hypo{$t $\in\{$u8, u16, u32, u64$\}}
-    \Infer2{\vdash_{data}$ d : t$}
+    \Infer2{\vdash^T_{data}$ d : t$}
   \end{prooftree}
   \\\vspace{\baselineskip}
   \begin{prooftree}
     \Hypo{$c is a character constant$}
-    \Infer1{\vdash_{data}$ c : char$}
+    \Infer1{\vdash^T_{data}$ c : char$}
   \end{prooftree}
   \\\vspace{\baselineskip}
   \begin{prooftree}
     \Hypo{$n : $\mathbb{N}}
-    \Hypo{\Gamma\Vdash$ t : Tn$}
-    \Hypo{\vdash_{data}$ c$_1$, c$_2$, \ldots, c$_n$ : t$}
-    \Infer3{\vdash_{data}$ [c$_1$, c$_2$, \ldots, c$_n$] : *t$}
+    \Hypo{\Gamma\vdash^K$ t : Tn$}
+    \Hypo{\vdash^T_{data}$ c$_1$, c$_2$, \ldots, c$_n$ : t$}
+    \Infer3{\vdash^T_{data}$ [c$_1$, c$_2$, \ldots, c$_n$] : *t$}
   \end{prooftree}
 
   \caption{Type inference rules for constant values.}
@@ -614,14 +623,6 @@ As offsetting a pointer can lead to an invalid address dereferencing (or at leas
 
 \chapter{Instructions and target-dependent features}\label{chap:nstar-specific}
 
-\section{Introduction}\label{sec:nstar-specific-introduction}
-
-In addition to the special notation for inference rules introduced in the precedent chapter\footnote{See Section~\ref{sec:nstar-common-introduction}~``\nameref{sec:nstar-common-introduction}''}, there is:
-\begin{itemize}
-  \item $\vdash_{code}$, describing the inference process in a \texttt{code} section;
-  \item $\Delta$, which is the current typing environment (associating registers with the type of data they hold);
-\end{itemize}
-
 \section{x86, amd64}\label{sec:nstar-specific-x86amd64}
 
 \subsection{Available registers}\label{subsec:nstar-specific-x86amd64-registers}
@@ -700,19 +701,19 @@ Grammar and inference rules are given respectively in Figure~\ref{fig:nstar-spec
 
   \begin{prooftree}
     \Hypo{$c is a character immediate$}
-    \Infer1{\Delta\vdash_{code}$ c : char$}
+    \Infer1{\Delta\vdash^T_{code}$ c : char$}
   \end{prooftree}
   \\\vspace{\baselineskip}
   \begin{prooftree}
     \Hypo{$i is an unsigned integer immediate$}
     \Hypo{$t $\in\{$ u8, u16, u32, u64 $\}}
-    \Infer2{\Delta\vdash_{code}$ i : t$}
+    \Infer2{\Delta\vdash^T_{code}$ i : t$}
   \end{prooftree}
   \\\vspace{\baselineskip}
   \begin{prooftree}
     \Hypo{$i is a signed integer immediate$}
     \Hypo{$t $\in\{$ s8, s16, s32, s64 $\}}
-    \Infer2{\Delta\vdash_{code}$ i : t$}
+    \Infer2{\Delta\vdash^T_{code}$ i : t$}
   \end{prooftree}
 
   \caption{Type inference rules for immediate values in x86-N*.}
@@ -740,8 +741,8 @@ Grammar and inference rules are given respectively in Figure~\ref{fig:nstar-spec
 
   \begin{prooftree}
     \Hypo{$x is a known label$}
-    \Hypo{\vdash_{data}$ x : *t$}
-    \Infer2{\Delta\vdash_{code}$ x : *t$}
+    \Hypo{\vdash^T_{data}$ x : *t$}
+    \Infer2{\Delta\vdash^T_{code}$ x : *t$}
   \end{prooftree}
 
   \caption{Type inference rules for data labels in x86-N*.}
@@ -769,7 +770,7 @@ Grammar is given in Figure~\ref{fig:nstar-specific-x86amd64-exprs-registers-gram
 
   \begin{prooftree}
     \Hypo{$r is a register$}
-    \Infer1{\Delta$, r : t $\vdash_{code}$ r : t$}
+    \Infer1{\Delta$, r : t $\vdash^T_{code}$ r : t$}
   \end{prooftree}
 
   \caption{Inference rules for register values.}
@@ -796,28 +797,28 @@ Grammar for pointer offsets is given in Figure~\ref{fig:nstar-specific-x86amd64-
   \centering
 
   \begin{prooftree}
-    \Hypo{$n$_1$, n$_2$, \ldots, n$_p$ $\in\mathbb{N}}
+    \Hypo{$n$_0$ = 0, n$_1$, n$_2$, \ldots, n$_p$ $\in\mathbb{N}}
     \Hypo{$m$_i$ = $-$n$_i}
-    \Infer[no rule, rule margin=1.0ex]2{\Gamma\Vdash$ t$_1$ : Tn$_1$, t$_2$ : Tn$_2$, \ldots, t$_p$ : Tn$_p$, s : Ts\hspace{1.5em}$%
-                                        \Delta\vdash_{code}$ e : sptr t$_1$::t$_2$::\ldots::t$_p$::s$}
-    \Infer1[Stack pointers]{\Delta\vdash_{code}$ m$_i$(e) : t$_i}
+    \Infer[no rule, rule margin=1.0ex]2{\Gamma\vdash^K$ t$_1$ : Tn$_1$, t$_2$ : Tn$_2$, \ldots, t$_p$ : Tn$_p$, s : Ts\hspace{1.5em}$%
+                                        \Delta\vdash^T_{code}$ e : sptr t$_1$::t$_2$::\ldots::t$_p$::s$}
+    \Infer1[Stack pointers]{\Delta\vdash^T_{code}$ m$_i$(e) : t$_{i + 1}}
     % small hack: makes all premises on top of each other
   \end{prooftree}
   \\\vspace{\baselineskip}
   \begin{prooftree}
-    \Hypo{$n$_1$, n$_2$, \ldots, n$_p$ $\in\mathbb{N}}
-    \Infer[no rule, rule margin=1.0ex]1{\Gamma\Vdash$ t$_1$ : Tn$_1$, t$_2$ : Tn$_2$, \ldots, t$_p$ : Tn$_p$\hspace{1.5em}$%
-                                        \Delta\vdash_{code}$ e : *$ ($ t$_1$::t$_2$::\ldots::t$_p$ $)}
-    \Infer1[Structure pointers]{\Delta\vdash_{code}$ n$_i$(e) : t$_i}
+    \Hypo{$n$_0$ = 0, n$_1$, n$_2$, \ldots, n$_p$ $\in\mathbb{N}}
+    \Infer[no rule, rule margin=1.0ex]1{\Gamma\vdash^K$ t$_1$ : Tn$_1$, t$_2$ : Tn$_2$, \ldots, t$_p$ : Tn$_p$\hspace{1.5em}$%
+                                        \Delta\vdash^T_{code}$ e : *$ ($ t$_1$::t$_2$::\ldots::t$_p$ $)}
+    \Infer1[Structure pointers]{\Delta\vdash^T_{code}$ n$_i$(e) : t$_{i + 1}}
     % small hack: makes all premises on top of each other
   \end{prooftree}
   \\\vspace{\baselineskip}
   \begin{prooftree}
     \Hypo{$k, n $\in\mathbb{N}}
     \Hypo{$m = k $\times$ n$}
-    \Hypo{\Gamma\Vdash$ t : Tn$}
-    \Hypo{\Delta\vdash_{code}$ e : *t$}
-    \Infer4[Raw pointers]{\Delta\vdash_{code}$ m(e) : t $}
+    \Hypo{\Gamma\vdash^K$ t : Tn$}
+    \Hypo{\Delta\vdash^T_{code}$ e : *t$}
+    \Infer4[Raw pointers]{\Delta\vdash^T_{code}$ m(e) : t$}
   \end{prooftree}
 
   \caption{Type inference rules for pointer offsets.}
