@@ -697,7 +697,7 @@ Immediate values are also known as ``hardcoded values''.
 These are values that you can directly read in the source file, and which do not come from e.g.\ registers.
 Grammar and inference rules are given respectively in Figure~\ref{fig:nstar-specific-x86amd64-exprs-immediate-grammar} and Figure~\ref{fig:nstar-specific-x86amd64-exprs-immediate-typerules}.
 
-\begin{figure}[htb]
+\begin{figure}[H]
   \centering
   \scalebox{.5}{
     \includegraphics{nstar-imm-char-grammar}
@@ -710,7 +710,7 @@ Grammar and inference rules are given respectively in Figure~\ref{fig:nstar-spec
   \label{fig:nstar-specific-x86amd64-exprs-immediate-grammar}
 \end{figure}
 
-\begin{figure}[htb]
+\begin{figure}[H]
   \centering
 
   \begin{prooftree}
@@ -740,7 +740,7 @@ Data labels are pointers to some piece of data (may it even be an array).
 They can be dereferenced and offset using the constructs given in N*.
 Grammar and inference rules are given respectively in Figure~\ref{fig:nstar-specific-x86amd64-exprs-labels-grammar} and Figure~\ref{fig:nstar-specific-x86amd64-exprs-labels-typerules}.
 
-\begin{figure}[htb]
+\begin{figure}[H]
   \centering
 
   \scalebox{.5}{
@@ -750,7 +750,7 @@ Grammar and inference rules are given respectively in Figure~\ref{fig:nstar-spec
   \label{fig:nstar-specific-x86amd64-exprs-labels-grammar}
 \end{figure}
 
-\begin{figure}[htb]
+\begin{figure}[H]
   \centering
 
   \begin{prooftree}
@@ -769,7 +769,7 @@ Registers are basically value containers.
 They can also be dereferenced and offset (applying those operations to the contained value).
 Grammar is given in Figure~\ref{fig:nstar-specific-x86amd64-exprs-registers-grammar} and type inference rules are given in Figure~\ref{fig:nstar-specific-x86amd64-exprs-registers-typerules}.
 
-\begin{figure}[htb]
+\begin{figure}[H]
   \centering
 
   \scalebox{.5}{
@@ -779,7 +779,7 @@ Grammar is given in Figure~\ref{fig:nstar-specific-x86amd64-exprs-registers-gram
   \label{fig:nstar-specific-x86amd64-exprs-registers-grammar}
 \end{figure}
 
-\begin{figure}[htb]
+\begin{figure}[H]
   \centering
 
   \begin{prooftree}
@@ -796,7 +796,7 @@ Grammar is given in Figure~\ref{fig:nstar-specific-x86amd64-exprs-registers-gram
 Pointer offsets allow accessing data that may be located relative to a given memory address.
 Grammar for pointer offsets is given in Figure~\ref{fig:nstar-specific-x86amd64-exprs-pointeroffsets-grammar} and type inference rules are given in Figure~\ref{fig:nstar-specific-x86amd64-exprs-pointeroffsets-typerules}.
 
-\begin{figure}[htb]
+\begin{figure}[H]
   \centering
 
   \scalebox{.5}{
@@ -807,7 +807,7 @@ Grammar for pointer offsets is given in Figure~\ref{fig:nstar-specific-x86amd64-
   \label{fig:nstar-specific-x86amd64-exprs-pointeroffsets-grammar}
 \end{figure}
 
-\begin{figure}[htb]
+\begin{figure}[H]
   \centering
 
   \begin{prooftree}
@@ -850,7 +850,7 @@ The \texttt{mov} instruction moves a value into a register or at a given address
 Grammar is given in Figure~\ref{fig:nstar-specific-x86amd64-instructions-mov-grammar}.
 Type inference rules are given in Figure~\ref{fig:nstar-specific-x86amd64-instructions-mov-typerules}.
 
-\begin{figure}[htb]
+\begin{figure}[H]
   \centering
   \scalebox{.5}{
     \includegraphics{nstar-mov-x86-grammar}
@@ -859,7 +859,7 @@ Type inference rules are given in Figure~\ref{fig:nstar-specific-x86amd64-instru
   \label{fig:nstar-specific-x86amd64-instructions-mov-grammar}
 \end{figure}
 
-\begin{figure}[htb]
+\begin{figure}[H]
   \centering
 
   \begin{prooftree}
