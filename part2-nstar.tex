@@ -986,7 +986,7 @@ Grammar and inference rules are respectively given in Figure~\ref{fig:nstar-spec
     \Hypo{\Gamma\vdash^K$ s$_1$ : k$_1$, s$_2$ : k$_2$, \ldots, s$_p$ : k$_p}
     \Infer[no rule, rule margin=1ex]1{$l : ctx $\in\Xi$\hspace{1.5em}%
                                       ctx $\subseteq\Delta$\hspace{1.5em}%
-                                      \textit{mgu}$(\{$ s$_1$ : k$_1$, s$_2$ : k$_2$, \ldots, s$_p$ : k$_p$ $\},$ \textit{boundVars}$($ctx$))}
+                                      \textit{mgu}$([$ s$_1$ : k$_1$, s$_2$ : k$_2$, \ldots, s$_p$ : k$_p$ $],$ \textit{boundVars}$($ctx$))}
     \Infer1{\Delta,\Xi\vdash^I$ jmp l<s$_1$, s$_2$, \ldots, s$_p$> $\dashv\Delta}
   \end{prooftree}
 
