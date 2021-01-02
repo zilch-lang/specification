@@ -373,7 +373,7 @@ Its syntax is defined in Figure~\ref{fig:nstar-common-sections-code-grammar}.
 
 Each label is assigned a type, describing the context needed to branch to it.
 If a label has the type \texttt{\{reg:s64\}} then there needs to be the register \texttt{reg} bound to a value of type \texttt{s64} in the current context, in order to branch to it.
-However, some restrictions apply to labels in order to make the type-checking meaningful (or at least handle some aspects that cannot be handled with types only). See more about that in Section~\ref{sec:nstar-common-bs}~``\nameref{sec:nstar-common-bs}''.
+However, some restrictions apply to labels in order to make the type-checking meaningful (or at least handle some aspects that cannot be handled with types only). See more about that in Section~\ref{subsec:nstar-common-bs-restrictions}~``\nameref{subsec:nstar-common-bs-restrictions}''.
 
 \begin{figure}[htb]
   \centering
@@ -506,12 +506,95 @@ Their grammar is given in Figure~\ref{fig:nstar-common-constvalue-grammar} and t
   \label{fig:nstar-common-constvalue-typerules}
 \end{figure}
 
-\section{Restrictions applied to branching}\label{sec:nstar-common-bs}
+\section{Branch-checking}\label{sec:nstar-common-bs}
+
+Branch-checking is a special mecanism in N* serving the purpose of statically ensuring that all jumps (whether they are conditional or not, or function calls, or even returns) are correct and safe w.r.t.\ the call stack.
+It mostly ensures that every called function returns at some point (therefore not leaking stack space), and that there is no possible way of jumping through a label, preventing unwanted implicit jumps.
+
+The control flow of a program is basically a directed edge-labelled graph.
+An edge from one vertice to another (possibly itself) embodies a jump, whatever it may be.
+
+\subsection{Function calls}\label{subsec:nstar-common-bs-funcall}
+
+For a function call to branch-check, there must be a return instruction applying to it.
+The return instruction can be located in the direct ``scope'' of the called function (as illustrated in Figure~\ref{fig:nstar-common-bs-funcall-simplereturn}) or in any subfunction, as long as none of them is also called.
+Two examples of the latter are given in Figure~\ref{fig:nstar-common-bs-funcall-subreturn} and Figure~\ref{fig:nstar-common-bs-funcall-subcallreturn}.
+Only the first one branch-checks, because the return in the second actually applies to the subfunction call.
+
+\begin{figure}[htb]
+  \centering
+
+  \begin{tikzpicture}[shorten >= 1pt, auto, node distance=3cm, thick]
+    \tikzset{vertex/.style = { shape = ellipse, draw }}
+    \tikzset{edge/.style = { ->, > = stealth }}
+
+    \node[vertex] (parent) at (0, 0) {parent};
+    \node[vertex] (child) at (4, 0) {child};
+
+    \path[->]
+      (parent) edge[bend left=10] node{call} (child)
+      (child) edge[bend left=10] node{return} (parent);
+
+  \end{tikzpicture}
+
+  \caption{A simple call-return branching.}
+  \label{fig:nstar-common-bs-funcall-simplereturn}
+\end{figure}
+\begin{figure}[htb]
+  \centering
+
+  \begin{tikzpicture}[shorten >= 1pt, auto, node distance=3cm, thick]
+    \tikzset{vertex/.style = { shape = ellipse, draw }}
+    \tikzset{edge/.style = { ->, > = stealth }}
+
+    \node[vertex] (f) at (0, 0) {f};
+    \node[vertex] (g) at (4, -1) {g};
+    \node[vertex] (h) at (4, 1) {h};
+
+    \path[->]
+      (f) edge[bend right=10, swap] node{call} (g)
+      (g) edge[bend right=10, swap] node{jump} (h)
+      (h) edge[bend right=10, swap] node{return} (f);
+
+  \end{tikzpicture}
+
+  \caption{Returning from a subfunction.}
+  \label{fig:nstar-common-bs-funcall-subreturn}
+\end{figure}
+\begin{figure}[htb]
+  \centering
+
+  \begin{tikzpicture}[shorten >= 1pt, auto, node distance=3cm, thick]
+    \tikzset{vertex/.style = { shape = ellipse, draw }}
+    \tikzset{edge/.style = { ->, > = stealth }}
+
+    \node[vertex] (f) at (0, 0) {f};
+    \node[vertex] (g) at (4, 0) {g};
+    \node[vertex] (h) at (8, 0) {h};
+
+    \path[->]
+      (f) edge[bend right=10, swap] node{call} (g)
+      (g) edge[bend right=10, swap] node{call} (h)
+      (h) edge[bend right=10, swap] node{return} (g)
+      (g) edge[dashed, bend right=10, swap] node{return?} (f);
+
+  \end{tikzpicture}
+
+  \caption{Call-return in a subfunction.}
+  \label{fig:nstar-common-bs-funcall-subcallreturn}
+\end{figure}
+
+\subsection{Restrictions applied to branching}\label{subsec:nstar-common-bs-restrictions}
 
 Branching ((un-)\ conditional jumps, calls, etc) is restricted in N* in order to prevent stack leaks, unknown caller address return or even missing return values.
 It also is restricted not to integrate some sort of scoping, which would add some (mostly useless) complexity when using/generating N*.
 
-\subsection{Returning to a known code-space address}\label{subsec:nstar-common-bs-ret}
+\subsubsection{Jumping to a known code-space address}\label{subsubsec:nstar-common-bs-restrictions-calljmp}
+
+In N*, it is only possible to jump to literal labels, to make branch-checking decidable.
+If jumping to an address was allowed (as an unsafe operation), branch-checking would not be able to determine whether the call (if it was one) returned or not, nor to determine that the address really contains some executable code (and not junk bytes).
+
+\subsubsection{Returning to a known code-space address}\label{subsubsec:nstar-common-bs-restrictions-ret}
 
 Because the stack is given a type in N*, we can use it to make sure that we are returning to a code-space address.
 When we \texttt{call} a label, we are pushing the current instruction pointer on top of the stack (the stack pointer is \texttt{\%rip} on x86/x64, \texttt{\$ip} on MIPS, etc) before jumping to the callee address.
@@ -520,7 +603,7 @@ Because of that, the type given to the stack for the context of a label contains
 This is later used by \texttt{ret} in order to determine that returning from this function can be done safely, and \textit{should}\footnote{It should return to a valid address, but this cannot be checked nor endorsed when using, for example, the foreign function interface or when creating a \texttt{main} function.} return to a valid code-space address.
 If any other data-type is present on top of the stack (an integer, a pointer to something else than a context, a stack pointer, a structure, an union), \texttt{ret} \textit{must} fail to type-check, preserving the stack at runtime and preventing an undefined behavior.
 
-\subsection{Missing return values (a.k.a.\ registers not bound before return)}\label{subsec:nstar-common-bs-unboundregs}
+\subsubsection{Missing return values (a.k.a.\ registers not bound before return)}\label{subsubsec:nstar-common-bs-restrictions-unboundregs}
 
 Along with checking that we are returning to a valid code-space address, we can also, thanks to the type of the stack, determine if returning from a function preserves the value in registers, and if after returning we have access to return values of a function.
 Consider the example given in Listing~\ref{lst:nstar-common-bs-returnvalues}.
@@ -544,7 +627,7 @@ This gives a safe way of using return values, and guaranteeing that there are in
   \label{lst:nstar-common-bs-returnvalues}
 \end{listing}
 
-\subsection{Type-checking and scoping problems}\label{subsec:nstar-common-bs-tcscopes}
+\subsubsection{Type-checking and scoping problems}\label{subsubsec:nstar-common-bs-restrictions-tcscopes}
 
 The type system in N* cannot detect control flow leaks.
 One common idiom in assembly languages is the possibility of doing things like in Listing~\ref{lst:nstar-common-bs-labeljumping}.
