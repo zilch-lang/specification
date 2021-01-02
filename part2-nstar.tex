@@ -34,8 +34,9 @@ Inference rules notation:
         \begin{itemize}
           \item $\Delta$ is the typing context, containing bound registers along with their types.
                 An ``unbound'' register is a register holding some data we don't know about at a given point;
+          \item $\Xi$ is the label context, containing all known labels as well as which section they are defined in, and what context they expect;
           \item $\vdash^{T}_{data}$ and $\vdash^{T}_{code}$ are the type inference judgements for expressions in their respective sections (\texttt{data} or \texttt{code});
-          \item $\Delta\vdash^{I}instr\dashv\Delta'$ denotes that the type inference of the instruction $instr$ in the current typing context $\Delta$ yields a new typing context $\Delta'$;
+          \item $\Delta,\Xi\vdash^{I}instr\dashv\Delta'$ denotes that the type inference of the instruction $instr$ in the current typing contexts $\Delta,\Xi$ yields a new typing context $\Delta'$;
         \end{itemize}
   \item Grammar
         \begin{figure}[H]
@@ -864,7 +865,7 @@ Type inference rules are given in Figure~\ref{fig:nstar-specific-x86amd64-instru
   \begin{prooftree}
     \Hypo{\Delta\vdash^T_{code}$ e : t$}
     \Hypo{$r is a register$}
-    \Infer2[\texttt{mov} to register]{\Delta\vdash^I$ mov e, r $\dashv\Delta\setminus$ r, r : t $}
+    \Infer2[\texttt{mov} to register]{\Delta,\Xi\vdash^I$ mov e, r $\dashv\Delta\setminus$ r, r : t $}
   \end{prooftree}
   \\\vspace{\baselineskip}
   \begin{prooftree}
