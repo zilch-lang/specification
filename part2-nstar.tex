@@ -78,7 +78,7 @@ The grammar is given in Figure~\ref{fig:nstar-common-ts-kinds-syntax}.
 \begin{figure}[htb]
   \centering
   \scalebox{.5}{
-    \includegraphics{nstar-kinds-syntax}
+    \includegraphics{nstar/types/kinds-syntax}
   }
   \caption{Grammar for kinds.}
   \label{fig:nstar-common-ts-kinds-syntax}
@@ -93,7 +93,7 @@ The syntax for the types of integers is given in Figure~\ref{fig:nstar-common-ts
 \begin{figure}[htb]
   \centering
   \scalebox{.5}{
-    \includegraphics{nstar-integers-types-syntax}
+    \includegraphics{nstar/types/integers-syntax}
   }
   \caption{Grammar for integer types.}
   \label{fig:nstar-common-ts-integer-syntax}
@@ -152,10 +152,10 @@ There are two other atomic types that we did not talk about, but refered to in t
 \begin{figure}[htb]
   \centering
   \scalebox{.5}{
-    \includegraphics{nstar-ptr-type-syntax}
+    \includegraphics{nstar/types/ptr-syntax}
   } \\
   \scalebox{.5}{
-    \includegraphics{nstar-char-type-syntax}
+    \includegraphics{nstar/types/char-syntax}
   }
   \caption{Grammar for character and pointer types}
   \label{fig:nstar-common-ts-atomic-syntax}
@@ -204,7 +204,7 @@ The grammar is described in Figure~\ref{fig:nstar-common-ts-records-syntax}.
 \begin{figure}[htb]
   \centering
   \scalebox{.5}{
-    \includegraphics{nstar-records-syntax}
+    \includegraphics{nstar/types/records-syntax}
   }
   \caption{Grammar for context types.}
   \label{fig:nstar-common-ts-records-syntax}
@@ -221,7 +221,7 @@ The type variable binder is used to abstract away some details of the type throu
 \begin{figure}[htb]
   \centering
   \scalebox{.5}{
-    \includegraphics{nstar-label-types-syntax}
+    \includegraphics{nstar/types/label-syntax}
   }
   \caption{Grammar for label context types.}
   \label{fig:nstar-common-ts-label-types-syntax}
@@ -257,11 +257,11 @@ Inference rules for kinds of stack types are written in Figure~\ref{fig:nstar-co
 \begin{figure}[htb]
   \centering
   \scalebox{.5}{
-    \includegraphics{nstar-stack-pointer-syntax}
+    \includegraphics{nstar/types/stack-pointer-syntax}
   }
   \\
   \scalebox{.5}{
-    \includegraphics{nstar-stack-cons-syntax}
+    \includegraphics{nstar/types/stack-cons-syntax}
   }
   \caption{Grammar for stack types.}
   \label{fig:nstar-common-ts-stack-types-syntax}
@@ -302,7 +302,7 @@ Structures take as much space as all their fields, thus can mainly be put on the
 \begin{figure}[htb]
   \centering
   \scalebox{.5}{
-    \includegraphics{nstar-struct-types-syntax}
+    \includegraphics{nstar/types/struct-syntax}
   }
 
   \caption{Grammar for structure types.}
@@ -330,7 +330,7 @@ Grammar for union types is given in Figure~\ref{fig:nstar-common-ts-unions-synta
 \begin{figure}[htb]
   \centering
   \scalebox{.5}{
-    \includegraphics{nstar-union-types-syntax}
+    \includegraphics{nstar/types/union-syntax}
   }
 
   \caption{Grammar for union types.}
@@ -378,11 +378,11 @@ However, some restrictions apply to labels in order to make the type-checking me
 \begin{figure}[htb]
   \centering
   \scalebox{.5}{
-    \includegraphics{nstar-code-section-1}
+    \includegraphics{nstar/sections/code-1}
   }
   \\
   \scalebox{.5}{
-    \includegraphics{nstar-code-section-2}
+    \includegraphics{nstar/sections/code-2}
   }
 
   \caption{Grammar for \texttt{code} sections.}
@@ -401,7 +401,7 @@ The grammar of those sections is given in Figure~\ref{fig:nstar-common-sections-
 \begin{figure}[htb]
   \centering
   \scalebox{.5}{
-    \includegraphics{nstar-data-section-grammar}
+    \includegraphics{nstar/sections/data-grammar}
   }
 
   \caption{Grammar for the \texttt{data}, \texttt{rodata} and \texttt{udata} sections.}
@@ -427,7 +427,7 @@ The grammar showing this is given in figure~\ref{fig:nstar-common-sections-exter
 \begin{figure}[htb]
   \centering
   \scalebox{.47}{
-    \includegraphics{nstar-externcode-section-grammar}
+    \includegraphics{nstar/sections/externcode-grammar}
   }
 
   \caption{Grammar for the \texttt{extern.code} file section.}
@@ -444,7 +444,7 @@ The grammar for this section is given in Figure~\ref{fig:nstar-common-sections-e
 \begin{figure}[htb]
   \centering
   \scalebox{.45}{
-    \includegraphics{nstar-externdata-section-grammar}
+    \includegraphics{nstar/sections/externdata-grammar}
   }
 
   \caption{Grammar for the \texttt{extern.data} and \texttt{extern.rodata} sections.}
@@ -460,15 +460,15 @@ Their grammar is given in Figure~\ref{fig:nstar-common-constvalue-grammar} and t
 \begin{figure}[htb]
   \centering
   \scalebox{.5}{
-    \includegraphics{nstar-integer-grammar}
+    \includegraphics{nstar/constants/integer-grammar}
   }
   \\
   \scalebox{.5}{
-    \includegraphics{nstar-character-grammar}
+    \includegraphics{nstar/constants/character-grammar}
   }
   \\
   \scalebox{.5}{
-    \includegraphics{nstar-array-grammar}
+    \includegraphics{nstar/constants/array-grammar}
   }
 
   \caption{Grammar for constant values.}
@@ -700,11 +700,11 @@ Grammar and inference rules are given respectively in Figure~\ref{fig:nstar-spec
 \begin{figure}[H]
   \centering
   \scalebox{.5}{
-    \includegraphics{nstar-imm-char-grammar}
+    \includegraphics{nstar/x86/imm-char-grammar}
   }
   \\
   \scalebox{.5}{
-    \includegraphics{nstar-imm-int-grammar}
+    \includegraphics{nstar/x86/imm-int-grammar}
   }
   \caption{Grammar for immediate values in x86-N*.}
   \label{fig:nstar-specific-x86amd64-exprs-immediate-grammar}
@@ -744,7 +744,7 @@ Grammar and inference rules are given respectively in Figure~\ref{fig:nstar-spec
   \centering
 
   \scalebox{.5}{
-    \includegraphics{nstar-label-expr-grammar}
+    \includegraphics{nstar/x86/label-expr-grammar}
   }
   \caption{Grammar for data labels in x86-N*.}
   \label{fig:nstar-specific-x86amd64-exprs-labels-grammar}
@@ -773,7 +773,7 @@ Grammar is given in Figure~\ref{fig:nstar-specific-x86amd64-exprs-registers-gram
   \centering
 
   \scalebox{.5}{
-    \includegraphics{nstar-register-x86-grammar}
+    \includegraphics{nstar/x86/register-grammar}
   }
   \caption{Grammar for registers in x86-N*.}
   \label{fig:nstar-specific-x86amd64-exprs-registers-grammar}
@@ -800,7 +800,7 @@ Grammar for pointer offsets is given in Figure~\ref{fig:nstar-specific-x86amd64-
   \centering
 
   \scalebox{.5}{
-    \includegraphics{nstar-pointer-offset-grammar}
+    \includegraphics{nstar/x86/pointer-offset-grammar}
   }
 
   \caption{Grammar for pointer offsets.}
@@ -853,7 +853,7 @@ Type inference rules are given in Figure~\ref{fig:nstar-specific-x86amd64-instru
 \begin{figure}[H]
   \centering
   \scalebox{.5}{
-    \includegraphics{nstar-mov-x86-grammar}
+    \includegraphics{nstar/x86/mov-grammar}
   }
   \caption{Grammar of the \texttt{mov} instruction.}
   \label{fig:nstar-specific-x86amd64-instructions-mov-grammar}
@@ -889,7 +889,7 @@ Grammar and inference rules are respectively given in Figure~\ref{fig:nstar-spec
   \centering
 
   \scalebox{.5}{
-    \includegraphics{nstar-jmp-x86-grammar}
+    \includegraphics{nstar/x86/jmp-grammar}
   }
 
   \caption{Grammar of the \texttt{jmp} instruction.}
