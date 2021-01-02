@@ -996,3 +996,37 @@ Grammar and inference rules are respectively given in Figure~\ref{fig:nstar-spec
 
 The reason why we do not modify the typing environment is because we are unable to model jumps directly in the type-system.
 However, jumps are checked using the branch-checking process described in Section~\ref{sec:nstar-common-bs}~``\nameref{sec:nstar-common-bs}''.
+
+\subsubsection{\texttt{call}}\label{subsubsec:nstar-specific-x86amd64-instructions-call}
+
+The \texttt{call} stores the current instruction pointer on top of the stack, then jumps to the target address (specified using a label).
+Grammar and inference rules are given in Figure~\ref{fig:nstar-specific-x86amd64-instructions-call-grammar} and Figure~\ref{fig:nstar-specific-x86amd64-instructions-call-typerules}.
+
+\begin{figure}[H]
+  \centering
+
+  \scalebox{.5}{
+    \includegraphics{nstar/x86/call-grammar}
+  }
+
+  \caption{Grammar of the \texttt{call} instruction.}
+  \label{fig:nstar-specific-x86amd64-instructions-call-grammar}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+
+  \begin{prooftree}
+    \Hypo{$c is a context$}
+    \Hypo{\Gamma\vdash^K$ s : Ts$}
+    \Hypo{\Gamma\vdash^K$ s$_1$ : k$_1$, s$_2$ : k$_2$, \ldots, s$_p$ : k$_p}
+    \Infer[no rule, rule margin=1ex]3{$l : ctx $\in\Xi$\hspace{1.5em}$%
+                                      $ctx $\subseteq\Delta}
+    \Infer[no rule, rule margin=1ex]1{$\textit{mgu}$([$ s$_1$ : k$_1$, s$_2$ : k$_2$, \ldots, s$_p$ : k$_p$ $],$ \textit{boundVars}$($ctx$))$\hspace{1.5em}$%
+                                      $\textit{mgu}$($\{ \%rsp: sptr *c::s \}, ctx$)}
+    \Infer1{\Delta,\Xi\vdash^I$ call l<s$_1$, s$_2$, \ldots, s$_p$> $\dashv$ c$}
+  \end{prooftree}
+
+  \caption{Type inferences rules for the \texttt{call} instruction.}
+  \label{fig:nstar-specific-x86amd64-instructions-call-typerules}
+\end{figure}
