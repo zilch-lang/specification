@@ -101,7 +101,7 @@ The syntax for the types of integers is given in Figure~\ref{fig:nstar-common-ts
 
 Integers have two varying parameters: their sign and sizes.
 According to the sign (i.e.\ signed or unsigned), some operations may not perform the same (for example \texttt{mul} does not behave the same).
-The size is nothing more than the number of bits occupied by the integer (in N*, those are restricted to multiples of $8$ smaller or equal to $64$).
+The size is nothing more than the number of bits occupied by the integer (in N*, those are restricted to powers of 2 between $8$ and $64$ included).
 Most operations should perform the same no matter the integer size, however it is recommended to search in the target architecture manual for further reference.
 
 Kinds of integers are written under the form of inference rules in Figure~\ref{fig:nstar-common-ts-integer-kindrules}.
