@@ -760,7 +760,21 @@ As offsetting a pointer can lead to an invalid address dereferencing (or at leas
 
 \subsection{Register mappings}\label{subsec:nstar-specific-x86amd64-registers}
 
-%% TODO
+\begin{tabularx}{\textwidth}{Y Y Y}
+  \toprule
+  N* & x86 & amd64 \\
+  \midrule
+  r0 & eax & rax \\
+  r1 & ecx & rcx \\
+  r2 & edx & rdx \\
+  r3 & ebx & rbx \\
+  r4 & esi & rsi \\
+  r5 & edi & rdi \\
+  \midrule
+  sp & esp & rsp \\
+  bp & ebp & rbp \\
+  \bottomrule
+\end{tabularx}
 
 \subsection{Expressions}\label{subsec:nstar-specific-x86amd64-exprs}
 
@@ -837,34 +851,6 @@ Grammar and inference rules are given respectively in Figure~\ref{fig:nstar-spec
 
   \caption{Type inference rules for data labels in x86-N*.}
   \label{fig:nstar-specific-x86amd64-exprs-labels-typerules}
-\end{figure}
-
-\subsubsection{Registers}\label{subsubsec:nstar-specific-x86amd64-exprs-registers}
-
-Registers are basically value containers.
-They can also be dereferenced and offset (applying those operations to the contained value).
-Grammar is given in Figure~\ref{fig:nstar-specific-x86amd64-exprs-registers-grammar} and type inference rules are given in Figure~\ref{fig:nstar-specific-x86amd64-exprs-registers-typerules}.
-
-\begin{figure}[H]
-  \centering
-
-  \scalebox{.5}{
-    \includegraphics{nstar/x86/register-grammar}
-  }
-  \caption{Grammar for registers in x86-N*.}
-  \label{fig:nstar-specific-x86amd64-exprs-registers-grammar}
-\end{figure}
-
-\begin{figure}[H]
-  \centering
-
-  \begin{prooftree}
-    \Hypo{$r is a register$}
-    \Infer1{\Delta$, r : t $\vdash^T_{code}$ r : t$}
-  \end{prooftree}
-
-  \caption{Inference rules for register values.}
-  \label{fig:nstar-specific-x86amd64-exprs-registers-typerules}
 \end{figure}
 
 \subsubsection{Pointer offsets}\label{fig:nstar-specific-x86amd64-exprs-pointeroffsets}
