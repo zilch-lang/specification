@@ -55,42 +55,6 @@ Inference rules notation:
 
 \chapter{Non platform-specific features}\label{chap:nstar-common}
 
-\section{Registers}\label{sec:nstar-common-registers}
-
-Registers in N* are abstracted away from the target architectures.
-Instead of manipulating registers \texttt{\%eax} or \texttt{\%rsp} or \texttt{\$a2}, which all are platform-specific, two families of registers can be manipulated:
-\begin{itemize}
-  \item General-purpose registers: there are 6 general purpose registers in N*, named \texttt{r0} to \texttt{r5}.
-        They can be 4 to 8 bytes large depending on the target architecture mappings.
-  \item Pointer registers: there are 2 pointer registers, namely \texttt{sp} and \texttt{bp}.
-        While they also can contain ``normal'' data, they are mostly used to store stack pointers (hence their name).
-\end{itemize}
-
-Grammar for all those registers is given in Figure~\ref{fig:nstar-common-registers-grammar} and inference rules are given in Figure~\ref{fig:nstar-common-registers-typerules}.
-
-\begin{figure}[htb]
-  \centering
-
-  \scalebox{.5}{
-    \includegraphics{nstar/register-grammar}
-  }
-
-  \caption{Grammar for registers in N*.}
-  \label{fig:nstar-common-registers-grammar}
-\end{figure}
-
-\begin{figure}[htb]
-  \centering
-
-  \begin{prooftree}
-    \Hypo{$r is a register$}
-    \Infer1{\Delta$, r : t $\vdash^T_{code}$ r : t$}
-  \end{prooftree}
-
-  \caption{Type inference rules for registers in N*}
-  \label{fig:nstar-common-registers-typerules}
-\end{figure}
-
 \section{Types}\label{sec:nstar-common-ts}
 
 One of the differences between classical assembly languages and N* is its type system.
@@ -392,6 +356,168 @@ This is more clear in the kind inference rule given in Figure~\ref{fig:nstar-com
 
 Note that unlike structure types, you will most likely be storing union types in registers, unless working with very big unions.
 Also, accessing a union's field is considered an unsafe operation, but this will be more detailed in another section on expressions.
+
+\section{Expressions}\label{sec:nstar-common-expressions}
+
+There are four types of expressions in N*: immediate values, data labels, registers and pointer offsets.
+All of these can be used as the source operand of the \texttt{mov} instruction.
+
+\subsection{Immediate values}\label{subsec:nstar-common-expressions-immediate}
+
+Immediate values are also known as ``hardcoded values''.
+These are values that you can directly read in the source file, and which do not come from e.g.\ registers.
+Grammar and inference rules are given respectively in Figure~\ref{fig:nstar-common-expressions-immediate-grammar} and Figure~\ref{fig:nstar-common-expressions-immediate-typerules}.
+
+\begin{figure}[H]
+  \centering
+  \scalebox{.5}{
+    \includegraphics{nstar/imm-char-grammar}
+  }
+  \\
+  \scalebox{.5}{
+    \includegraphics{nstar/imm-int-grammar}
+  }
+  \caption{Grammar for immediate values in N*.}
+  \label{fig:nstar-common-expressions-immediate-grammar}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+
+  \begin{prooftree}
+    \Hypo{$c is a character immediate$}
+    \Infer1{\Delta\vdash^T_{code}$ c : char$}
+  \end{prooftree}
+  \\\vspace{\baselineskip}
+  \begin{prooftree}
+    \Hypo{$i is an unsigned integer immediate$}
+    \Hypo{$t $\in\{$ u8, u16, u32, u64 $\}}
+    \Infer2{\Delta\vdash^T_{code}$ i : t$}
+  \end{prooftree}
+  \\\vspace{\baselineskip}
+  \begin{prooftree}
+    \Hypo{$i is a signed integer immediate$}
+    \Hypo{$t $\in\{$ s8, s16, s32, s64 $\}}
+    \Infer2{\Delta\vdash^T_{code}$ i : t$}
+  \end{prooftree}
+
+  \caption{Type inference rules for immediate values in N*.}
+  \label{fig:nstar-common-expressions-immediate-typerules}
+\end{figure}
+
+\subsection{Data labels}\label{subsubsec:nstar-common-expressions-labels}
+
+Data labels are pointers to some piece of data (may it even be an array).
+They can be dereferenced and offset using the constructs given in N*.
+Grammar and inference rules are given respectively in Figure~\ref{fig:nstar-common-expressions-labels-grammar} and Figure~\ref{fig:nstar-common-expressions-labels-typerules}.
+
+\begin{figure}[H]
+  \centering
+
+  \scalebox{.5}{
+    \includegraphics{nstar/label-expr-grammar}
+  }
+  \caption{Grammar for data labels in N*.}
+  \label{fig:nstar-common-expressions-labels-grammar}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+
+  \begin{prooftree}
+    \Hypo{$x is a known label$}
+    \Hypo{\vdash^T_{data}$ x : *t$}
+    \Infer2{\Delta\vdash^T_{code}$ x : *t$}
+  \end{prooftree}
+
+  \caption{Type inference rules for data labels in N*.}
+  \label{fig:nstar-common-expressions-labels-typerules}
+\end{figure}
+
+\subsection{Registers}\label{subsec:nstar-common-expressions-registers}
+
+Registers in N* are abstracted away from the target architectures.
+Instead of manipulating registers \texttt{\%eax} or \texttt{\%rsp} or \texttt{\$a2}, which all are platform-specific, two families of registers can be manipulated:
+\begin{itemize}
+  \item General-purpose registers: there are 6 general purpose registers in N*, named \texttt{r0} to \texttt{r5}.
+        They can be 4 to 8 bytes large depending on the target architecture mappings.
+  \item Pointer registers: there are 2 pointer registers, namely \texttt{sp} and \texttt{bp}.
+        While they also can contain ``normal'' data, they are mostly used to store stack pointers (hence their name).
+\end{itemize}
+
+Grammar for all those registers is given in Figure~\ref{fig:nstar-common-expressions-registers-grammar} and inference rules are given in Figure~\ref{fig:nstar-common-expressions-registers-typerules}.
+
+\begin{figure}[htb]
+  \centering
+
+  \scalebox{.5}{
+    \includegraphics{nstar/register-grammar}
+  }
+
+  \caption{Grammar for registers in N*.}
+  \label{fig:nstar-common-expressions-registers-grammar}
+\end{figure}
+
+\begin{figure}[htb]
+  \centering
+
+  \begin{prooftree}
+    \Hypo{$r is a register$}
+    \Infer1{\Delta$, r : t $\vdash^T_{code}$ r : t$}
+  \end{prooftree}
+
+  \caption{Type inference rules for registers in N*}
+  \label{fig:nstar-common-expressions-registers-typerules}
+\end{figure}
+
+\subsection{Pointer offsets}\label{fig:nstar-common-expressions-pointeroffsets}
+
+Pointer offsets allow accessing data that may be located relative to a given memory address.
+Grammar for pointer offsets is given in Figure~\ref{fig:nstar-common-expressions-pointeroffsets-grammar} and type inference rules are given in Figure~\ref{fig:nstar-common-expressions-pointeroffsets-typerules}.
+
+\begin{figure}[H]
+  \centering
+
+  \scalebox{.5}{
+    \includegraphics{nstar/pointer-offset-grammar}
+  }
+
+  \caption{Grammar for pointer offsets.}
+  \label{fig:nstar-common-expressions-pointeroffsets-grammar}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+
+  \begin{prooftree}
+    \Hypo{$n$_0$ = 0, n$_1$, n$_2$, \ldots, n$_p$ $\in\mathbb{N}}
+    \Hypo{$m$_i$ = $-$n$_i}
+    \Infer[no rule, rule margin=1.0ex]2{\Gamma\vdash^K$ t$_1$ : Tn$_1$, t$_2$ : Tn$_2$, \ldots, t$_p$ : Tn$_p$, s : Ts\hspace{1.5em}$%
+                                        \Delta\vdash^T_{code}$ e : sptr t$_1$::t$_2$::\ldots::t$_p$::s$}
+    \Infer1[Stack pointers]{\Delta\vdash^T_{code}$ m$_i$(e) : t$_{i + 1}}
+    % small hack: makes all premises on top of each other
+  \end{prooftree}
+  \\\vspace{\baselineskip}
+  \begin{prooftree}
+    \Hypo{$n$_0$ = 0, n$_1$, n$_2$, \ldots, n$_p$ $\in\mathbb{N}}
+    \Infer[no rule, rule margin=1.0ex]1{\Gamma\vdash^K$ t$_1$ : Tn$_1$, t$_2$ : Tn$_2$, \ldots, t$_p$ : Tn$_p$\hspace{1.5em}$%
+                                        \Delta\vdash^T_{code}$ e : *$ ($ t$_1$::t$_2$::\ldots::t$_p$ $)}
+    \Infer1[Structure pointers]{\Delta\vdash^T_{code}$ n$_i$(e) : t$_{i + 1}}
+    % small hack: makes all premises on top of each other
+  \end{prooftree}
+  \\\vspace{\baselineskip}
+  \begin{prooftree}
+    \Hypo{$k, n $\in\mathbb{N}}
+    \Hypo{$m = k $\times$ n$}
+    \Hypo{\Gamma\vdash^K$ t : Tn$}
+    \Hypo{\Delta\vdash^T_{code}$ e : *t$}
+    \Infer4[Raw pointers]{\Delta\vdash^T_{code}$ m(e) : t$}
+  \end{prooftree}
+
+  \caption{Type inference rules for pointer offsets.}
+  \label{fig:nstar-common-expressions-pointeroffsets-typerules}
+\end{figure}
+
 
 \section{File sections}\label{sec:nstar-common-sections}
 
@@ -770,136 +896,11 @@ As offsetting a pointer can lead to an invalid address dereferencing (or at leas
   r3 & ebx & rbx \\
   r4 & esi & rsi \\
   r5 & edi & rdi \\
-  \midrule
+  \cmidrule(lr){1-3}
   sp & esp & rsp \\
   bp & ebp & rbp \\
   \bottomrule
 \end{tabularx}
-
-\subsection{Expressions}\label{subsec:nstar-specific-x86amd64-exprs}
-
-There are four types of expressions in x86-N*: immediate values, data labels, registers and pointer offsets.
-All of these can be used as the value operand of the \texttt{mov} instruction.
-
-\subsubsection{Immediate values}\label{subsubsec:nstar-specific-x86amd64-exprs-immediate}
-
-Immediate values are also known as ``hardcoded values''.
-These are values that you can directly read in the source file, and which do not come from e.g.\ registers.
-Grammar and inference rules are given respectively in Figure~\ref{fig:nstar-specific-x86amd64-exprs-immediate-grammar} and Figure~\ref{fig:nstar-specific-x86amd64-exprs-immediate-typerules}.
-
-\begin{figure}[H]
-  \centering
-  \scalebox{.5}{
-    \includegraphics{nstar/x86/imm-char-grammar}
-  }
-  \\
-  \scalebox{.5}{
-    \includegraphics{nstar/x86/imm-int-grammar}
-  }
-  \caption{Grammar for immediate values in x86-N*.}
-  \label{fig:nstar-specific-x86amd64-exprs-immediate-grammar}
-\end{figure}
-
-\begin{figure}[H]
-  \centering
-
-  \begin{prooftree}
-    \Hypo{$c is a character immediate$}
-    \Infer1{\Delta\vdash^T_{code}$ c : char$}
-  \end{prooftree}
-  \\\vspace{\baselineskip}
-  \begin{prooftree}
-    \Hypo{$i is an unsigned integer immediate$}
-    \Hypo{$t $\in\{$ u8, u16, u32, u64 $\}}
-    \Infer2{\Delta\vdash^T_{code}$ i : t$}
-  \end{prooftree}
-  \\\vspace{\baselineskip}
-  \begin{prooftree}
-    \Hypo{$i is a signed integer immediate$}
-    \Hypo{$t $\in\{$ s8, s16, s32, s64 $\}}
-    \Infer2{\Delta\vdash^T_{code}$ i : t$}
-  \end{prooftree}
-
-  \caption{Type inference rules for immediate values in x86-N*.}
-  \label{fig:nstar-specific-x86amd64-exprs-immediate-typerules}
-\end{figure}
-
-\subsubsection{Data labels}\label{subsubsec:nstar-specific-x86amd64-exprs-labels}
-
-Data labels are pointers to some piece of data (may it even be an array).
-They can be dereferenced and offset using the constructs given in N*.
-Grammar and inference rules are given respectively in Figure~\ref{fig:nstar-specific-x86amd64-exprs-labels-grammar} and Figure~\ref{fig:nstar-specific-x86amd64-exprs-labels-typerules}.
-
-\begin{figure}[H]
-  \centering
-
-  \scalebox{.5}{
-    \includegraphics{nstar/x86/label-expr-grammar}
-  }
-  \caption{Grammar for data labels in x86-N*.}
-  \label{fig:nstar-specific-x86amd64-exprs-labels-grammar}
-\end{figure}
-
-\begin{figure}[H]
-  \centering
-
-  \begin{prooftree}
-    \Hypo{$x is a known label$}
-    \Hypo{\vdash^T_{data}$ x : *t$}
-    \Infer2{\Delta\vdash^T_{code}$ x : *t$}
-  \end{prooftree}
-
-  \caption{Type inference rules for data labels in x86-N*.}
-  \label{fig:nstar-specific-x86amd64-exprs-labels-typerules}
-\end{figure}
-
-\subsubsection{Pointer offsets}\label{fig:nstar-specific-x86amd64-exprs-pointeroffsets}
-
-Pointer offsets allow accessing data that may be located relative to a given memory address.
-Grammar for pointer offsets is given in Figure~\ref{fig:nstar-specific-x86amd64-exprs-pointeroffsets-grammar} and type inference rules are given in Figure~\ref{fig:nstar-specific-x86amd64-exprs-pointeroffsets-typerules}.
-
-\begin{figure}[H]
-  \centering
-
-  \scalebox{.5}{
-    \includegraphics{nstar/x86/pointer-offset-grammar}
-  }
-
-  \caption{Grammar for pointer offsets.}
-  \label{fig:nstar-specific-x86amd64-exprs-pointeroffsets-grammar}
-\end{figure}
-
-\begin{figure}[H]
-  \centering
-
-  \begin{prooftree}
-    \Hypo{$n$_0$ = 0, n$_1$, n$_2$, \ldots, n$_p$ $\in\mathbb{N}}
-    \Hypo{$m$_i$ = $-$n$_i}
-    \Infer[no rule, rule margin=1.0ex]2{\Gamma\vdash^K$ t$_1$ : Tn$_1$, t$_2$ : Tn$_2$, \ldots, t$_p$ : Tn$_p$, s : Ts\hspace{1.5em}$%
-                                        \Delta\vdash^T_{code}$ e : sptr t$_1$::t$_2$::\ldots::t$_p$::s$}
-    \Infer1[Stack pointers]{\Delta\vdash^T_{code}$ m$_i$(e) : t$_{i + 1}}
-    % small hack: makes all premises on top of each other
-  \end{prooftree}
-  \\\vspace{\baselineskip}
-  \begin{prooftree}
-    \Hypo{$n$_0$ = 0, n$_1$, n$_2$, \ldots, n$_p$ $\in\mathbb{N}}
-    \Infer[no rule, rule margin=1.0ex]1{\Gamma\vdash^K$ t$_1$ : Tn$_1$, t$_2$ : Tn$_2$, \ldots, t$_p$ : Tn$_p$\hspace{1.5em}$%
-                                        \Delta\vdash^T_{code}$ e : *$ ($ t$_1$::t$_2$::\ldots::t$_p$ $)}
-    \Infer1[Structure pointers]{\Delta\vdash^T_{code}$ n$_i$(e) : t$_{i + 1}}
-    % small hack: makes all premises on top of each other
-  \end{prooftree}
-  \\\vspace{\baselineskip}
-  \begin{prooftree}
-    \Hypo{$k, n $\in\mathbb{N}}
-    \Hypo{$m = k $\times$ n$}
-    \Hypo{\Gamma\vdash^K$ t : Tn$}
-    \Hypo{\Delta\vdash^T_{code}$ e : *t$}
-    \Infer4[Raw pointers]{\Delta\vdash^T_{code}$ m(e) : t$}
-  \end{prooftree}
-
-  \caption{Type inference rules for pointer offsets.}
-  \label{fig:nstar-specific-x86amd64-exprs-pointeroffsets-typerules}
-\end{figure}
 
 \subsection{Supported instructions}\label{subsec:nstar-specific-x86amd64-instructions}
 
