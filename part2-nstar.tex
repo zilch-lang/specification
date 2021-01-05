@@ -882,6 +882,11 @@ Because there is no built-in array type, we have to rely on pointers to be able 
 It would also be really hard to manipulate plain array types (because, for example, of the size to store with the type).
 As offsetting a pointer can lead to an invalid address dereferencing (or at least dereferencing an address which doesn't belong to the application memory, i.e.\ allocated by another process), it is considered an unsafe operation and therefore needs to be wrapped in an \texttt{unsafe} block.
 
+\subsection{Pointer offsetting using a register}\label{subsec:nstar-common-unsafe-ptroffsetreg}
+
+Offsetting a stack pointer or a structure pointer is considered a safe operation because it is possible to guarantee at compile-time that the offset is correct and points to valid data, unless the offset is a register.
+Because of this, offsetting any pointer using a register (e.g. \texttt{\%r1(\$0 : u64)}) is considered an unsafe operation and should be surrounded by an \texttt{unsafe} block, no matter the instruction used (\texttt{mov}, \texttt{push}, \texttt{pop}, \ldots).
+
 \chapter{Instructions and target-dependent features}\label{chap:nstar-specific}
 
 \section{x86, amd64}\label{sec:nstar-specific-x86amd64}
