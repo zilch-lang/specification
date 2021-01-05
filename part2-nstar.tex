@@ -962,6 +962,7 @@ However, jumps are checked using the branch-checking process described in Sectio
 \section{\texttt{call}}\label{sec:nstar-instructionset-call}
 
 The \texttt{call} instruction stores the current instruction pointer on top of the stack, then jumps to the target address (specified using a label).
+Doing \texttt{call f<s...>} is mostly equivalent to doing \texttt{push \%ip; jmp f<s...>} (not entirely, because we cannot manipulate \texttt{\%ip} in N*).
 Grammar and inference rules are given in Figure~\ref{fig:nstar-instructionset-call-grammar} and Figure~\ref{fig:nstar-instructionset-call-typerules}.
 
 \begin{figure}[H]
