@@ -55,6 +55,42 @@ Inference rules notation:
 
 \chapter{Non platform-specific features}\label{chap:nstar-common}
 
+\section{Registers}\label{sec:nstar-common-registers}
+
+Registers in N* are abstracted away from the target architectures.
+Instead of manipulating registers \texttt{\%eax} or \texttt{\%rsp} or \texttt{\$a2}, which all are platform-specific, two families of registers can be manipulated:
+\begin{itemize}
+  \item General-purpose registers: there are 6 general purpose registers in N*, named \texttt{r0} to \texttt{r5}.
+        They can be 4 to 8 bytes large depending on the target architecture mappings.
+  \item Pointer registers: there are 2 pointer registers, namely \texttt{sp} and \texttt{bp}.
+        While they also can contain ``normal'' data, they are mostly used to store stack pointers (hence their name).
+\end{itemize}
+
+Grammar for all those registers is given in Figure~\ref{fig:nstar-common-registers-grammar} and inference rules are given in Figure~\ref{fig:nstar-common-registers-typerules}.
+
+\begin{figure}[htb]
+  \centering
+
+  \scalebox{.5}{
+    \includegraphics{nstar/register-grammar}
+  }
+
+  \caption{Grammar for registers in N*.}
+  \label{fig:nstar-common-registers-grammar}
+\end{figure}
+
+\begin{figure}[htb]
+  \centering
+
+  \begin{prooftree}
+    \Hypo{$r is a register$}
+    \Infer1{\Delta$, r : t $\vdash^T_{code}$ r : t$}
+  \end{prooftree}
+
+  \caption{Type inference rules for registers in N*}
+  \label{fig:nstar-common-registers-typerules}
+\end{figure}
+
 \section{Types}\label{sec:nstar-common-ts}
 
 One of the differences between classical assembly languages and N* is its type system.
@@ -722,52 +758,9 @@ As offsetting a pointer can lead to an invalid address dereferencing (or at leas
 
 \section{x86, amd64}\label{sec:nstar-specific-x86amd64}
 
-\subsection{Available registers}\label{subsec:nstar-specific-x86amd64-registers}
+\subsection{Register mappings}\label{subsec:nstar-specific-x86amd64-registers}
 
-\begin{tabularx}{\textwidth}{*{8}{| >{\centering\arraybackslash}X} |}
-  \hline
-  \textbf{64} & \textbf{56} & \textbf{48} & \textbf{40} & \textbf{32} & \textbf{24} & \textbf{16} & \textbf{8} \\
-  \hline
-
-  \rowcolor{gray!30}%
-  \multicolumn{8}{|c|}{\textbf{General purpose registers: A, B, C and D}} \\
-  \hline
-
-  \multicolumn{8}{|c|}{R?X} \\
-  \hline
-  \multicolumn{4}{|c|}{\cellcolor{gray!10}} & \multicolumn{4}{c|}{E?X} \\
-  \hline
-  \multicolumn{6}{|c|}{\cellcolor{gray!10}} & \multicolumn{2}{c|}{?X} \\
-  \hline
-  \multicolumn{6}{|c|}{\cellcolor{gray!10}} & {?H} & {?L} \\
-  \hline
-
-  \rowcolor{gray!30}%
-  \multicolumn{8}{|c|}{\textbf{Index registers: S and D}} \\
-  \hline
-
-  \multicolumn{8}{|c|}{R?I} \\
-  \hline
-  \multicolumn{4}{|c|}{\cellcolor{gray!10}} & \multicolumn{4}{c|}{E?I} \\
-  \hline
-  \multicolumn{6}{|c|}{\cellcolor{gray!10}} & \multicolumn{2}{c|}{?I} \\
-  \hline
-  \multicolumn{7}{|c|}{\cellcolor{gray!10}} & {?IL} \\
-  \hline
-
-  \rowcolor{gray!30}%
-  \multicolumn{8}{|c|}{\textbf{Pointer registers: S and B\makebox[0pt][l]{$^{\ast}$} }} \\
-  \hline
-
-  \multicolumn{8}{|c|}{R?P} \\
-  \hline
-  \multicolumn{4}{|c|}{\cellcolor{gray!10}} & \multicolumn{4}{c|}{E?P} \\
-  \hline
-
-  \hline
-  \multicolumn{8}{|l|}{\textit{\footnotesize$^{\ast}$ RSP and RBP are only available in 64-bit mode, while ESP and EBP are only available in 32-bit mode.}} \\
-  \hline
-\end{tabularx}
+%% TODO
 
 \subsection{Expressions}\label{subsec:nstar-specific-x86amd64-exprs}
 
