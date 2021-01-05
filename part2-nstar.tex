@@ -371,11 +371,11 @@ Grammar and inference rules are given respectively in Figure~\ref{fig:nstar-comm
 \begin{figure}[H]
   \centering
   \scalebox{.5}{
-    \includegraphics{nstar/imm-char-grammar}
+    \includegraphics{nstar/exprs/imm-char-grammar}
   }
   \\
   \scalebox{.5}{
-    \includegraphics{nstar/imm-int-grammar}
+    \includegraphics{nstar/exprs/imm-int-grammar}
   }
   \caption{Grammar for immediate values in N*.}
   \label{fig:nstar-common-expressions-immediate-grammar}
@@ -415,7 +415,7 @@ Grammar and inference rules are given respectively in Figure~\ref{fig:nstar-comm
   \centering
 
   \scalebox{.5}{
-    \includegraphics{nstar/label-expr-grammar}
+    \includegraphics{nstar/exprs/label-expr-grammar}
   }
   \caption{Grammar for data labels in N*.}
   \label{fig:nstar-common-expressions-labels-grammar}
@@ -451,7 +451,7 @@ Grammar for all those registers is given in Figure~\ref{fig:nstar-common-express
   \centering
 
   \scalebox{.5}{
-    \includegraphics{nstar/register-grammar}
+    \includegraphics{nstar/exprs/register-grammar}
   }
 
   \caption{Grammar for registers in N*.}
@@ -479,7 +479,7 @@ Grammar for pointer offsets is given in Figure~\ref{fig:nstar-common-expressions
   \centering
 
   \scalebox{.5}{
-    \includegraphics{nstar/pointer-offset-grammar}
+    \includegraphics{nstar/exprs/pointer-offset-grammar}
   }
 
   \caption{Grammar for pointer offsets.}
@@ -491,33 +491,35 @@ Grammar for pointer offsets is given in Figure~\ref{fig:nstar-common-expressions
 
   \begin{prooftree}
     \Hypo{$n$_0$ = 0, n$_1$, n$_2$, \ldots, n$_p$ $\in\mathbb{N}}
-    \Hypo{$m$_i$ = $-$n$_i}
+    \Hypo{\Delta\vdash^T_{code}$ o : s64$}
     \Infer[no rule, rule margin=1.0ex]2{\Gamma\vdash^K$ t$_1$ : Tn$_1$, t$_2$ : Tn$_2$, \ldots, t$_p$ : Tn$_p$, s : Ts\hspace{1.5em}$%
                                         \Delta\vdash^T_{code}$ e : sptr t$_1$::t$_2$::\ldots::t$_p$::s$}
-    \Infer1[Stack pointers]{\Delta\vdash^T_{code}$ m$_i$(e) : t$_{i + 1}}
+    \Infer1[Stack pointers]{\Delta\vdash^T_{code}$ o(e) : t$_i}
     % small hack: makes all premises on top of each other
   \end{prooftree}
   \\\vspace{\baselineskip}
   \begin{prooftree}
     \Hypo{$n$_0$ = 0, n$_1$, n$_2$, \ldots, n$_p$ $\in\mathbb{N}}
-    \Infer[no rule, rule margin=1.0ex]1{\Gamma\vdash^K$ t$_1$ : Tn$_1$, t$_2$ : Tn$_2$, \ldots, t$_p$ : Tn$_p$\hspace{1.5em}$%
+    \Hypo{\Delta\vdash^T_{code}$ o : s64$}
+    \Infer[no rule, rule margin=1.0ex]2{\Gamma\vdash^K$ t$_1$ : Tn$_1$, t$_2$ : Tn$_2$, \ldots, t$_p$ : Tn$_p$\hspace{1.5em}$%
                                         \Delta\vdash^T_{code}$ e : *$ ($ t$_1$::t$_2$::\ldots::t$_p$ $)}
-    \Infer1[Structure pointers]{\Delta\vdash^T_{code}$ n$_i$(e) : t$_{i + 1}}
+    \Infer1[Structure pointers]{\Delta\vdash^T_{code}$ o(e) : t$_i}
     % small hack: makes all premises on top of each other
   \end{prooftree}
   \\\vspace{\baselineskip}
   \begin{prooftree}
-    \Hypo{$k, n $\in\mathbb{N}}
-    \Hypo{$m = k $\times$ n$}
+    \Hypo{$n $\in\mathbb{N}}
+    \Hypo{\Delta\vdash^T_{code}$ o : s64$}
     \Hypo{\Gamma\vdash^K$ t : Tn$}
     \Hypo{\Delta\vdash^T_{code}$ e : *t$}
-    \Infer4[Raw pointers]{\Delta\vdash^T_{code}$ m(e) : t$}
+    \Infer4[Raw pointers]{\Delta\vdash^T_{code}$ o(e) : t$}
   \end{prooftree}
 
   \caption{Type inference rules for pointer offsets.}
   \label{fig:nstar-common-expressions-pointeroffsets-typerules}
 \end{figure}
 
+Although offsetting a pointer works with any expression as the offset (as long as it is a signed integer), if the offset is a register, it is considered an unsafe operation\footnote{See Section~\ref{subsec:nstar-common-unsafe-ptroffsetreg}~``\nameref{subsec:nstar-common-unsafe-ptroffsetreg}''}.
 
 \section{File sections}\label{sec:nstar-common-sections}
 
