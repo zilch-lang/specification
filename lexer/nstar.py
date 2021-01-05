@@ -27,7 +27,7 @@ class NStarLexer(RegexLexer):
             (r'(ret|mov|jmp|call|cmp|je)\b', Name.Builtin)
         ],
         'registers': [
-            (r'(%(rax|rbx|rcx|rdx|rbp|rsp|rdi|rsi))\b', Name.Constant)
+            (r'(%(r0|r1|r2|r3|r4|r5|sp|bp|ip))\b', Name.Constant)
         ],
         'types': [
             (r'(Ts|Ta|T4|T8|s8|s16|s32|s64|u8|u16|u32|u64)\b', Keyword.Type)

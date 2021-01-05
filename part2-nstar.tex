@@ -235,7 +235,7 @@ The type variable \texttt{s} is specialized at the call site.
   \centering
   \begin{minipage}{0.90\textwidth}
     \begin{minted}[]{\nstarlexer}
-      label: forall (s: Ts). { %rsp: sptr *{ %rsp: sptr s }::s }
+      label: forall (s: Ts). { %sp: sptr *{ %sp: sptr s }::s }
           ret
     \end{minted}
   \end{minipage}
@@ -781,9 +781,9 @@ This gives a safe way of using return values, and guaranteeing that there are in
   \centering
   \begin{minipage}{0.90\textwidth}
     \begin{minted}[]{\nstarlexer}
-    example: forall (s: Ts). { %rsp: sptr *{ %rsp: sptr s, %rax: u64, %rbx: u64 } }
-      mov 0, %rax
-      mov 5, %rbx
+    example: forall (s: Ts). { %sp: sptr *{ %sp: sptr s, %r0: u64, %r3: u64 } }
+      mov 0, %r0
+      mov 5, %r3
       ret
     \end{minted}
   \end{minipage}
@@ -823,14 +823,14 @@ The instruction \texttt{jmp tmp<s>} seems unneeded (in fact, it can be optimized
   \centering
   \begin{minipage}{0.90\textwidth}
     \begin{minted}[]{\nstarlexer}
-      f: forall (s: Ts). { %rsp: sptr *{ %rsp: sptr s, %rax: u64 }::s, %rax: u64 }
-        cmp %rax, 0
+      f: forall (s: Ts). { %sp: sptr *{ %sp: sptr s, %r0: u64 }::s, %r0: u64 }
+        cmp %r0, 0
         je r<s>
         jmp tmp<s>
-      tmp: forall (s: Ts). { %rsp: sptr *{ %rsp: sptr s, %rax: u64 }::s, %rax: u64 }
-        mov 0, %rax
+      tmp: forall (s: Ts). { %sp: sptr *{ %sp: sptr s, %r0: u64 }::s, %r0: u64 }
+        mov 0, %r0
         jmp r<s>
-      r: forall (s: Ts). { %rsp: sptr *{ %rsp: sptr s, %rax: u64 }::s, %rax: u64 }
+      r: forall (s: Ts). { %sp: sptr *{ %sp: sptr s, %r0: u64 }::s, %r0: u64 }
         ret
     \end{minted}
   \end{minipage}
