@@ -915,11 +915,9 @@ Type inference rules are given in Figure~\ref{fig:nstar-instructionset-mov-typer
   \end{prooftree}
   \\\vspace{\baselineskip}
   \begin{prooftree}
-    \Hypo{$n, k $\in\mathbb{N}}
-    \Hypo{$m = $\pm$k $\times$ n$}
     \Hypo{\Delta\vdash^T_{code}$ e : t$}
     \Hypo{\Delta\vdash^T_{code}$ m(d) : t$}
-    \Infer4[\texttt{mov} to pointer offset]{\Delta,\Xi\vdash^I$ mov e, m(d) $\dashv\Delta}
+    \Infer2[\texttt{mov} to pointer offset]{\Delta,\Xi\vdash^I$ mov e, m(d) $\dashv\Delta}
   \end{prooftree}
 
   \caption{Type inference rules for the \texttt{mov} instruction.}
