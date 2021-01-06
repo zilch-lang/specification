@@ -1067,6 +1067,37 @@ Grammar is given in Figure~\ref{fig:nstar-instructionset-ret-grammar} and type i
   \label{fig:nstar-instructionset-ret-typerules}
 \end{figure}
 
+\section{\texttt{push}}\label{fig:nstar-instructionset-push}
+
+The \texttt{push} instruction inserts sized data on top of the stack.
+Grammar for it is given in Figure~\ref{fig:nstar-instructionset-push-grammar} and inference rules are given in Figure~\ref{fig:nstar-instructionset-push-typerules}.
+
+\begin{figure}[H]
+  \centering
+
+  \scalebox{.5}{
+    \includegraphics{nstar/instructions/push-grammar}
+  }
+
+  \caption{Grammar for the \texttt{push} instruction.}
+  \label{fig:nstar-instructionset-push-grammar}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+
+  \begin{prooftree}
+    \hypo{$n $\in\mathbb{N}}
+    \hypo{\Gamma\vdash^K$ t : Tn, s : Ts$}
+    \hypo{\Delta\vdash^T_{code}$ e : t$}
+    \hypo{$\%sp : sptr s $\in\Delta}
+    \infer4{\Delta,\Xi\vdash^I$ push e $\dashv\Delta\setminus$ \%sp, \%sp : sptr t::s$}
+  \end{prooftree}
+
+  \caption{Type inference rules for the \texttt{push} instruction.}
+  \label{fig:nstar-instructionset-push-typerules}
+\end{figure}
+
 \chapter{Target-dependent features}\label{chap:nstar-specific}
 
 \section{x86, amd64}\label{sec:nstar-specific-x86amd64}
