@@ -961,7 +961,7 @@ However, jumps are checked using the branch-checking process described in Sectio
 \section{\texttt{call}}\label{sec:nstar-instructionset-call}
 
 The \texttt{call} instruction stores the current instruction pointer on top of the stack, then jumps to the target address (specified using a label).
-Doing \texttt{call f<s...>} is mostly equivalent to doing \texttt{push \%ip; jmp f<s...>} (not entirely, because we cannot manipulate \texttt{\%ip} in N*).
+Doing \texttt{call f} is mostly equivalent to doing \texttt{push \%ip; jmp f} at runtime.
 Grammar and inference rules are given in Figure~\ref{fig:nstar-instructionset-call-grammar} and Figure~\ref{fig:nstar-instructionset-call-typerules}.
 
 \begin{figure}[H]
@@ -989,7 +989,7 @@ Grammar and inference rules are given in Figure~\ref{fig:nstar-instructionset-ca
     \infer1{\Delta,\Xi\vdash^I$ call l<s$_1$, s$_2$, \ldots, s$_p$> $\dashv$ c$}
   \end{prooftree}
 
-  \caption{Type inferences rules for the \texttt{call} instruction.}
+  \caption{Type inference rules for the \texttt{call} instruction.}
   \label{fig:nstar-instructionset-call-typerules}
 \end{figure}
 
@@ -1035,6 +1035,37 @@ Grammar and inference rules are given in Figure~\ref{fig:nstar-instructionset-po
   \label{fig:nstar-instructionset-pop-typerules}
 \end{figure}
 
+\section{\texttt{ret}}\label{sec:nstar-instructionset-ret}
+
+The \texttt{ret} instruction moves the instruction pointer to the address on top of the stack, and pops it from the stack.
+It is essentially equivalent to doing \texttt{pop \%ip} at runtime.
+Grammar is given in Figure~\ref{fig:nstar-instructionset-ret-grammar} and type inference rules are given in Figure~\ref{fig:nstar-instructionset-ret-typerules}.
+
+\begin{figure}[H]
+  \centering
+
+  \scalebox{.5}{
+    \includegraphics{nstar/instructions/ret-grammar}
+  }
+
+  \caption{Grammar for the \texttt{ret} instruction.}
+  \label{fig:nstar-instructionset-ret-grammar}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+
+  \begin{prooftree}
+    \hypo{$c is a context$}
+    \hypo{\Gamma\vdash^K$ s : Ts$}
+    \hypo{$\%sp : sptr *c::s $\in\Delta}
+    \hypo{$c $\subseteq\Delta}
+    \infer4{\Delta,\Xi\vdash^I$ ret $\dashv\Delta}
+  \end{prooftree}
+
+  \caption{Type inference rules for the \texttt{ret} instruction.}
+  \label{fig:nstar-instructionset-ret-typerules}
+\end{figure}
 
 \chapter{Target-dependent features}\label{chap:nstar-specific}
 
