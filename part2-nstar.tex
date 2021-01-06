@@ -1014,21 +1014,19 @@ Grammar and inference rules are given in Figure~\ref{fig:nstar-instructionset-po
 
   \begin{prooftree}
     \hypo{$r is a register$}
-    \hypo{$\%sp : sptr ts $\in\Delta}
     \hypo{$n $\leq$ 8 $\in\mathbb{N}}
-    \infer[no rule, rule margin=1ex]3{\Gamma\vdash^K$ t : Tn, s : Ts\hspace{1.5em}$%
+    \infer[no rule, rule margin=1ex]2{\Gamma\vdash^K$ t : Tn, s : Ts\hspace{1.5em}$%
                                       $t $\nsim$ *\{\}\hspace{1.5em}$%
                                       $ts $\sim$ t::s$}
-    \infer1[\texttt{pop} to register]{\Delta,\Xi\vdash^I$ pop r $\dashv\Delta\setminus\{$ r, \%sp $\}$, r : t, \%sp : sptr s$}
+    \infer1[\texttt{pop} to register]{\Delta,$ \%sp : sptr ts$,\Xi\vdash^I$ pop r $\dashv\Delta\setminus$ r, r : t, \%sp : sptr s$}
   \end{prooftree}
   \\\vspace{\baselineskip}
   \begin{prooftree}
     \hypo{$n $\in\mathbb{N}}
     \hypo{\Gamma\vdash^K$ t : Tn, s : Ts$}
-    \infer[no rule, rule margin=1ex]2{$\%sp : sptr ts $\in\Delta$\hspace{1.5em}$%
-                                      \Delta\vdash^T_{code}$ o(e) : t\hspace{1.5em}$%
-                                      $ts $\sim$ t::s$}
-    \infer1[\texttt{pop} to pointer offset]{\Delta,\Xi\vdash^I$ pop o(e) $\dashv\Delta\setminus$ \%sp, \%sp : sptr s$}
+    \hypo{\Delta\vdash^T_{code}$ o(e) : t\hspace{1.5em}$}
+    \hypo{$ts $\sim$ t::s$}
+    \infer4[\texttt{pop} to pointer offset]{\Delta,$ \%sp : sptr ts$,\Xi\vdash^I$ pop o(e) $\dashv\Delta$, \%sp : sptr s$}
   \end{prooftree}
 
   \caption{Type inference rules for the \texttt{pop} instruction.}
@@ -1090,8 +1088,7 @@ Grammar for it is given in Figure~\ref{fig:nstar-instructionset-push-grammar} an
     \hypo{$n $\in\mathbb{N}}
     \hypo{\Gamma\vdash^K$ t : Tn, s : Ts$}
     \hypo{\Delta\vdash^T_{code}$ e : t$}
-    \hypo{$\%sp : sptr s $\in\Delta}
-    \infer4{\Delta,\Xi\vdash^I$ push e $\dashv\Delta\setminus$ \%sp, \%sp : sptr t::s$}
+    \infer3{\Delta,$ \%sp : sptr s$,\Xi\vdash^I$ push e $\dashv\Delta$, \%sp : sptr t::s$}
   \end{prooftree}
 
   \caption{Type inference rules for the \texttt{push} instruction.}
