@@ -31,12 +31,41 @@ MY_STYLE = '''\
 	}
 '''
 
-inner = Sequence(
-    Terminal("section"),
-    Terminal("{"),
-    OneOrMore(Skip(), NonTerminal('data-entry')),
-    Terminal("}")
-)
+def mk_diagram(name, nodes):
+    return Diagram(Start('complex', name), nodes, type='complex', css=MY_STYLE)
 
-d = Diagram(Start('complex', "data-section"), inner, type="complex", css=MY_STYLE)
-d.writeSvg(sys.stdout.write)
+def character_immediate():
+    inner = Sequence(
+	Terminal("'"),
+	Choice(
+	    1,
+	    Sequence(
+		Terminal('\\'),
+		Choice(
+		    1,
+		    Sequence(
+			Terminal('x'),
+			NonTerminal('hex-digit'),
+			NonTerminal('hex-digit')
+		    ),
+		    HorizontalChoice(
+			Terminal('n'),
+			Terminal('r'),
+			Terminal('\\'),
+			Terminal('0')
+		    ),
+		    HorizontalChoice(
+			Terminal('t'),
+			Terminal('v'),
+			Terminal('e')
+		    ),
+		)
+	    ),
+	    NonTerminal('ascii-character')
+	),
+	Terminal("'")
+    )
+
+    return mk_diagram('character-immediate', inner)
+
+character_immediate().writeSvg(sys.stdout.write)
