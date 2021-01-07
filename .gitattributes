@@ -1,2 +1,2 @@
 **/*.tex linguist-documentation=false linguist-detectable=true
-*.py linguist-detectable=false
+railroad-diagrams.py linguist-detectable=false
