@@ -68,4 +68,7 @@ def character_immediate():
 
     return mk_diagram('character-immediate', inner)
 
+def character_constant():
+    return character_immediate()
+
 character_immediate().writeSvg(sys.stdout.write)
