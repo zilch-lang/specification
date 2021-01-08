@@ -36,34 +36,34 @@ def mk_diagram(name, nodes):
 
 def character_immediate():
     inner = Sequence(
-	Terminal("'"),
-	Choice(
-	    1,
-	    Sequence(
-		Terminal('\\'),
+		Terminal("'"),
 		Choice(
-		    1,
-		    Sequence(
-			Terminal('x'),
-			NonTerminal('hex-digit'),
-			NonTerminal('hex-digit')
-		    ),
-		    HorizontalChoice(
-			Terminal('n'),
-			Terminal('r'),
-			Terminal('\\'),
-			Terminal('0')
-		    ),
-		    HorizontalChoice(
-			Terminal('t'),
-			Terminal('v'),
-			Terminal('e')
-		    ),
-		)
-	    ),
-	    NonTerminal('ascii-character')
-	),
-	Terminal("'")
+			1,
+			Sequence(
+				Terminal('\\'),
+				Choice(
+					1,
+					Sequence(
+						Terminal('x'),
+						NonTerminal('hex-digit'),
+						NonTerminal('hex-digit')
+					),
+					HorizontalChoice(
+						Terminal('n'),
+						Terminal('r'),
+						Terminal('\\'),
+						Terminal('0')
+					),
+					HorizontalChoice(
+						Terminal('t'),
+						Terminal('v'),
+						Terminal('e')
+					),
+				)
+			),
+			NonTerminal('ascii-character')
+		),
+		Terminal("'")
     )
 
     return mk_diagram('character-immediate', inner)
@@ -71,4 +71,11 @@ def character_immediate():
 def character_constant():
     return character_immediate()
 
-character_immediate().writeSvg(sys.stdout.write)
+def nop_instruction():
+	inner = Sequence(
+		Terminal('nop')
+	)
+
+	return mk_diagram('nop-instruction', inner)
+
+nop_instruction().writeSvg(sys.stdout.write)

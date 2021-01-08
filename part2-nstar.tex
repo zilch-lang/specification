@@ -1065,7 +1065,7 @@ Grammar is given in Figure~\ref{fig:nstar-instructionset-ret-grammar} and type i
   \label{fig:nstar-instructionset-ret-typerules}
 \end{figure}
 
-\section{\texttt{push}}\label{fig:nstar-instructionset-push}
+\section{\texttt{push}}\label{sec:nstar-instructionset-push}
 
 The \texttt{push} instruction inserts sized data on top of the stack.
 Grammar for it is given in Figure~\ref{fig:nstar-instructionset-push-grammar} and inference rules are given in Figure~\ref{fig:nstar-instructionset-push-typerules}.
@@ -1093,6 +1093,33 @@ Grammar for it is given in Figure~\ref{fig:nstar-instructionset-push-grammar} an
 
   \caption{Type inference rules for the \texttt{push} instruction.}
   \label{fig:nstar-instructionset-push-typerules}
+\end{figure}
+
+\section{\texttt{nop}}\label{sec:nstar-instructionset-nop}
+
+The \texttt{nop} instruction does absolutely nothing else than skipping a CPU cycle.
+Grammar and type inference rules are respectively given in Figure~\ref{fig:nstar-instructionset-nop-grammar} and Figure~\ref{fig:nstar-instructionset-nop-typerules}.
+
+\begin{figure}[H]
+  \centering
+
+  \scalebox{.5}{
+    \includegraphics{nstar/instructions/nop-grammar}
+  }
+
+  \caption{Grammar for the \texttt{nop} instruction.}
+  \label{fig:nstar-instructionset-nop-grammar}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+
+  \begin{prooftree}
+    \infer0{\Delta,\Xi\vdash^I$ nop $\dashv\Delta}
+  \end{prooftree}
+
+  \caption{Type inference rules for the \texttt{nop} instruction.}
+  \label{fig:nstar-instructionset-nop-typerules}
 \end{figure}
 
 \chapter{Target-dependent features}\label{chap:nstar-specific}
