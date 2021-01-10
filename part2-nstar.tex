@@ -557,6 +557,8 @@ However, some restrictions apply to labels in order to make the type-checking me
 Every assembly instruction makes the current context vary in some way, either by binding registers, forgetting about some bindings, changing register types, or some other way. The current context is just a record keeping track of the currently bound registers, along with the data type they contain.
 More on that in sections about instructions\footnote{Instructions are platform-specific, that's why we don't talk about them here.}.
 
+Every label can also be given an optional \texttt{global} qualifier, which is used to indicate that the label can be used outside of the file (it can be thought of as ``exported'').
+
 \subsection{The \texttt{data}, \texttt{rodata} and \texttt{udata} sections}\label{subsec:nstar-common-sections-data}
 
 The \texttt{data} and \texttt{rodata} sections are sections used to reference (read-only) literal data (much like constants in PHP).

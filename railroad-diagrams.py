@@ -78,4 +78,25 @@ def nop_instruction():
 
 	return mk_diagram('nop-instruction', inner)
 
-nop_instruction().writeSvg(sys.stdout.write)
+def code_line():
+	inner = Choice(
+		1,
+		Sequence(
+			Optional(
+				Terminal('global')
+			),
+			NonTerminal('identifier'),
+			Terminal(':'),
+			NonTerminal('label-type')
+		),
+		Sequence(
+			Optional(
+				Terminal('unsafe')
+			),
+			NonTerminal('code-instruction')
+		)
+	)
+
+	return mk_diagram('code-line', inner)
+
+code_line().writeSvg(sys.stdout.write)
