@@ -99,4 +99,57 @@ def code_line():
 
 	return mk_diagram('code-line', inner)
 
-code_line().writeSvg(sys.stdout.write)
+def data_section():
+	inner = Sequence(
+		Terminal('section'),
+		Choice(
+			1,
+			Terminal('data'),
+			Terminal('rodata'),
+			Terminal('udata')
+		),
+		Terminal('{'),
+		ZeroOrMore(
+			Choice(
+				1,
+				Sequence(
+					Optional(
+						Terminal('global')
+					),
+					NonTerminal('identifier'),
+					Terminal(':'),
+					NonTerminal('constant-type')
+				),
+				NonTerminal('constant-value')
+			)
+		),
+		Terminal('}')
+	)
+
+	return mk_diagram('data-section', inner)
+
+def extern_data_section():
+	inner = Sequence(
+		Terminal('section'),
+		Choice(
+			0,
+			Terminal('extern.data'),
+			Terminal('extern.rodata')
+		),
+		Terminal('{'),
+		ZeroOrMore(
+			Sequence(
+				Optional(
+					Terminal('dyn')
+				),
+				NonTerminal('identifier'),
+				Terminal(':'),
+				NonTerminal('constant-type')
+			)
+		),
+		Terminal('}')
+	)
+
+	return mk_diagram('extern.data-section', inner)
+
+extern_data_section().writeSvg(sys.stdout.write)

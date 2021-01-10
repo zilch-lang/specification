@@ -579,6 +579,8 @@ The grammar of those sections is given in Figure~\ref{fig:nstar-common-sections-
 
 While the \texttt{data} and \texttt{rodata} sections contain initialised values (that is, hardcoded bytes in the executable), the \texttt{udata} section does not contain any byte (it should be only $0$s, to reserve space for each entry).
 
+Each label can also be marked with a \texttt{global} qualifier, which acts the same as in the \texttt{code} section.
+
 \subsection{The \texttt{extern} sections}\label{subsec:nstar-common-sections-extern}
 
 The \texttt{extern} sections contain information related to static and dynamic imports.
