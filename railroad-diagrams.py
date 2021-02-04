@@ -79,21 +79,25 @@ def nop_instruction():
 	return mk_diagram('nop-instruction', inner)
 
 def code_line():
-	inner = Choice(
-		1,
+	inner = Stack(
 		Sequence(
 			Optional(
 				Terminal('global')
 			),
 			NonTerminal('identifier'),
 			Terminal(':'),
-			NonTerminal('label-type')
+			NonTerminal('label-type'),
+			Terminal('=')
 		),
-		Sequence(
-			Optional(
-				Terminal('unsafe')
-			),
-			NonTerminal('code-instruction')
+		Choice(
+			1,
+			NonTerminal('instruction_block'),
+			Sequence(
+				Terminal('unsafe'),
+				Terminal('{'),
+				NonTerminal('instruction_block'),
+				Terminal('}')
+			)
 		)
 	)
 
@@ -232,4 +236,41 @@ def kind():
 
 	return mk_diagram('kind', inner)
 
-kind().writeSvg(sys.stdout.write)
+def instruction_block():
+	inner = Choice(
+		1,
+		Sequence(
+			Optional(
+				Terminal('unsafe')
+			),
+			NonTerminal('instruction'),
+			Terminal(';'),
+			NonTerminal('instruction_block')
+		),
+		Group(
+			Choice(
+				1,
+				NonTerminal('ret-instruction'),
+				NonTerminal('call-instruction'),
+				NonTerminal('jmp-instruction')
+			),
+			'Terminal instructions'
+		)
+	)
+
+	return mk_diagram('instruction-block', inner)
+
+def code_section():
+	inner = Sequence(
+		Terminal('section'),
+		Terminal('code'),
+		Terminal('{'),
+		ZeroOrMore(
+			NonTerminal('code-line')
+		),
+		Terminal('}')
+	)
+
+	return mk_diagram('code-section', inner)
+
+code_line().writeSvg(sys.stdout.write)
