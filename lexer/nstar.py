@@ -13,7 +13,7 @@ class NStarLexer(RegexLexer):
             (r'#.*?\n', Comment.Single)
         ],
         'keywords': [
-            (r'(forall|unsafe|sptr)\b', Keyword)
+            (r'(forall|∀|unsafe)\b', Keyword)
         ],
         'literals': [
             (r'"[^"]"', String.Double),
@@ -30,7 +30,7 @@ class NStarLexer(RegexLexer):
             (r'(%(r0|r1|r2|r3|r4|r5|sp|bp|ip))\b', Name.Constant)
         ],
         'types': [
-            (r'(Ts|Ta|T4|T8|s8|s16|s32|s64|u8|u16|u32|u64)\b', Keyword.Type)
+            (r'(Ts|Ta|Tc|T4|T8|s8|s16|s32|s64|u8|u16|u32|u64)\b', Keyword.Type)
         ],
         'variables': [
             (r'^([a-zA-Z]*)\:', Name.Variable),
@@ -45,7 +45,7 @@ class NStarLexer(RegexLexer):
             include('registers'),
             include('types'),
 
-            (r'(\*|\:\:)', Operator),
+            (r'(\*|\:\:|(\-\>)|\|)', Operator),
             (r'(\{|\}|\.|\:)', Punctuation),
 
             (r'.', Text)
