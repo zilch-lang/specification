@@ -14,7 +14,7 @@ TALx86 is basically NASM with a type system, targetting only the x86 architectur
 
 \vspace{\baselineskip}
 
-N*'s goal is to assist users with a simple but powerful type system, as well as other features like what is called ``branch-checking'' which prevents from leaking the control flow of the program, and thus makes a part of the type-checking process meaningful.
+N*'s goal is to assist users with a simple but powerful type system, yet still allowing for low-level data manipulation.
 But before even being a usable programming language, N* aims at being a compiler backend (much like for example LLVM), and is used that way in the Zilch project. Differences with other compiler backends are mostly the type-system, allowing the compilation of Zilch source code into type-safe instructions.
 
 \vspace{\baselineskip}
@@ -251,7 +251,7 @@ The type variable \texttt{s} is specialized at the call site.
 
 \subsection{Stack types}\label{subsec:nstar-common-ts-stack}
 
-There are mainly two stack types in N*: the stack pointer \texttt{sptr} and the stack constructor \texttt{::}.
+There is one stack type in N*: the stack constructor \texttt{::}.
 Note that there is no ``empty stack'' type as would be the case with e.g.\ lists in Haskell.
 The reason is that it forces the developer to abstract the stack to be able to have a ``stack tail'' (the part of the stack on the right of the stack constructor \texttt{::}) at some point.\footnote{It also serves the purpose to ensure that we cannot construct a stack from nothing, and that it should always be given to us, to e.g.\ the \texttt{main} function.}
 An example is given in Listing~\ref{lst:nstar-common-ts-records-stackmask}.
@@ -485,7 +485,7 @@ Grammar for pointer offsets is given in Figure~\ref{fig:nstar-common-expressions
     \hypo{$n$_0$ = 0, n$_1$, n$_2$, \ldots, n$_p$ $\in\mathbb{N}}
     \hypo{\Delta\vdash^T_{code}$ o : s64$}
     \infer[no rule, rule margin=1.0ex]2{\Gamma\vdash^K$ t$_1$ : Tn$_1$, t$_2$ : Tn$_2$, \ldots, t$_p$ : Tn$_p$, s : Ts\hspace{1.5em}$%
-                                        \Delta\vdash^T_{code}$ e : sptr t$_1$::t$_2$::\ldots::t$_p$::s$}
+                                        \Delta\vdash^T_{code}$ e : t$_1$::t$_2$::\ldots::t$_p$::s$}
     \infer1[Stack pointers]{\Delta\vdash^T_{code}$ o(e) : t$_i}
     % small hack: makes all premises on top of each other
   \end{prooftree}
@@ -777,7 +777,7 @@ This gives a safe way of using return values, and guaranteeing that there are in
   \centering
   \begin{minipage}{0.90\textwidth}
     \begin{minted}[]{\nstarlexer}
-    example: forall (s: Ts). { %sp: sptr *{ %sp: sptr s, %r0: u64, %r3: u64 } }
+    example: forall(s: Ts, e: Tc). {| forall(). { %r0: u64, %r3: u64 | s -> e }::s -> 0 }
       mov 0, %r0
       mov 5, %r3
       ret
