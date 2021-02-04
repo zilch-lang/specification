@@ -73,6 +73,7 @@ There are three type of kinds in N*:
   \item Stack kind, denotating stack-like types, which can be safely offsetted
   \item Kinds whose size is abstracted away, useful to ask for any sized type
   \item Kinds whose size is already known
+  \item Continuation kinds, for types that can be used as continuations
 \end{itemize}
 The grammar is given in Figure~\ref{fig:nstar-common-ts-kinds-syntax}.
 
@@ -198,7 +199,7 @@ However, it is possible to use the literal \texttt{\$0} (which represents a poin
 
 \subsection{Context types}\label{subsec:nstar-common-ts-records}
 
-Record types (or contexts) are mappings from registers to types.
+Record types (or contexts) are mappings from registers to types, which also hold information about the current stack, as well as the return continuation.
 They are used to indicate that a register is bound to a value of a given type at a certain point in the program.
 The grammar is described in Figure~\ref{fig:nstar-common-ts-records-syntax}.
 
@@ -207,7 +208,11 @@ The grammar is described in Figure~\ref{fig:nstar-common-ts-records-syntax}.
   \scalebox{.5}{
     \includegraphics{nstar/types/records-syntax}
   }
-  \caption{Grammar for context types.}
+  \\
+  \scalebox{.5}{
+    \includegraphics{nstar/types/continuation-syntax}
+  }
+  \caption{Grammar for context and continuation types.}
   \label{fig:nstar-common-ts-records-syntax}
 \end{figure}
 
@@ -215,7 +220,7 @@ Context types are used to represent data contexts where any mapping is some sort
 
 \vspace{\baselineskip}
 
-\textbf{Note:} In the context of label types, a context type can be augmented by a \texttt{forall} generic type variable binder.
+\textbf{Note:} In the context of label types (and more generally code addresses), a context type is augmented by a \texttt{forall} generic type variable binder.
 The grammar is described in Figure~\ref{fig:nstar-common-ts-label-types-syntax}.
 The type variable binder is used to abstract away some details of the type through an opaque variable specialized at the call site.
 
@@ -236,7 +241,7 @@ The type variable \texttt{s} is specialized at the call site.
   \centering
   \begin{minipage}{0.90\textwidth}
     \begin{minted}[]{\nstarlexer}
-      label: forall (s: Ts). { %sp: sptr *{ %sp: sptr s }::s }
+      label: forall(s: Ts, e: Tc). {| forall(). {| s -> e }::s -> 0 }
           ret
     \end{minted}
   \end{minipage}

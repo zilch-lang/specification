@@ -218,4 +218,18 @@ def cont_type():
 
 	return mk_diagram('cont-type', inner)
 
-cont_type().writeSvg(sys.stdout.write)
+def kind():
+	inner = Choice(
+		1,
+		Terminal('Ta'),
+		Terminal('Ts'),
+		Terminal('Tc'),
+		Sequence(
+			Terminal('T'),
+			NonTerminal("positive-integer")
+		)
+	)
+
+	return mk_diagram('kind', inner)
+
+kind().writeSvg(sys.stdout.write)
