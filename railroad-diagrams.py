@@ -152,4 +152,70 @@ def extern_data_section():
 
 	return mk_diagram('extern.data-section', inner)
 
-extern_data_section().writeSvg(sys.stdout.write)
+def label_type():
+	inner = Sequence(
+		Choice(
+			0,
+			Terminal('forall'),
+			Terminal('∀')
+		),
+		Terminal('('),
+		ZeroOrMore(
+			Sequence(
+				NonTerminal('identifier'),
+				Terminal(':'),
+				NonTerminal('kind')
+			),
+			Terminal(',')
+		),
+		Terminal(')'),
+		Terminal('.'),
+		NonTerminal('context-type')
+	)
+
+	return mk_diagram('label-type', inner)
+
+def context_type():
+	inner = Sequence(
+		Terminal('{'),
+		ZeroOrMore(
+			Sequence(
+				NonTerminal('register'),
+				Terminal(':'),
+				NonTerminal('type')
+			),
+			Terminal(',')
+		),
+		Terminal('|'),
+		NonTerminal('stack-type'),
+		Choice(
+			0,
+			Terminal('->'),
+			Terminal('→')
+		),
+		NonTerminal('cont-type'),
+		Terminal('}')
+	)
+
+	return mk_diagram('context-type', inner)
+
+def cont_type():
+	inner = Choice(
+		1,
+		Group(
+			NonTerminal('digit'),
+			'Stack index'
+		),
+		Group(
+			NonTerminal('identifier'),
+			'Type variable'
+		),
+		Group(
+			NonTerminal('register'),
+			'Register'
+		)
+	)
+
+	return mk_diagram('cont-type', inner)
+
+cont_type().writeSvg(sys.stdout.write)
