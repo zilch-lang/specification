@@ -258,10 +258,6 @@ Inference rules for kinds of stack types are written in Figure~\ref{fig:nstar-co
 \begin{figure}[htb]
   \centering
   \scalebox{.5}{
-    \includegraphics{nstar/types/stack-pointer-syntax}
-  }
-  \\
-  \scalebox{.5}{
     \includegraphics{nstar/types/stack-cons-syntax}
   }
   \caption{Grammar for stack types.}
@@ -271,16 +267,6 @@ Inference rules for kinds of stack types are written in Figure~\ref{fig:nstar-co
 \begin{figure}[htb]
   \centering
 
-  \begin{prooftree}
-    \hypo{\Gamma\vdash^K$ s : Ts$}
-    \infer1[32-bits pointers]{\Gamma\vdash^K$ sptr s : T4$}
-  \end{prooftree}
-  \hspace{3em}
-  \begin{prooftree}
-    \hypo{\Gamma\vdash^K$ s : Ts$}
-    \infer1[64-bits pointers]{\Gamma\vdash^K$ sptr s : T8$}
-  \end{prooftree}
-  \\\vspace{\baselineskip}
   \begin{prooftree}
     \hypo{$n : $\mathbb{N}$ $}
     \hypo{\Gamma\vdash^K$ t : Tn$}
