@@ -273,4 +273,52 @@ def code_section():
 
 	return mk_diagram('code-section', inner)
 
-code_line().writeSvg(sys.stdout.write)
+def jmp_instruction():
+	inner = Sequence(
+		Terminal('jmp'),
+		Group(
+			NonTerminal('identifier'),
+			'target label'
+		),
+		Group(
+			Optional(
+				Sequence(
+					Terminal('<'),
+					ZeroOrMore(
+						NonTerminal('type'),
+						Terminal(',')
+					),
+					Terminal('>')
+				)
+			),
+			'type specialisation'
+		)
+	)
+
+	return mk_diagram('jmp-instruction', inner)
+
+def call_instruction():
+	inner = Sequence(
+		Terminal('call'),
+		Group(
+			NonTerminal('identifier'),
+			'target label'
+		),
+		Group(
+			Optional(
+				Sequence(
+					Terminal('<'),
+					ZeroOrMore(
+						NonTerminal('type'),
+						Terminal(',')
+					),
+					Terminal('>')
+				)
+			),
+			'type specialisation'
+		)
+	)
+
+	return mk_diagram('call-instruction', inner)
+
+call_instruction().writeSvg(sys.stdout.write)
