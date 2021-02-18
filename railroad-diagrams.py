@@ -109,23 +109,11 @@ def data_section():
 		Choice(
 			1,
 			Terminal('data'),
-			Terminal('rodata'),
-			Terminal('udata')
+			Terminal('rodata')
 		),
 		Terminal('{'),
 		ZeroOrMore(
-			Choice(
-				1,
-				Sequence(
-					Optional(
-						Terminal('global')
-					),
-					NonTerminal('identifier'),
-					Terminal(':'),
-					NonTerminal('constant-type')
-				),
-				NonTerminal('constant-value')
-			)
+			NonTerminal('data-line')
 		),
 		Terminal('}')
 	)
@@ -404,4 +392,43 @@ def register():
 
 	return mk_diagram('register', inner)
 
-register().writeSvg(sys.stdout.write)
+def udata_section():
+	inner = Sequence(
+		Terminal('section'),
+		Terminal('udata'),
+		Terminal('{'),
+		ZeroOrMore(
+			NonTerminal('udata-line')
+		),
+		Terminal('}')
+	)
+
+	return mk_diagram('udata-section', inner)
+
+def data_line():
+	inner = Sequence(
+		Optional(
+			Terminal('global')
+		),
+		NonTerminal('identifier'),
+		Terminal(':'),
+		NonTerminal('constant-type'),
+		Terminal('='),
+		NonTerminal('constant-value')
+	)
+
+	return mk_diagram('data-line', inner)
+
+def udata_line():
+	inner = Sequence(
+		Optional(
+			Terminal('global')
+		),
+		NonTerminal('identifier'),
+		Terminal(':'),
+		NonTerminal('constant-type')
+	)
+
+	return mk_diagram('udata-line', inner)
+
+udata_line().writeSvg(sys.stdout.write)
