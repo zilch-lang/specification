@@ -321,4 +321,30 @@ def call_instruction():
 
 	return mk_diagram('call-instruction', inner)
 
-cont_type().writeSvg(sys.stdout.write)
+def ptr_byte_offset():
+	inner = Sequence(
+        Choice(
+			1,
+			Comment('0'),
+			NonTerminal('expression')
+		),
+		Terminal('('),
+		Choice(
+			0,
+			NonTerminal('expression'),
+			Group(
+				Sequence(
+					Terminal('$'),
+					NonTerminal('positive-integer'),
+					Terminal(':'),
+					NonTerminal('type')
+				),
+				'typed memory address'
+			)
+		),
+		Terminal(')')
+	)
+
+	return mk_diagram('pointer-byte-offset', inner)
+
+ptr_byte_offset().writeSvg(sys.stdout.write)
