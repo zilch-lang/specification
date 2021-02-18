@@ -207,7 +207,7 @@ def cont_type():
 	inner = Choice(
 		1,
 		Group(
-			NonTerminal('digit'),
+			NonTerminal('positive-integer'),
 			'Stack index'
 		),
 		Group(
@@ -321,4 +321,4 @@ def call_instruction():
 
 	return mk_diagram('call-instruction', inner)
 
-call_instruction().writeSvg(sys.stdout.write)
+cont_type().writeSvg(sys.stdout.write)
