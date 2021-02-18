@@ -347,4 +347,22 @@ def ptr_byte_offset():
 
 	return mk_diagram('pointer-byte-offset', inner)
 
-ptr_byte_offset().writeSvg(sys.stdout.write)
+def ptr_offset():
+	inner = Sequence(
+		Group(
+			Choice(
+				0,
+				NonTerminal('expression'),
+				Terminal('stack')
+			),
+			'Source'
+		),
+		Terminal('['),
+		Group(
+			NonTerminal('expression'),
+			'Offset'
+		),
+		Terminal(']')
+	)
+
+	return mk_diagram('pointer-offset', inner)
