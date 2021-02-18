@@ -384,4 +384,24 @@ def label_specialization():
 
 	return mk_diagram('label-value', inner)
 
-label_specialization().writeSvg(sys.stdout.write)
+def register():
+	inner = Sequence(
+		Terminal('%'),
+		Choice(
+			0,
+			HorizontalChoice(
+				Terminal('r0'),
+				Terminal('r1'),
+				Terminal('r2')
+			),
+			HorizontalChoice(
+				Terminal('r3'),
+				Terminal('r4'),
+				Terminal('r5')
+			)
+		)
+	)
+
+	return mk_diagram('register', inner)
+
+register().writeSvg(sys.stdout.write)
