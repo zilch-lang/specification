@@ -32,11 +32,14 @@ Inference rules notation:
         \end{itemize}
   \item Type inference
         \begin{itemize}
-          \item $\Delta$ is the typing context, containing bound registers along with their types.
-                An ``unbound'' register is a register holding some data we don't know about at a given point;
-          \item $\Xi$ is the label context, containing all known labels as well as which section they are defined in, and what context they expect;
-          \item $\vdash^{T}_{data}$ and $\vdash^{T}_{code}$ are the type inference judgements for expressions in their respective sections (\texttt{data} or \texttt{code});
-          \item $\Delta;\Xi\vdash^{I}instr\dashv\Delta'$ denotes that the type inference of the instruction $instr$ in the current typing contexts $\Delta;\Xi$ yields a new typing context $\Delta'$;
+          \item $\Xi$ is the context containing all bound labels, composed of two other contexts: $\Xi_{c}$ and $\Xi_{d}$. $\Xi_{c}$ contains all the labels defined in \texttt{code} sections, and $\Xi_{d}$ contains all the labels defined in \texttt{data} sections;
+          \item $\chi$ is the current register-to-type mapping, and contains all known-to-be-bound registers.
+                A register which is not present in this context means that either it has never been bound, or the value in it has been forgotten at some point;
+          \item $\sigma$ is the current stack type;
+          \item $\epsilon$ is the current continuation;
+          \item $\vdash^{T}_{data}$ and $\vdash^{T}_{code}$ are the type inference judgements for expressions in their respective sections (\texttt{data} or \texttt{code}).
+                $\vdash^{T}_{data}$ uses no context, whereas $\vdash^{T}_{code}$ uses all four of the defined contexts above (namely $\Xi$, $\chi$, $\sigma$ and $\epsilon$);
+          \item $\Xi;\chi;\sigma;\epsilon\vdash^{I}instr\dashv\chi^\prime;\sigma^\prime;\epsilon^\prime$ denotes that the type inference of the instruction $instr$ in the current typing contexts $\Xi;\chi;\sigma;\epsilon$ yields a new typing context $\chi^\prime;\sigma^\prime;\epsilon^\prime$;
           \item $t1 \sim t2$ (and its counterpart $t1 \nsim t2$) respectively mean that $t1$ and $t2$ can be unified (or not);
         \end{itemize}
   \item Grammar
