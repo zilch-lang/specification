@@ -366,3 +366,22 @@ def ptr_offset():
 	)
 
 	return mk_diagram('pointer-offset', inner)
+
+def label_specialization():
+	inner = Sequence(
+		NonTerminal('identifier'),
+		Optional(
+			Sequence(
+				Terminal('<'),
+				ZeroOrMore(
+					NonTerminal('type'),
+					Terminal(',')
+				),
+				Terminal('>')
+			)
+		)
+	)
+
+	return mk_diagram('label-value', inner)
+
+label_specialization().writeSvg(sys.stdout.write)
