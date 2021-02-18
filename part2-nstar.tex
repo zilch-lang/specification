@@ -426,19 +426,45 @@ Grammar and inference rules are given respectively in Figure~\ref{fig:nstar-comm
   \end{prooftree}
 
   \caption{Type inference rules for data labels in N*.}
-  \label{fig:nstar-common-expressions-labels-typerules}
+  \label{fig:nstar-common-expressions-labels-data-typerules}
+\end{figure}
+
+\subsubsection{Code labels}\label{subsubsec:nstar-common-expressions-labels-code}
+
+Code labels are pointers to some piece of executable instructions.
+Unless data labels, they cannot be dereferenced or offset, but are instead automatically boxed.
+Grammar and inference rules are given respectively in Figure~\ref{fig:nstar-common-expressions-labels-code-grammar} and Figure~\ref{fig:nstar-common-expressions-labels-code-typerules}.
+
+\begin{figure}[H]
+  \centering
+
+  \scalebox{.5}{
+    \includegraphics{nstar/exprs/label-value-grammar}
+  }
+  \caption{Grammar for code labels in N*.}
+  \label{fig:nstar-common-expressions-labels-code-grammar}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+
+  \begin{prooftree}
+    \hypo{$l : $\forall$($\vec{v}$).ctx $\in\Xi_c}
+    \hypo{\Gamma\vdash^K$ s$_1$ : k$_1$, s$_2$ : k$_2$, \ldots, s$_p$ : k$_p}
+    \infer[no rule, rule margin=1.0ex]2{\vec{s}$ = $\{$ s$_1$ : k$_1$, s$_2$ : k$_2$, \ldots, s$_p$ : k$_p$ $\}$\hspace{1.5em}$%
+                                        \vec{s}\sim\vec{v}}
+    \infer1{\Xi;\chi;\sigma;\epsilon\vdash^T_{code}$ l<$\vec{s}$> : $\forall$().ctx$}
+  \end{prooftree}
+
+  \caption{Type inference rules for code labels in N*.}
+  \label{fig:nstar-common-expressions-labels-code-typerules}
 \end{figure}
 
 \subsection{Registers}\label{subsec:nstar-common-expressions-registers}
 
 Registers in N* are abstracted away from the target architectures.
-Instead of manipulating registers \texttt{\%eax} or \texttt{\%rsp} or \texttt{\$a2}, which all are platform-specific, two families of registers can be manipulated:
-\begin{itemize}
-  \item General-purpose registers: there are 6 general purpose registers in N*, named \texttt{r0} to \texttt{r5}.
-        They can be 4 to 8 bytes large depending on the target architecture mappings.
-  \item Pointer registers: there are 2 pointer registers, namely \texttt{sp} and \texttt{bp}.
-        While they also can contain ``normal'' data, they are mostly used to store stack pointers (hence their name).
-\end{itemize}
+Instead of manipulating registers \texttt{\%eax} or \texttt{\%rsp} or \texttt{\$a2}, which all are platform-specific, there are 6 general purpose registers in N*, named \texttt{r0} to \texttt{r5}.
+They can be 4 to 8 bytes large depending on the target architecture mappings.
 
 Grammar for all those registers is given in Figure~\ref{fig:nstar-common-expressions-registers-grammar} and inference rules are given in Figure~\ref{fig:nstar-common-expressions-registers-typerules}.
 
