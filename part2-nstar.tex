@@ -380,19 +380,19 @@ Grammar and inference rules are given respectively in Figure~\ref{fig:nstar-comm
 
   \begin{prooftree}
     \hypo{$c is a character immediate$}
-    \infer1{\Delta\vdash^T_{code}$ c : char$}
+    \infer1{\Xi;\chi;\sigma;\epsilon\vdash^T_{code}$ c : char$}
   \end{prooftree}
   \\\vspace{\baselineskip}
   \begin{prooftree}
     \hypo{$i is an unsigned integer immediate$}
     \hypo{$t $\in\{$ u8, u16, u32, u64 $\}}
-    \infer2{\Delta\vdash^T_{code}$ i : t$}
+    \infer2{\Xi;\chi;\sigma;\epsilon\vdash^T_{code}$ i : t$}
   \end{prooftree}
   \\\vspace{\baselineskip}
   \begin{prooftree}
     \hypo{$i is a signed integer immediate$}
     \hypo{$t $\in\{$ s8, s16, s32, s64 $\}}
-    \infer2{\Delta\vdash^T_{code}$ i : t$}
+    \infer2{\Xi;\chi;\sigma;\epsilon\vdash^T_{code}$ i : t$}
   \end{prooftree}
 
   \caption{Type inference rules for immediate values in N*.}
@@ -421,9 +421,8 @@ Grammar and inference rules are given respectively in Figure~\ref{fig:nstar-comm
   \centering
 
   \begin{prooftree}
-    \hypo{$x is a known label$}
-    \hypo{\vdash^T_{data}$ x : t$}
-    \infer2{\Delta\vdash^T_{code}$ x : *t$}
+    \hypo{$l : t $\in\Xi_d}
+    \infer1{\Xi;\chi;\sigma;\epsilon\vdash^T_{code}$ l : *t$}
   \end{prooftree}
 
   \caption{Type inference rules for data labels in N*.}
@@ -484,8 +483,7 @@ Grammar for all those registers is given in Figure~\ref{fig:nstar-common-express
   \centering
 
   \begin{prooftree}
-    \hypo{$r is a register$}
-    \infer1{\Delta$, r : t $\vdash^T_{code}$ r : t$}
+    \infer0{\Xi;\chi$, r : t$;\sigma;\epsilon\vdash^T_{code}$ r : t$}
   \end{prooftree}
 
   \caption{Type inference rules for registers in N*}
@@ -516,29 +514,31 @@ Grammar for pointer offsets is given in Figure~\ref{fig:nstar-common-expressions
   \centering
 
   \begin{prooftree}
-    \hypo{$n$_0$ = 0, n$_1$, n$_2$, \ldots, n$_p$ $\in\mathbb{N}}
-    \hypo{\Delta\vdash^T_{code}$ o : s64$}
-    \infer[no rule, rule margin=1.0ex]2{\Gamma\vdash^K$ t$_1$ : Tn$_1$, t$_2$ : Tn$_2$, \ldots, t$_p$ : Tn$_p$, s : Ts\hspace{1.5em}$%
-                                        \Delta\vdash^T_{code}$ e : t$_1$::t$_2$::\ldots::t$_p$::s$}
-    \infer1[Stack pointers]{\Delta\vdash^T_{code}$ o(e) : t$_i}
-    % small hack: makes all premises on top of each other
+    \hypo{\Gamma\vdash^K$ t : k$}
+    \hypo{\Xi;\chi;\sigma;\epsilon\vdash^T_{code}$ p : *t$}
+    \hypo{\Xi;\chi;\sigma;\epsilon\vdash^T_{code}$ o : s64$}
+    \infer3[raw pointer byte offset]{\Xi;\chi;\sigma;\epsilon\vdash^T_{code}$ o(p) : *t$}
   \end{prooftree}
   \\\vspace{\baselineskip}
   \begin{prooftree}
-    \hypo{$n$_0$ = 0, n$_1$, n$_2$, \ldots, n$_p$ $\in\mathbb{N}}
-    \hypo{\Delta\vdash^T_{code}$ o : s64$}
-    \infer[no rule, rule margin=1.0ex]2{\Gamma\vdash^K$ t$_1$ : Tn$_1$, t$_2$ : Tn$_2$, \ldots, t$_p$ : Tn$_p$\hspace{1.5em}$%
-                                        \Delta\vdash^T_{code}$ e : *$ ($ t$_1$::t$_2$::\ldots::t$_p$ $)}
-    \infer1[Structure pointers]{\Delta\vdash^T_{code}$ o(e) : t$_i}
-    % small hack: makes all premises on top of each other
+    \hypo{\Gamma\vdash^K$ t : k$}
+    \hypo{\Xi;\chi;\sigma;\epsilon\vdash^T_{code}$ p : *t$}
+    \hypo{\Xi;\chi;\sigma;\epsilon\vdash^T_{code}$ o : s64$}
+    \infer3[raw pointer base offset]{\Xi;\chi;\sigma;\epsilon\vdash^T_{code}$ p[o] : *t$}
   \end{prooftree}
   \\\vspace{\baselineskip}
   \begin{prooftree}
-    \hypo{$n $\in\mathbb{N}}
-    \hypo{\Delta\vdash^T_{code}$ o : s64$}
-    \hypo{\Gamma\vdash^K$ t : Tn$}
-    \hypo{\Delta\vdash^T_{code}$ e : *t$}
-    \infer4[Raw pointers]{\Delta\vdash^T_{code}$ o(e) : t$}
+    \hypo{\Gamma\vdash^K$ t$_1$ : Tn$_0$, t$_2$ : Tn$_1$, \ldots, t$_m$ : Tn$_{m-1}}
+    \infer[no rule, rule margin=1.0ex]1{$n$_0$, n$_1$, \ldots, n$_p\in\mathbb{N}$\hspace{1.5em}$%
+                                        \Xi;\chi;\sigma;\epsilon\vdash^T_{code}$ p : *(t$_1$, t$_2$, \ldots, t$_m$)$}
+    \infer1[structure pointer offset]{\Xi;\chi;\sigma;\epsilon\vdash^T_{code}$ p[n$_i$] : t$_{i-1}}
+  \end{prooftree}
+  \\\vspace{\baselineskip}
+  \begin{prooftree}
+    \hypo{$n$_0$, n$_1$, \ldots, n$_p\in\mathbb{N}}
+    \hypo{\hat{\sigma}$ = t$_1$::t$_2$::\ldots::t$_m$::s$}
+    \infer[no rule, rule margin=1.0ex]2{\Gamma\vdash^K$ t$_1$ : Tn$_0$, t$_2$ : Tn$_1$, \ldots, t$_m$ : Tn$_{m-1}$, s : Ts$}
+    \infer1[stack pointer offset]{\Xi;\chi;\hat{\sigma};\epsilon\vdash^T_{code}$ stack[n$_i$] : t$_{i-1}}
   \end{prooftree}
 
   \caption{Type inference rules for pointer offsets.}
