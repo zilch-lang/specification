@@ -427,4 +427,96 @@ def udata_line():
 
 	return mk_diagram('udata-line', inner)
 
-ptr_offset().writeSvg(sys.stdout.write)
+def mv_instruction():
+	inner = Sequence(
+		Terminal('mv'),
+		Group(
+			Choice(
+				0,
+				NonTerminal('register'),
+				NonTerminal('integer-value')
+			),
+			'source'
+		),
+		Terminal(','),
+		Group(
+			NonTerminal('register'),
+			'destination'
+		)
+	)
+
+	return mk_diagram('mv-instruction', inner)
+
+def sst_instruction():
+	inner = Sequence(
+		Terminal('sst'),
+		Group(
+			Choice(
+				0,
+				NonTerminal('register'),
+				NonTerminal('integer-value')
+			),
+			'source'
+		),
+		Terminal(','),
+		Group(
+			NonTerminal('positive-integer'),
+			'stack index destination'
+		)
+	)
+
+	return mk_diagram('sst-instruction', inner)
+
+def sld_instruction():
+	inner = Sequence(
+		Terminal('sld'),
+		Group(
+			NonTerminal('positive-integer'),
+			'stack index source'
+		),
+		Terminal(','),
+		Group(
+			NonTerminal('register'),
+			'destination'
+		)
+	)
+
+	return mk_diagram('sld-instruction', inner)
+
+def st_instruction():
+	inner = Sequence(
+		Terminal('st'),
+		Group(
+			Choice(
+				0,
+				NonTerminal('register'),
+				NonTerminal('integer-value')
+			),
+			'source'
+		),
+		Terminal(','),
+		Group(
+			NonTerminal('pointer-offset'),
+			'destination'
+		)
+	)
+
+	return mk_diagram('st-instruction', inner)
+
+def ld_instruction():
+	inner = Sequence(
+		Terminal('ld'),
+		Group(
+			NonTerminal('pointer-offset'),
+			'source'
+		),
+		Terminal(','),
+		Group(
+			NonTerminal('register'),
+			'destination'
+		)
+	)
+
+	return mk_diagram('ld-instruction', inner)
+
+ld_instruction().writeSvg(sys.stdout.write)

@@ -778,38 +778,200 @@ Because of this, offsetting any pointer using a register (e.g. \texttt{\%r1(\$0 
 
 \chapter{Instruction set}\label{chap:nstar-instructionset}
 
-\section{\texttt{mov}}\label{sec:nstar-instructionset-mov}
+\section{\texttt{mv}}\label{sec:nstar-instructionset-mv}
 
-The \texttt{mov} instruction moves a value into a register or at a given address (literal address or pointer address).
-Grammar is given in Figure~\ref{fig:nstar-instructionset-mov-grammar}.
-Type inference rules are given in Figure~\ref{fig:nstar-instructionset-mov-typerules}.
+The \texttt{mv} instruction moves a value (immediate value or stored in a register) into a register.
+Grammar is given in Figure~\ref{fig:nstar-instructionset-mv-grammar}.
+Type inference rules are given in Figure~\ref{fig:nstar-instructionset-mv-typerules}.
 
 \begin{figure}[H]
   \centering
   \scalebox{.5}{
     \includegraphics{nstar/instructions/mov-grammar}
   }
-  \caption{Grammar of the \texttt{mov} instruction.}
-  \label{fig:nstar-instructionset-mov-grammar}
+  \caption{Grammar of the \texttt{mv} instruction.}
+  \label{fig:nstar-instructionset-mv-grammar}
 \end{figure}
 
 \begin{figure}[H]
   \centering
 
   \begin{prooftree}
-    \hypo{\Delta\vdash^T_{code}$ e : t$}
-    \hypo{$r is a register$}
-    \infer2[\texttt{mov} to register]{\Delta;\Xi\vdash^I$ mov e, r $\dashv\Delta\setminus$ r, r : t $}
+    \hypo{$r, d are registers$}
+    \hypo{\Xi;\chi;\sigma;\epsilon\vdash^T_{code}$ r : $\forall$().ctx$}
+    \infer2[move cont from register to register]{\Xi;\chi;\sigma;$ r $\vdash^I$ mv r, d $\dashv\chi,$d : $\forall$().ctx$;\sigma;$ d$}
   \end{prooftree}
   \\\vspace{\baselineskip}
   \begin{prooftree}
-    \hypo{\Delta\vdash^T_{code}$ e : t$}
-    \hypo{\Delta\vdash^T_{code}$ m(d) : t$}
-    \infer2[\texttt{mov} to pointer offset]{\Delta;\Xi\vdash^I$ mov e, m(d) $\dashv\Delta}
+    \hypo{$r is a register$}
+    \hypo{$n $\leq 8}
+    \hypo{\Gamma\vdash^K$ t : Tn$}
+    \hypo{\Xi;\chi;\sigma;\epsilon\vdash^T_{code}$ e : t$}
+    \infer4[move value to register]{\Xi;\chi;\sigma;\epsilon\vdash^I$ mv e, r $\dashv\chi\setminus$r, r : t$;\sigma;\epsilon}
   \end{prooftree}
 
-  \caption{Type inference rules for the \texttt{mov} instruction.}
-  \label{fig:nstar-instructionset-mov-typerules}
+  \caption{Type inference rules for the \texttt{mv} instruction.}
+  \label{fig:nstar-instructionset-mv-typerules}
+\end{figure}
+
+\section{\texttt{sst}}\label{sec:nstar-instructionset-sst}
+
+The \texttt{sst} instruction stores a value at the given index on the stack.
+Grammar and inference rules are given in Figure~\ref{fig:nstar-instructionset-sst-grammar} and Figure~\ref{fig:nstar-instructionset-sst-typerules}.
+
+\begin{figure}[H]
+  \centering
+
+  \scalebox{.5}{
+    \includegraphics{nstar/instructions/sst-grammar}
+  }
+
+  \caption{Grammar for the \texttt{sst} instruction.}
+  \label{fig:nstar-instructionset-sst-grammar}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+
+  \begin{prooftree}
+    \hypo{$r is a register$}
+    \hypo{$n $\in\mathbb{N}}
+    \hypo{\hat{\sigma}=$ t$_0$::t$_1$::\ldots::t$_p$::s$}
+    \infer[no rule, rule margin=1.0ex]3{\Gamma\vdash^K$ t : T8\hspace{1.5em}$%
+                                        $n $\leq$ p$}
+    \infer[no rule, rule margin=1.0ex]1{\hat{\sigma}^\prime=\hat{\sigma}[\forall$().ctx$\setminus$t$_n]$\hspace{1.5em}$%
+                                        \Xi;\chi;\hat{\sigma};\epsilon\vdash^T_{code}$ r : $\forall$().ctx\hspace{1.5em}$%
+                                        $t$_n\sim$ t$}
+    \infer1[store cont from register to stack]{\Xi;\chi;\hat{\sigma};$ r $\vdash^I$ sst r, n $\dashv\chi;\hat{\sigma}^\prime;$ n$}
+  \end{prooftree}
+  \\\vspace{\baselineskip}
+  \begin{prooftree}
+    \hypo{$n $\in\mathbb{N}}
+    \hypo{\hat{\sigma}=$ t$_0$::t$_1$::\ldots::t$_p$::s$}
+    \hypo{$n $\leq$ p$}
+    \hypo{\Xi;\chi;\hat{\sigma};\epsilon\vdash^T_{code}$ e : t$_n}
+    \infer4[store value in stack]{\Xi;\chi;\hat{\sigma};\epsilon\vdash^I$ sst e, n $\dashv\chi;\hat{\sigma};\epsilon}
+  \end{prooftree}
+
+
+  \caption{Type inference rules for the \texttt{sst} instruction.}
+  \label{fig:nstar-instructionset-sst-typerules}
+\end{figure}
+
+\section{\texttt{sld}}\label{sec:nstar-instructionset-sld}
+
+The \texttt{sld} instruction stores the value at the given index on the stack in a register.
+Grammar and inference rules are given in Figure~\ref{fig:nstar-instructionset-sld-grammar} and Figure~\ref{fig:nstar-instructionset-sld-typerules}.
+
+\begin{figure}[H]
+  \centering
+
+  \scalebox{.5}{
+    \includegraphics{nstar/instructions/sld-grammar}
+  }
+
+  \caption{Grammar for the \texttt{sld} instruction.}
+  \label{fig:nstar-instructionset-sld-grammar}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+
+  \begin{prooftree}
+    \hypo{$r is a register$}
+    \hypo{$n $\in\mathbb{N}}
+    \hypo{$n $\leq$ p$}
+    \infer[no rule, rule margin=1.0ex]3{\hat{\sigma}=$ t$_0$::t$_1$::\ldots::t$_p$::s\hspace{1.5em}$%
+                                        $t$_n\sim\forall$().ctx$}
+    \infer1[load cont from stack in register]{\Xi;\chi;\hat{\sigma};$ n $\vdash^I$ sld n, r $\dashv\chi,$ r : t$_n;\hat{\sigma};$ r$}
+  \end{prooftree}
+  \\\vspace{\baselineskip}
+  \begin{prooftree}
+    \hypo{$r is a register$}
+    \hypo{$n, k $\in\mathbb{N}}
+    \infer[no rule, rule margin=1.0ex]2{$n $\leq$ p\hspace{1.5em}$%
+                                        $k $\leq8$\hspace{1.5em}$%
+                                        \hat{\sigma}=$ t$_0$::t$_1$::\ldots::t$_p$::s\hspace{1.5em}$%
+                                        \Gamma\vdash^K$ t$_n$ : Tk$}
+    \infer1[load value from stack]{\Xi;\chi;\hat{\sigma};\epsilon\vdash^I$ sld n, r $\dashv\chi,$ r : t$_n;\hat{\sigma};\epsilon}
+  \end{prooftree}
+
+  \caption{Type inference rules for the \texttt{sld} instruction.}
+  \label{fig:nstar-instructionset-sld-typerules}
+\end{figure}
+
+\section{\texttt{st}}\label{sec:nstar-instructionset-st}
+
+The \texttt{st} instruction stores a value into a memory area denoted by pointer offset.
+The grammar and inference rules are given in Figure~\ref{fig:nstar-instructionset-st-grammar} and Figure~\ref{fig:nstar-instructionset-st-typerules}.
+
+\begin{figure}[H]
+  \centering
+
+  \scalebox{.5}{
+    \includegraphics{nstar/instructions/st-grammar}
+  }
+
+  \caption{Grammar for the \texttt{st} instruction.}
+  \label{fig:nstar-instructionset-st-grammar}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+
+  \begin{prooftree}
+    \hypo{\Xi;\chi;\sigma;\epsilon\vdash^T_{code}$ e : t$}
+    \hypo{$e $\neq\epsilon}
+    \hypo{\Xi;\chi;\sigma;\epsilon\vdash^T_{code}$ o(p) : *t$}
+    \infer3[store value in pointer byte offset]{\Xi;\chi;\sigma;\epsilon\vdash^I$ st e, o(p) $\dashv\chi;\sigma;\epsilon}
+  \end{prooftree}
+  \\\vspace{\baselineskip}
+  \begin{prooftree}
+    \hypo{\Xi;\chi;\sigma;\epsilon\vdash^T_{code}$ e : t$}
+    \hypo{$e $\neq\epsilon}
+    \hypo{\Xi;\chi;\sigma;\epsilon\vdash^T_{code}$ p[o] : *t$}
+    \infer3[store value in pointer base offset]{\Xi;\chi;\sigma;\epsilon\vdash^I$ st e, p[o] $\dashv\chi;\sigma;\epsilon}
+  \end{prooftree}
+
+  \caption{Type inference rules for the \texttt{st} instruction.}
+  \label{fig:nstar-instructionset-st-typerules}
+\end{figure}
+
+\section{\texttt{ld}}\label{sec:nstar-instructionset-ld}
+
+The \texttt{ld} instruction loads a value from a memory area into a register.
+Grammar and inference rules are given in Figure~\ref{fig:nstar-instructionset-ld-grammar} and Figure~\ref{fig:nstar-instructionset-ld-typerules}.
+
+\begin{figure}[H]
+  \centering
+
+  \scalebox{.5}{
+    \includegraphics{nstar/instructions/ld-grammar}
+  }
+
+  \caption{Grammar for the \texttt{ld} instruction.}
+  \label{fig:nstar-instructionset-ld-grammar}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+
+  \begin{prooftree}
+    \hypo{$r is a register$}
+    \hypo{$r $\neq\epsilon}
+    \hypo{\Xi;\chi;\sigma;\epsilon\vdash^T_{code}$ o(p) : *t$}
+    \infer3[load value from pointer byte offset]{\Xi;\chi;\sigma;\epsilon\vdash^I$ ld o(p), r $\dashv\chi,$ r : t$;\sigma;\epsilon}
+  \end{prooftree}
+  \\\vspace{\baselineskip}
+  \begin{prooftree}
+    \hypo{$r is a register$}
+    \hypo{$r $\neq\epsilon}
+    \hypo{\Xi;\chi;\sigma;\epsilon\vdash^T_{code}$ p[o] : *t$}
+    \infer3[load value from pointer base offset]{\Xi;\chi;\sigma;\epsilon\vdash^I$ ld p[o], r $\dashv\chi,$ r : t$;\sigma;\epsilon}
+  \end{prooftree}
+
+  \caption{Type inference rules for the \texttt{ld} instruction.}
+  \label{fig:nstar-instructionset-ld-typerules}
 \end{figure}
 
 \section{\texttt{jmp}}\label{sec:nstar-instructionset-jmp}
