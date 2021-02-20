@@ -338,11 +338,7 @@ def ptr_byte_offset():
 def ptr_offset():
 	inner = Sequence(
 		Group(
-			Choice(
-				0,
-				NonTerminal('expression'),
-				Terminal('stack')
-			),
+			NonTerminal('expression'),
 			'Source'
 		),
 		Terminal('['),
@@ -431,4 +427,4 @@ def udata_line():
 
 	return mk_diagram('udata-line', inner)
 
-udata_line().writeSvg(sys.stdout.write)
+ptr_offset().writeSvg(sys.stdout.write)

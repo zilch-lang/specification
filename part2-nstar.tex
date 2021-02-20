@@ -531,14 +531,7 @@ Grammar for pointer offsets is given in Figure~\ref{fig:nstar-common-expressions
     \hypo{\Gamma\vdash^K$ t$_1$ : Tn$_0$, t$_2$ : Tn$_1$, \ldots, t$_m$ : Tn$_{m-1}}
     \infer[no rule, rule margin=1.0ex]1{$n$_0$, n$_1$, \ldots, n$_p\in\mathbb{N}$\hspace{1.5em}$%
                                         \Xi;\chi;\sigma;\epsilon\vdash^T_{code}$ p : *(t$_1$, t$_2$, \ldots, t$_m$)$}
-    \infer1[structure pointer offset]{\Xi;\chi;\sigma;\epsilon\vdash^T_{code}$ p[n$_i$] : t$_{i-1}}
-  \end{prooftree}
-  \\\vspace{\baselineskip}
-  \begin{prooftree}
-    \hypo{$n$_0$, n$_1$, \ldots, n$_p\in\mathbb{N}}
-    \hypo{\hat{\sigma}$ = t$_1$::t$_2$::\ldots::t$_m$::s$}
-    \infer[no rule, rule margin=1.0ex]2{\Gamma\vdash^K$ t$_1$ : Tn$_0$, t$_2$ : Tn$_1$, \ldots, t$_m$ : Tn$_{m-1}$, s : Ts$}
-    \infer1[stack pointer offset]{\Xi;\chi;\hat{\sigma};\epsilon\vdash^T_{code}$ stack[n$_i$] : t$_{i-1}}
+    \infer1[structure pointer offset]{\Xi;\chi;\sigma;\epsilon\vdash^T_{code}$ p[n$_i$] : *t$_{i-1}}
   \end{prooftree}
 
   \caption{Type inference rules for pointer offsets.}
