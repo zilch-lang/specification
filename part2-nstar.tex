@@ -880,45 +880,6 @@ Grammar and inference rules are given in Figure~\ref{fig:nstar-instructionset-ca
   \label{fig:nstar-instructionset-call-typerules}
 \end{figure}
 
-\section{\texttt{pop}}\label{sec:nstar-instructionset-pop}
-
-The \texttt{pop} instruction stores the top of the stack at a specific memory address (or in a register), and removes it from the stack.
-Grammar and inference rules are given in Figure~\ref{fig:nstar-instructionset-pop-grammar} and Figure~\ref{fig:nstar-instructionset-pop-typerules}.
-
-\begin{figure}[H]
-  \centering
-
-  \scalebox{.5}{
-    \includegraphics{nstar/instructions/pop-grammar}
-  }
-
-  \caption{Grammar for the \texttt{pop} instruction.}
-  \label{fig:nstar-instructionset-pop-grammar}
-\end{figure}
-
-\begin{figure}[H]
-  \centering
-
-  \begin{prooftree}
-    \hypo{$r is a register$}
-    \hypo{$n $\in\mathbb{N}}
-    \infer[no rule, rule margin=1ex]2{\Gamma\vdash^K$ t : Tn, s : Ts\hspace{1.5em}$%
-                                      $ts $\sim$ t::s$}
-    \infer1[\texttt{pop} to register]{\Delta$ | ts$;\Xi\vdash^I$ pop r $\dashv\Delta\setminus$ r, r : t | s$}
-  \end{prooftree}
-  \\\vspace{\baselineskip}
-  \begin{prooftree}
-    \hypo{$n $\in\mathbb{N}}
-    \hypo{\Gamma\vdash^K$ t : Tn, s : Ts$}
-    \hypo{\Delta\vdash^T_{code}$ o(e) : t\hspace{1.5em}$}
-    \hypo{$ts $\sim$ t::s$}
-    \infer4[\texttt{pop} to pointer offset]{\Delta$ | ts$;\Xi\vdash^I$ pop o(e) $\dashv\Delta$ | s$}
-  \end{prooftree}
-
-  \caption{Type inference rules for the \texttt{pop} instruction.}
-  \label{fig:nstar-instructionset-pop-typerules}
-\end{figure}
-
 \section{\texttt{ret}}\label{sec:nstar-instructionset-ret}
 
 The \texttt{ret} instruction moves the instruction pointer to the address on top of the stack, and pops it from the stack.
@@ -948,36 +909,6 @@ Grammar is given in Figure~\ref{fig:nstar-instructionset-ret-grammar} and type i
 
   \caption{Type inference rules for the \texttt{ret} instruction.}
   \label{fig:nstar-instructionset-ret-typerules}
-\end{figure}
-
-\section{\texttt{push}}\label{sec:nstar-instructionset-push}
-
-The \texttt{push} instruction inserts sized data on top of the stack.
-Grammar for it is given in Figure~\ref{fig:nstar-instructionset-push-grammar} and inference rules are given in Figure~\ref{fig:nstar-instructionset-push-typerules}.
-
-\begin{figure}[H]
-  \centering
-
-  \scalebox{.5}{
-    \includegraphics{nstar/instructions/push-grammar}
-  }
-
-  \caption{Grammar for the \texttt{push} instruction.}
-  \label{fig:nstar-instructionset-push-grammar}
-\end{figure}
-
-\begin{figure}[H]
-  \centering
-
-  \begin{prooftree}
-    \hypo{$n $\in\mathbb{N}}
-    \hypo{\Gamma\vdash^K$ t : Tn, s : Ts$}
-    \hypo{\Delta\vdash^T_{code}$ e : t$}
-    \infer3{\Delta$ | s$;\Xi\vdash^I$ push e $\dashv\Delta$ | t::s$}
-  \end{prooftree}
-
-  \caption{Type inference rules for the \texttt{push} instruction.}
-  \label{fig:nstar-instructionset-push-typerules}
 \end{figure}
 
 \section{\texttt{nop}}\label{sec:nstar-instructionset-nop}
