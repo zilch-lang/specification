@@ -276,21 +276,8 @@ def call_instruction():
 	inner = Sequence(
 		Terminal('call'),
 		Group(
-			NonTerminal('identifier'),
+			NonTerminal('label-specialization'),
 			'target label'
-		),
-		Group(
-			Optional(
-				Sequence(
-					Terminal('<'),
-					ZeroOrMore(
-						NonTerminal('type'),
-						Terminal(',')
-					),
-					Terminal('>')
-				)
-			),
-			'type specialisation'
 		)
 	)
 
@@ -506,4 +493,4 @@ def ld_instruction():
 
 	return mk_diagram('ld-instruction', inner)
 
-jmp_instruction().writeSvg(sys.stdout.write)
+call_instruction().writeSvg(sys.stdout.write)
