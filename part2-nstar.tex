@@ -994,18 +994,16 @@ Grammar and inference rules are respectively given in Figure~\ref{fig:nstar-inst
   \centering
 
   \begin{prooftree}
-    \hypo{\Gamma\vdash^K$ s$_1$ : k$_1$, s$_2$ : k$_2$, \ldots, s$_p$ : k$_p}
-    \infer[no rule, rule margin=1ex]1{$l : ctx $\in\Xi$\hspace{1.5em}%
-                                      ctx $\subseteq\Delta$\hspace{1.5em}%
-                                      $[$ s$_1$ : k$_1$, s$_2$ : k$_2$, \ldots, s$_p$ : k$_p$ $]\sim$ \textit{boundVars}$($ctx$))}
-    \infer1{\Delta;\Xi\vdash^I$ jmp l<s$_1$, s$_2$, \ldots, s$_p$> $\dashv\Delta}
+    \hypo{\Xi;\chi;\sigma;\epsilon\vdash^T_{code}$ l : $\forall$().ctx$}
+    \hypo{$ctx $\sim$ \{ $\chi$ | $\sigma\to\epsilon$ \}$}
+    \infer2[jump to label]{\Xi;\chi;\sigma;\epsilon\vdash^I$ jmp l $\dashv\chi;\sigma;\epsilon}
   \end{prooftree}
 
   \caption{Type inference rules for the \texttt{jmp} instruction.}
   \label{fig:nstar-instructionset-jmp-typerules}
 \end{figure}
 
-The reason why we do not modify the typing environment is because we are unable to model jumps directly in the type-system.
+The result context is exactly the same as the input context, but this is not a problem because jumps can only be used at the end of blocks, where the result context does not matter at all.
 
 \section{\texttt{call}}\label{sec:nstar-instructionset-call}
 

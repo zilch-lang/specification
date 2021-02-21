@@ -265,21 +265,8 @@ def jmp_instruction():
 	inner = Sequence(
 		Terminal('jmp'),
 		Group(
-			NonTerminal('identifier'),
+			NonTerminal('label-specialization'),
 			'target label'
-		),
-		Group(
-			Optional(
-				Sequence(
-					Terminal('<'),
-					ZeroOrMore(
-						NonTerminal('type'),
-						Terminal(',')
-					),
-					Terminal('>')
-				)
-			),
-			'type specialisation'
 		)
 	)
 
@@ -519,4 +506,4 @@ def ld_instruction():
 
 	return mk_diagram('ld-instruction', inner)
 
-ld_instruction().writeSvg(sys.stdout.write)
+jmp_instruction().writeSvg(sys.stdout.write)
