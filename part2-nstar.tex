@@ -713,28 +713,25 @@ It also is restricted not to integrate some sort of scoping, which would add som
 
 \subsection{Returning to a known code-space address}\label{subsec:nstar-common-bs-restrictions-ret}
 
-Because the stack is given a type in N*, we can use it to make sure that we are returning to a code-space address.
-When we \texttt{call} a label, we are pushing the current instruction pointer on top of the stack (the stack pointer is \texttt{\%rip} on x86/x64, \texttt{\$sp} on MIPS, etc) before jumping to the callee address.
-
-Because of that, the type given to the stack for the context of a label contains at least a pointer to some context (\texttt{forall(). \{ binds\ldots\ \}}) on the very top of it (unless this label is never meant to be \texttt{call}ed but rather \texttt{jmp}ed to).
-This is later used by \texttt{ret} in order to determine that returning from this function can be done safely, and \textit{should}\footnote{It should return to a valid address, but this cannot be checked nor endorsed when using, for example, the foreign function interface or when creating a \texttt{main} function.} return to a valid code-space address.
-If any other data-type is present on top of the stack (an integer, a pointer to something else than a context, a stack pointer, a structure, an union), \texttt{ret} \textit{must} fail to type-check, preserving the stack at runtime and preventing an undefined behavior.
+N* offers what we call ``continuations'', which are a mean of easily controlling the instruction control flow of the program.
+Thanks to that, this is actually easy to check whether we would be returning to some valid piece of code: the continuation part of th context must be bound to something of the form $\forall().ctx$.
+When anything else is in the continuation (in fact, it cannot be, because we do not allow overwriting the continuation --- which can be worked around by moving the continuation somewhere else before), it is strictly impossible to either \texttt{call} or \texttt{jmp} to a label, or \texttt{ret} from a piece of code, which would yield a very nasty undefined behavior at runtime in mainstream assembly languages.
 
 \subsection{Missing return values (a.k.a.\ registers not bound before return)}\label{subsec:nstar-common-bs-restrictions-unboundregs}
 
-Along with checking that we are returning to a valid code-space address, we can also, thanks to the type of the stack, determine if returning from a function preserves the value in registers, and if after returning we have access to return values of a function.
+Along with checking that we are returning to a valid code-space address, we can also, thanks to context types, determine if returning from a function preserves the value in registers, and if after returning we have access to return values of a function.
 Consider the example given in Listing~\ref{lst:nstar-common-bs-returnvalues}.
 
 When \texttt{ret}urning from the \texttt{example} ``function'', we give access to the values of type \texttt{u64} in the \texttt{\%r0} and \texttt{\%r3} registers.
-Note that if either of those registers were not bound before (not given as parameters, or bound using \texttt{mov}), type-checking \textit{must} fail to prevent undefined behavior when later accessing the ``value'' in either register.
-We can easily see that the return context contains \texttt{\%r0: u64} and \texttt{\%r3: u64}, which means that both registers must have been bound before, and are accessible for reading later one, after the \texttt{call} that went until here.
+Note that if either of those registers were not bound before (not given as parameters, or bound using \texttt{mv}), type-checking \textit{must} fail to prevent undefined behavior when later accessing the ``value'' in either register.
+We can easily see that the return context contains \texttt{\%r0: u64} and \texttt{\%r3: u64}, which means that both registers must have been bound before, and are accessible for reading later on, after the \texttt{call} that went until here.
 This gives a safe way of using return values, and guaranteeing that there are indeed return values stored in the target registers.
 
 \begin{listing}[htb]
   \centering
   \begin{minipage}{0.90\textwidth}
     \begin{minted}[]{\nstarlexer}
-    example: forall(s: Ts, e: Tc). {| forall(). { %r0: u64, %r3: u64 | s -> e }::s -> 0 }
+    example: forall(s: Ts, e: Tc).{| forall().{ %r0: u64, %r3: u64 | s -> e }::s -> 0 }
       mov 0, %r0
       mov 5, %r3
       ret
