@@ -799,7 +799,7 @@ Type inference rules are given in Figure~\ref{fig:nstar-instructionset-mv-typeru
   \begin{prooftree}
     \hypo{$r, d are registers$}
     \hypo{\Xi;\chi;\sigma;\epsilon\vdash^T_{code}$ r : $\forall$().ctx$}
-    \infer2[move cont from register to register]{\Xi;\chi;\sigma;$ r $\vdash^I$ mv r, d $\dashv\chi,$d : $\forall$().ctx$;\sigma;$ d$}
+    \infer2[move cont from register to register]{\Xi;\chi;\sigma;$ r $\vdash^I$ mv r, d $\dashv\chi,$ d : $\forall$().ctx$;\sigma;$ d$}
   \end{prooftree}
   \\\vspace{\baselineskip}
   \begin{prooftree}
@@ -1061,10 +1061,19 @@ Grammar is given in Figure~\ref{fig:nstar-instructionset-ret-grammar} and type i
   \centering
 
   \begin{prooftree}
-    \hypo{$c is a context$}
-    \hypo{\Gamma\vdash^K$ s : Ts$}
-    \hypo{$c $\subseteq\Delta}
-    \infer3{\Delta$ | c::s$;\Xi\vdash^I$ ret $\dashv\Delta}
+    \hypo{$r is a register$}
+    \hypo{\Xi;\chi;\sigma;$ r $\vdash^T_{code}$ r : $\forall$().\{ $\chi^\prime$ | $\sigma\to\epsilon$ \}$}
+    \hypo{\chi\sim\chi^\prime}
+    \infer3[return to caller in register]{\Xi;\chi;\sigma;$ r $\vdash^I$ ret $\dashv\chi;\sigma;$ r$}
+  \end{prooftree}
+  \\\vspace{\baselineskip}
+  \begin{prooftree}
+    \hypo{\hat{\sigma}=$ t$_0$::t$_1$::\ldots::t$_p$::s$}
+    \hypo{$n $\in\mathbb{N}}
+    \hypo{$n $\leq$ p$}
+    \infer[no rule, rule margin=1.0ex]3{\Xi;\chi;\hat{\sigma};$ n $\vdash^T_{code}$ t$_n$ : $\forall$().\{ $\chi^\prime$ | $\hat{\sigma}\to\epsilon$ \}\hspace{1.5em}$%
+                                        \chi\sim\chi^\prime}
+    \infer1[return to caller on stack]{\Xi;\chi;\hat{\sigma};$ n $\vdash^I$ ret $\dashv\chi;\hat{\sigma};$ n$}
   \end{prooftree}
 
   \caption{Type inference rules for the \texttt{ret} instruction.}
