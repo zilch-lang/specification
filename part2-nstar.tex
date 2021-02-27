@@ -1128,6 +1128,43 @@ Grammar and type inference rules are respectively given in Figure~\ref{fig:nstar
   \label{fig:nstar-instructionset-nop-typerules}
 \end{figure}
 
+\section{\texttt{salloc}}\label{sec:nstar-instructionset-salloc}
+
+The \texttt{salloc} instructions allocates some space on top of the stack for some data of the given type.
+Grammar and type inference rules are given in Figure~\ref{fig:nstar-instructionset-salloc-grammar} and Figure~\ref{fig:nstar-instructionset-salloc-typerules}.
+
+\begin{figure}[H]
+  \centering
+
+  \scalebox{.5}{
+    \includegraphics{nstar/instructions/salloc-grammar}
+  }
+
+  \caption{Grammar for the \texttt{salloc} instruction.}
+  \label{fig:nstar-instructionset-salloc-grammar}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+
+  \begin{prooftree}
+    \hypo{$n, m $\in\mathbb{N}}
+    \hypo{\Gamma\vdash^K$ t : Tm$}
+    \hypo{\sigma^\prime=$ t::$\sigma}
+    \infer3[\texttt{salloc} with stack continuation]{\Xi;\Gamma;\chi;\sigma;$ n $\vdash^I$ salloc t $\dashv\chi;\sigma^\prime;$ n$+1}
+  \end{prooftree}
+  \\\vspace{\baselineskip}
+  \begin{prooftree}
+    \hypo{$m $\in\mathbb{N}}
+    \hypo{\Gamma\vdash^K$ t : Tm$}
+    \hypo{\sigma^\prime=$ t::$\sigma}
+    \infer3{\Xi;\Gamma;\chi;\sigma;\epsilon\vdash^I$ salloc t $\dashv\chi;\sigma^\prime;\epsilon}
+  \end{prooftree}
+
+  \caption{Type inference rules for the \texttt{salloc} instruction.}
+  \label{fig:nstar-instructionset-salloc-typerules}
+\end{figure}
+
 \section{\texttt{sfree}}\label{sec:nstar-instructionset-sfree}
 
 The \texttt{sfree} instruction frees the top-most stack cell.

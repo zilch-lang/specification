@@ -501,4 +501,12 @@ def sfree_instruction():
 
 	return mk_diagram('sfree-instruction', inner)
 
-sfree_instruction().writeSvg(sys.stdout.write)
+def salloc_instruction():
+	inner = Sequence(
+		Terminal('salloc'),
+		NonTerminal('type')
+	)
+
+	return mk_diagram('salloc-instruction', inner)
+
+salloc_instruction().writeSvg(sys.stdout.write)
