@@ -1128,6 +1128,43 @@ Grammar and type inference rules are respectively given in Figure~\ref{fig:nstar
   \label{fig:nstar-instructionset-nop-typerules}
 \end{figure}
 
+\section{\texttt{sfree}}\label{sec:nstar-instructionset-sfree}
+
+The \texttt{sfree} instruction frees the top-most stack cell.
+Grammar and type inference rules are respectively given in Figure~\ref{fig:nstar-instructionset-sfree-grammar} and Figure~\ref{fig:nstar-instructionset-sfree-typerules}.
+
+\begin{figure}[H]
+  \centering
+
+  \scalebox{.5}{
+    \includegraphics{nstar/instructions/sfree-grammar}
+  }
+
+  \caption{Grammar for the \texttt{sfree} instruction.}
+  \label{fig:nstar-instructionset-sfree-grammar}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+
+  \begin{prooftree}
+    \hypo{$n $\geq 1}
+    \hypo{$n $\leq$ p$}
+    \hypo{\sigma=$ t$_0$::t$_1$::\ldots::t$_p$::s$}
+    \hypo{\sigma^\prime=$ t$_1$::\ldots::t$_p$::s$}
+    \infer4[\texttt{sfree} with stack continuation]{\Xi;\Gamma;\chi;\sigma;$ n $\vdash^I$ sfree $\dashv\chi;\sigma^\prime;$ n$-1}
+  \end{prooftree}
+  \\\vspace{\baselineskip}
+  \begin{prooftree}
+    \hypo{\sigma=$ t$_0$::t$_1$::\ldots::t$_p$::s$}
+    \hypo{\sigma^\prime=$ t$_1$::\ldots::t$_p$::s$}
+    \infer2{\Xi;\Gamma;\chi;\sigma;\epsilon\vdash^I$ sfree $\dashv\chi;\sigma^\prime;\epsilon}
+  \end{prooftree}
+
+  \caption{Type inference rules for the \texttt{sfree} instruction.}
+  \label{fig:nstar-instructionset-sfree-typerules}
+\end{figure}
+
 \chapter{Target-dependent features}\label{chap:nstar-specific}
 
 \section{x86, amd64}\label{sec:nstar-specific-x86amd64}

@@ -494,4 +494,11 @@ def ld_instruction():
 
 	return mk_diagram('ld-instruction', inner)
 
-mv_instruction().writeSvg(sys.stdout.write)
+def sfree_instruction():
+	inner = Sequence(
+		Terminal('sfree')
+	)
+
+	return mk_diagram('sfree-instruction', inner)
+
+sfree_instruction().writeSvg(sys.stdout.write)
