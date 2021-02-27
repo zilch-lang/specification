@@ -406,7 +406,8 @@ def mv_instruction():
 		Terminal('mv'),
 		Group(
 			Choice(
-				0,
+				1,
+				NonTerminal('label-value'),
 				NonTerminal('register'),
 				NonTerminal('integer-value')
 			),
@@ -493,4 +494,4 @@ def ld_instruction():
 
 	return mk_diagram('ld-instruction', inner)
 
-call_instruction().writeSvg(sys.stdout.write)
+mv_instruction().writeSvg(sys.stdout.write)
