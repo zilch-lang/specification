@@ -1358,3 +1358,38 @@ Grammar and type inference rules are respectively given in Figure~\ref{fig:nstar
   r5 & edi & rdi \\
   \bottomrule
 \end{tabularx}
+
+\chapter{The \nstar\ abstract machine}\label{chap:nstar-nsam}
+
+The \nstar\ abstract machine (``NSAM'' for short) is a computation model for low-level assembly languages, especially \nstar.
+Its core is untyped and may yield undefined behavior when used incorrectly.
+However, in the context of \nstar, the core of the NSAM does not need to be type-safe because \nstar\ already is.
+
+This abstract machine describes the operational semantics of the NSAM core, which is a subset of the instructions available in \nstar.
+But some instructions like \texttt{call} may be encoded using the defined primitives below.
+A rough translation of some \nstar\ instructions will be proposed as a simple beginning point in Figure~\ref{fig:nstar-nsam-translation-nstar-nsam}, but this is by no mean meant to be an exhaustive list of the possible translations.
+
+\begin{figure}[htb]
+  \centering
+
+  \framebox[\textwidth][c]{
+  \begin{tabular}{*{3}{>{\centering\arraybackslash}p{0.30\textwidth}}}
+    $\_;\_;\_\vdash\text{jmp l<}\vec{\text{t}}\text{>} \rightsquigarrow \textit{jmp l}$ &
+    $\_;\_;\_\vdash\text{call l<}\vec{\text{t}}\text{>} \rightsquigarrow \textit{jmp l}$ &
+    $\_;\_;\text{r}\vdash\text{ret} \rightsquigarrow \textit{ret r}$ \\
+
+    \rule{0pt}{1ex} \\
+
+    $\_;\_;\_\vdash\text{salloc t} \rightsquigarrow \textit{salloc sizeof(t)}$ &
+    $\_;\text{t}\dblcolon\sigma;\_\vdash\text{sfree} \rightsquigarrow \textit{sfree sizeof(t)}$ &
+    $\_;\_;\_\vdash\text{halt} \rightsquigarrow \textit{halt}$ \\
+
+    \rule{0pt}{1ex} \\
+
+    & $\ldots$ &
+  \end{tabular}
+  }
+
+  \caption{The beginning of a small translation model from \nstar\ to the NSAM core. \textbf{$\chi;\sigma;\epsilon\vdash\text{i} \rightsquigarrow \textit{i}$} is the translation from the \nstar\ typed instruction \textbf{$\chi;\sigma;\epsilon\vdash\text{i}$} into the NSAM core instruction \textbf{$\textit{i}$}.}
+  \label{fig:nstar-nsam-translation-nstar-nsam}
+\end{figure}
