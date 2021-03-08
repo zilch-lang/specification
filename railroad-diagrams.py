@@ -285,24 +285,32 @@ def call_instruction():
 
 def ptr_byte_offset():
 	inner = Sequence(
-        Choice(
-			1,
-			Comment('0'),
-			NonTerminal('expression')
+		Group(
+			Choice(
+				1,
+				Comment('0'),
+				NonTerminal('register'),
+				NonTerminal('signed-integer')
+			),
+			'offset'
 		),
 		Terminal('('),
-		Choice(
-			0,
-			NonTerminal('expression'),
-			Group(
-				Sequence(
-					Terminal('$'),
-					NonTerminal('positive-integer'),
-					Terminal(':'),
-					NonTerminal('type')
-				),
-				'typed memory address'
-			)
+		Group(
+			Choice(
+				1,
+				NonTerminal('register'),
+				NonTerminal('label'),
+				Group(
+					Sequence(
+						Terminal('$'),
+						NonTerminal('positive-integer'),
+						Terminal(':'),
+						NonTerminal('type')
+					),
+					'typed memory address'
+				)
+			),
+			'source'
 		),
 		Terminal(')')
 	)
@@ -312,13 +320,21 @@ def ptr_byte_offset():
 def ptr_offset():
 	inner = Sequence(
 		Group(
-			NonTerminal('expression'),
-			'Source'
+			Choice(
+				1,
+				NonTerminal('register'),
+				NonTerminal('label')
+			),
+			'source'
 		),
 		Terminal('['),
 		Group(
-			NonTerminal('expression'),
-			'Offset'
+			Choice(
+				1,
+				NonTerminal('register'),
+				NonTerminal('signed-integer')
+			),
+			'offset'
 		),
 		Terminal(']')
 	)
@@ -509,4 +525,4 @@ def salloc_instruction():
 
 	return mk_diagram('salloc-instruction', inner)
 
-salloc_instruction().writeSvg(sys.stdout.write)
+ptr_offset().writeSvg(sys.stdout.write)
