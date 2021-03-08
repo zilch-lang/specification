@@ -291,7 +291,7 @@ The type variable \texttt{s} is specialized at the call site.
   \begin{minipage}{0.90\textwidth}
     \begin{minted}[]{\nstarlexer}
       label: forall(s: Ts, e: Tc). { %r0: forall(). {| s -> e } | s -> %r0 }
-        ret
+           = ret
     \end{minted}
   \end{minipage}
   \caption{Stack masking using a type variable binder.}
@@ -842,9 +842,9 @@ This gives a safe way of using return values, and guaranteeing that there are in
   \begin{minipage}{0.90\textwidth}
     \begin{minted}[]{\nstarlexer}
     example: forall(s: Ts, e: Tc).{ %r5: forall().{ %r0: u64, %r3: u64 | s -> e } | s -> %r5 }
-      mov 0, %r0
-      mov 5, %r3
-      ret
+           = mv 0, %r0
+           ; mv 5, %r3
+           ; ret
     \end{minted}
   \end{minipage}
   \caption{An example of returning multiple values from a simple function.}
