@@ -81,8 +81,10 @@ The grammar is given in Figure~\ref{fig:nstar-common-ts-kinds-syntax}.
 
 \begin{figure}[htb]
   \centering
-  \scalebox{.5}{
-    \includegraphics{nstar/types/kinds-syntax}
+  \framebox[\textwidth][c]{
+    \scalebox{.5}{
+      \includegraphics{nstar/types/kinds-syntax}
+    }
   }
   \caption{Grammar for kinds.}
   \label{fig:nstar-common-ts-kinds-syntax}
@@ -96,8 +98,10 @@ The syntax for the types of integers is given in Figure~\ref{fig:nstar-common-ts
 
 \begin{figure}[htb]
   \centering
-  \scalebox{.5}{
-    \includegraphics{nstar/types/integers-syntax}
+  \framebox[\textwidth][c]{
+    \scalebox{.5}{
+      \includegraphics{nstar/types/integers-syntax}
+    }
   }
   \caption{Grammar for integer types.}
   \label{fig:nstar-common-ts-integer-syntax}
@@ -113,37 +117,40 @@ Kinds of integers are written under the form of inference rules in Figure~\ref{f
 \begin{figure}[htb]
   \centering
 
-  \begin{prooftree}
-    \infer0{\Gamma\vdash^K$ u64 : T8$}
-  \end{prooftree}
-  \hspace{3em}
-  \begin{prooftree}
-    \infer0{\Gamma\vdash^K$ s64 : T8$}
-  \end{prooftree}
-  \hspace{3em}
-  \begin{prooftree}
-    \infer0{\Gamma\vdash^K$ u32 : T4$}
-  \end{prooftree}
-  \hspace{3em}
-  \begin{prooftree}
-    \infer0{\Gamma\vdash^K$ s32 : T4$}
-  \end{prooftree}
-  \\\vspace{\baselineskip}
-  \begin{prooftree}
-    \infer0{\Gamma\vdash^K$ u16 : T2$}
-  \end{prooftree}
-  \hspace{3em}
-  \begin{prooftree}
-    \infer0{\Gamma\vdash^K$ s16 : T2$}
-  \end{prooftree}
-  \hspace{3em}
-  \begin{prooftree}
-    \infer0{\Gamma\vdash^K$ u8 : T1$}
-  \end{prooftree}
-  \hspace{3em}
-  \begin{prooftree}
-    \infer0{\Gamma\vdash^K$ s8 : T1$}
-  \end{prooftree}
+  \framebox[\textwidth][c]{\parbox{\textwidth}{
+      \centering
+      \begin{prooftree}
+        \infer0{\Gamma\vdash^K$ u64 : T8$}
+      \end{prooftree}
+      \hspace{3em}
+      \begin{prooftree}
+        \infer0{\Gamma\vdash^K$ s64 : T8$}
+      \end{prooftree}
+      \hspace{3em}
+      \begin{prooftree}
+        \infer0{\Gamma\vdash^K$ u32 : T4$}
+      \end{prooftree}
+      \hspace{3em}
+      \begin{prooftree}
+        \infer0{\Gamma\vdash^K$ s32 : T4$}
+      \end{prooftree}
+      \\\vspace{\baselineskip}
+      \begin{prooftree}
+        \infer0{\Gamma\vdash^K$ u16 : T2$}
+      \end{prooftree}
+      \hspace{3em}
+      \begin{prooftree}
+        \infer0{\Gamma\vdash^K$ s16 : T2$}
+      \end{prooftree}
+      \hspace{3em}
+      \begin{prooftree}
+        \infer0{\Gamma\vdash^K$ u8 : T1$}
+      \end{prooftree}
+      \hspace{3em}
+      \begin{prooftree}
+        \infer0{\Gamma\vdash^K$ s8 : T1$}
+      \end{prooftree}
+  }}
 
   \caption{Kind inference rules for integers.}
   \label{fig:nstar-common-ts-integer-kindrules}
@@ -155,12 +162,15 @@ There are two other atomic types that we did not talk about, but refered to in t
 
 \begin{figure}[htb]
   \centering
-  \scalebox{.5}{
-    \includegraphics{nstar/types/ptr-syntax}
-  } \\
-  \scalebox{.5}{
-    \includegraphics{nstar/types/char-syntax}
-  }
+  \framebox[\textwidth][c]{\parbox{\textwidth}{
+      \centering
+      \scalebox{.5}{
+        \includegraphics{nstar/types/ptr-syntax}
+      } \\
+      \scalebox{.5}{
+        \includegraphics{nstar/types/char-syntax}
+      }
+  }}
   \caption{Grammar for character and pointer types}
   \label{fig:nstar-common-ts-atomic-syntax}
 \end{figure}
@@ -181,19 +191,21 @@ However, it is possible to use the literal \texttt{\$0} (which represents a poin
 
 \begin{figure}[htb]
   \centering
-  \begin{prooftree}
-    \infer0{\Gamma\vdash^K$ char : T1$}
-  \end{prooftree}
-  \hspace{3em}
-  \begin{prooftree}
-    \hypo{\Gamma\vdash^K$ t : Ta$}
-    \infer1[64-bits pointers]{\Gamma\vdash^K$ *t : T8$}
-  \end{prooftree}
-  \hspace{3em}
-  \begin{prooftree}
-    \hypo{\Gamma\vdash^K$ t : Ta$}
-    \infer1[32-bits pointers]{\Gamma\vdash^K$ *t : T4$}
-  \end{prooftree}
+  \framebox[\textwidth][c]{
+    \begin{prooftree}
+      \infer0{\Gamma\vdash^K$ char : T1$}
+    \end{prooftree}
+    \hspace{3em}
+    \begin{prooftree}
+      \hypo{\Gamma\vdash^K$ t : Ta$}
+      \infer1[64-bits pointers]{\Gamma\vdash^K$ *t : T8$}
+    \end{prooftree}
+    \hspace{3em}
+    \begin{prooftree}
+      \hypo{\Gamma\vdash^K$ t : Ta$}
+      \infer1[32-bits pointers]{\Gamma\vdash^K$ *t : T4$}
+    \end{prooftree}
+  }
 
   \caption{Kind inference rules for other atomic types.}
   \label{fig:nstar-common-ts-atomic-kindrules}
@@ -207,13 +219,16 @@ The grammar is described in Figure~\ref{fig:nstar-common-ts-records-syntax}.
 
 \begin{figure}[htb]
   \centering
-  \scalebox{.5}{
-    \includegraphics{nstar/types/records-syntax}
-  }
-  \\
-  \scalebox{.5}{
-    \includegraphics{nstar/types/continuation-syntax}
-  }
+  \framebox[\textwidth][c]{\parbox{\textwidth}{
+      \centering
+      \scalebox{.5}{
+        \includegraphics{nstar/types/records-syntax}
+      }
+      \\
+      \scalebox{.5}{
+        \includegraphics{nstar/types/continuation-syntax}
+      }
+  }}
   \caption{Grammar for context and continuation types.}
   \label{fig:nstar-common-ts-records-syntax}
 \end{figure}
@@ -221,12 +236,14 @@ The grammar is described in Figure~\ref{fig:nstar-common-ts-records-syntax}.
 \begin{figure}[htb]
   \centering
 
-  \begin{prooftree}
-    \hypo{\Gamma\vdash^K\hat{\chi}}
-    \hypo{\Gamma\vdash^K$ s : Ts$}
-    \hypo{\Gamma\vdash^K$ e : Tc$}
-    \infer3{\Gamma\vdash^K$\{ $\hat{\chi}$ | s $\to$ e \} : Ta$}
-  \end{prooftree}
+  \framebox[\textwidth][c]{
+    \begin{prooftree}
+      \hypo{\Gamma\vdash^K\hat{\chi}}
+      \hypo{\Gamma\vdash^K$ s : Ts$}
+      \hypo{\Gamma\vdash^K$ e : Tc$}
+      \infer3{\Gamma\vdash^K$\{ $\hat{\chi}$ | s $\to$ e \} : Ta$}
+    \end{prooftree}
+  }
 
   \caption{Type inference rules for record types.}
   \label{fig:nstar-common-ts-records-typerules}
@@ -242,8 +259,10 @@ The type variable binder is used to abstract away some details of the type throu
 
 \begin{figure}[htb]
   \centering
-  \scalebox{.5}{
-    \includegraphics{nstar/types/label-syntax}
+  \framebox[\textwidth][c]{
+    \scalebox{.5}{
+      \includegraphics{nstar/types/label-syntax}
+    }
   }
   \caption{Grammar for label context types.}
   \label{fig:nstar-common-ts-label-types-syntax}
@@ -252,10 +271,12 @@ The type variable binder is used to abstract away some details of the type throu
 \begin{figure}[htb]
   \centering
 
-  \begin{prooftree}
-    \hypo{\Gamma,\hat{v}\vdash^K$ ctx : Ta$}
-    \infer1{\Gamma\vdash^K\forall$($\hat{v}$).ctx : T8$}
-  \end{prooftree}
+  \framebox[\textwidth][c]{
+    \begin{prooftree}
+      \hypo{\Gamma,\hat{v}\vdash^K$ ctx : Ta$}
+      \infer1{\Gamma\vdash^K\forall$($\hat{v}$).ctx : T8$}
+    \end{prooftree}
+  }
 
   \caption{Type inference rules for label context types.}
   \label{fig:nstar-common-ts-label-types-typerules}
@@ -270,7 +291,7 @@ The type variable \texttt{s} is specialized at the call site.
   \begin{minipage}{0.90\textwidth}
     \begin{minted}[]{\nstarlexer}
       label: forall(s: Ts, e: Tc). { %r0: forall(). {| s -> e } | s -> %r0 }
-          ret
+        ret
     \end{minted}
   \end{minipage}
   \caption{Stack masking using a type variable binder.}
@@ -290,22 +311,26 @@ Inference rules for kinds of stack types are written in Figure~\ref{fig:nstar-co
 
 \begin{figure}[htb]
   \centering
-  \scalebox{.5}{
-    \includegraphics{nstar/types/stack-cons-syntax}
+  \framebox[\textwidth][c]{
+    \scalebox{.5}{
+      \includegraphics{nstar/types/stack-cons-syntax}
+    }
   }
   \caption{Grammar for stack types.}
   \label{fig:nstar-common-ts-stack-types-syntax}
 \end{figure}
 
-\begin{figure}[htb]
+\begin{figure}[H]
   \centering
 
-  \begin{prooftree}
-    \hypo{$n : $\mathbb{N}$ $}
-    \hypo{\Gamma\vdash^K$ t : Tn$}
-    \hypo{\Gamma\vdash^K$ s : Ts$}
-    \infer3{\Gamma\vdash^K$ t :: s : Ts$}
-  \end{prooftree}
+  \framebox[\textwidth][c]{
+    \begin{prooftree}
+      \hypo{$n : $\mathbb{N}$ $}
+      \hypo{\Gamma\vdash^K$ t : Tn$}
+      \hypo{\Gamma\vdash^K$ s : Ts$}
+      \infer3{\Gamma\vdash^K$ t :: s : Ts$}
+    \end{prooftree}
+  }
 
   \caption{Kind inference rules for stack types}
   \label{fig:nstar-common-ts-stack-types-kindrules}
@@ -321,8 +346,11 @@ Structures take as much space as all their fields, thus can mainly be put on the
 
 \begin{figure}[htb]
   \centering
-  \scalebox{.5}{
-    \includegraphics{nstar/types/struct-syntax}
+
+  \framebox[\textwidth][c]{
+    \scalebox{.5}{
+      \includegraphics{nstar/types/struct-syntax}
+    }
   }
 
   \caption{Grammar for structure types.}
@@ -331,12 +359,15 @@ Structures take as much space as all their fields, thus can mainly be put on the
 
 \begin{figure}[H]
   \centering
-  \begin{prooftree}
-    \hypo{$n$_0$, n$_1$, $\ldots$, n$_p$ : $\mathbb{N}}
-    \hypo{\Gamma\vdash^K$ t$_0$ : Tn$_0$, t$_1$ : Tn$_1$, $\ldots$, t$_p$ : Tn$_p}
-    \hypo{$m = $\sum_{i = 0}^{p}{n_i}}
-    \infer3{\Gamma\vdash^K$ (t$_0$, t$_1$, $\ldots$, t$_p$) : Tm$}
-  \end{prooftree}
+
+  \framebox[\textwidth][c]{
+    \begin{prooftree}
+      \hypo{$n$_0$, n$_1$, $\ldots$, n$_p$ : $\mathbb{N}}
+      \hypo{\Gamma\vdash^K$ t$_0$ : Tn$_0$, t$_1$ : Tn$_1$, $\ldots$, t$_p$ : Tn$_p}
+      \hypo{$m = $\sum_{i = 0}^{p}{n_i}}
+      \infer3{\Gamma\vdash^K$ (t$_0$, t$_1$, $\ldots$, t$_p$) : Tm$}
+    \end{prooftree}
+  }
 
   \caption{Kind inference rule for structures.}
   \label{fig:nstar-common-ts-structs-kindrules}
@@ -349,8 +380,11 @@ Grammar for union types is given in Figure~\ref{fig:nstar-common-ts-unions-synta
 
 \begin{figure}[htb]
   \centering
-  \scalebox{.5}{
-    \includegraphics{nstar/types/union-syntax}
+
+  \framebox[\textwidth][c]{
+    \scalebox{.5}{
+      \includegraphics{nstar/types/union-syntax}
+    }
   }
 
   \caption{Grammar for union types.}
@@ -363,12 +397,14 @@ This is more clear in the kind inference rule given in Figure~\ref{fig:nstar-com
 \begin{figure}[H]
   \centering
 
-  \begin{prooftree}
-    \hypo{$n$_0$, n$_1$, $\ldots$, n$_p$ : $\mathbb{N}}
-    \hypo{\Gamma\vdash^K$ t$_0$ : Tn$_0$, t$_1$ : Tn$_1$, $\ldots$, t$_p$ : Tn$_p}
-    \hypo{$m = $\max_{i = 0}^{p}{n_i}}
-    \infer3{\Gamma\vdash^K$ $\langle$t$_0$, t$_1$, $\ldots$, t$_p\rangle$ : Tm$}
-  \end{prooftree}
+  \framebox[\textwidth][c]{
+    \begin{prooftree}
+      \hypo{$n$_0$, n$_1$, $\ldots$, n$_p$ : $\mathbb{N}}
+      \hypo{\Gamma\vdash^K$ t$_0$ : Tn$_0$, t$_1$ : Tn$_1$, $\ldots$, t$_p$ : Tn$_p}
+      \hypo{$m = $\max_{i = 0}^{p}{n_i}}
+      \infer3{\Gamma\vdash^K$ $\langle$t$_0$, t$_1$, $\ldots$, t$_p\rangle$ : Tm$}
+    \end{prooftree}
+  }
 
   \caption{Kind inference rules for union types.}
   \label{fig:nstar-common-ts-unions-kindrules}
@@ -390,13 +426,18 @@ Grammar and inference rules are given respectively in Figure~\ref{fig:nstar-comm
 
 \begin{figure}[H]
   \centering
-  \scalebox{.5}{
-    \includegraphics{nstar/exprs/imm-char-grammar}
-  }
-  \\
-  \scalebox{.5}{
-    \includegraphics{nstar/exprs/imm-int-grammar}
-  }
+
+  \framebox[\textwidth][c]{\parbox{\textwidth}{
+      \centering
+      \scalebox{.5}{
+        \includegraphics{nstar/exprs/imm-char-grammar}
+      }
+      \\
+      \scalebox{.5}{
+        \includegraphics{nstar/exprs/imm-int-grammar}
+      }
+   }}
+
   \caption{Grammar for immediate values in \nstar.}
   \label{fig:nstar-common-expressions-immediate-grammar}
 \end{figure}
@@ -404,22 +445,25 @@ Grammar and inference rules are given respectively in Figure~\ref{fig:nstar-comm
 \begin{figure}[H]
   \centering
 
-  \begin{prooftree}
-    \hypo{$c is a character immediate$}
-    \infer1{\Xi;\Gamma;\chi;\sigma;\epsilon\vdash^T_{code}$ c : char$}
-  \end{prooftree}
-  \\\vspace{\baselineskip}
-  \begin{prooftree}
-    \hypo{$i is an unsigned integer immediate$}
-    \hypo{$t $\in\{$ u8, u16, u32, u64 $\}}
-    \infer2{\Xi;\Gamma;\chi;\sigma;\epsilon\vdash^T_{code}$ i : t$}
-  \end{prooftree}
-  \\\vspace{\baselineskip}
-  \begin{prooftree}
-    \hypo{$i is a signed integer immediate$}
-    \hypo{$t $\in\{$ s8, s16, s32, s64 $\}}
-    \infer2{\Xi;\Gamma;\chi;\sigma;\epsilon\vdash^T_{code}$ i : t$}
-  \end{prooftree}
+  \framebox[\textwidth][c]{\parbox{\textwidth}{
+      \centering
+      \begin{prooftree}
+        \hypo{$c is a character immediate$}
+        \infer1{\Xi;\Gamma;\chi;\sigma;\epsilon\vdash^T_{code}$ c : char$}
+      \end{prooftree}
+      \\\vspace{\baselineskip}
+      \begin{prooftree}
+        \hypo{$i is an unsigned integer immediate$}
+        \hypo{$t $\in\{$ u8, u16, u32, u64 $\}}
+        \infer2{\Xi;\Gamma;\chi;\sigma;\epsilon\vdash^T_{code}$ i : t$}
+      \end{prooftree}
+      \\\vspace{\baselineskip}
+      \begin{prooftree}
+        \hypo{$i is a signed integer immediate$}
+        \hypo{$t $\in\{$ s8, s16, s32, s64 $\}}
+        \infer2{\Xi;\Gamma;\chi;\sigma;\epsilon\vdash^T_{code}$ i : t$}
+      \end{prooftree}
+  }}
 
   \caption{Type inference rules for immediate values in \nstar.}
   \label{fig:nstar-common-expressions-immediate-typerules}
@@ -436,8 +480,10 @@ Grammar and inference rules are given respectively in Figure~\ref{fig:nstar-comm
 \begin{figure}[H]
   \centering
 
-  \scalebox{.5}{
-    \includegraphics{nstar/exprs/label-expr-grammar}
+  \framebox[\textwidth][c]{
+    \scalebox{.5}{
+      \includegraphics{nstar/exprs/label-expr-grammar}
+    }
   }
   \caption{Grammar for data labels in \nstar.}
   \label{fig:nstar-common-expressions-labels-data-grammar}
@@ -446,10 +492,12 @@ Grammar and inference rules are given respectively in Figure~\ref{fig:nstar-comm
 \begin{figure}[H]
   \centering
 
-  \begin{prooftree}
-    \hypo{$l : t $\in\Xi_d}
-    \infer1{\Xi;\Gamma;\chi;\sigma;\epsilon\vdash^T_{code}$ l : *t$}
-  \end{prooftree}
+  \framebox[\textwidth][c]{
+    \begin{prooftree}
+      \hypo{$l : t $\in\Xi_d}
+      \infer1{\Xi;\Gamma;\chi;\sigma;\epsilon\vdash^T_{code}$ l : *t$}
+    \end{prooftree}
+  }
 
   \caption{Type inference rules for data labels in \nstar.}
   \label{fig:nstar-common-expressions-labels-data-typerules}
@@ -464,9 +512,12 @@ Grammar and inference rules are given respectively in Figure~\ref{fig:nstar-comm
 \begin{figure}[H]
   \centering
 
-  \scalebox{.5}{
-    \includegraphics{nstar/exprs/label-value-grammar}
+  \framebox[\textwidth][c]{
+    \scalebox{.5}{
+      \includegraphics{nstar/exprs/label-value-grammar}
+    }
   }
+
   \caption{Grammar for code labels in \nstar.}
   \label{fig:nstar-common-expressions-labels-code-grammar}
 \end{figure}
@@ -474,13 +525,15 @@ Grammar and inference rules are given respectively in Figure~\ref{fig:nstar-comm
 \begin{figure}[H]
   \centering
 
-  \begin{prooftree}
-    \hypo{$l : $\forall$($\vec{v}$).ctx $\in\Xi_c}
-    \hypo{\Gamma\vdash^K$ s$_1$ : k$_1$, s$_2$ : k$_2$, \ldots, s$_p$ : k$_p}
-    \infer[no rule, rule margin=1.0ex]2{\vec{s}$ = $\{$ s$_1$ : k$_1$, s$_2$ : k$_2$, \ldots, s$_p$ : k$_p$ $\}$\hspace{1.5em}$%
-                                        \vec{s}\sim\vec{v}}
-    \infer1{\Xi;\Gamma;\chi;\sigma;\epsilon\vdash^T_{code}$ l<$\vec{s}$> : $\forall$().ctx$}
-  \end{prooftree}
+  \framebox[\textwidth][c]{
+    \begin{prooftree}
+      \hypo{$l : $\forall$($\vec{v}$).ctx $\in\Xi_c}
+      \hypo{\Gamma\vdash^K$ s$_1$ : k$_1$, s$_2$ : k$_2$, \ldots, s$_p$ : k$_p}
+      \infer[no rule, rule margin=1.0ex]2{\vec{s}$ = $\{$ s$_1$ : k$_1$, s$_2$ : k$_2$, \ldots, s$_p$ : k$_p$ $\}$\hspace{1.5em}$%
+        \vec{s}\sim\vec{v}}
+      \infer1{\Xi;\Gamma;\chi;\sigma;\epsilon\vdash^T_{code}$ l<$\vec{s}$> : $\forall$().ctx$}
+    \end{prooftree}
+  }
 
   \caption{Type inference rules for code labels in \nstar.}
   \label{fig:nstar-common-expressions-labels-code-typerules}
@@ -497,8 +550,10 @@ Grammar for all those registers is given in Figure~\ref{fig:nstar-common-express
 \begin{figure}[htb]
   \centering
 
-  \scalebox{.5}{
-    \includegraphics{nstar/exprs/register-grammar}
+  \framebox[\textwidth][c]{
+    \scalebox{.5}{
+      \includegraphics{nstar/exprs/register-grammar}
+    }
   }
 
   \caption{Grammar for registers in \nstar.}
@@ -508,9 +563,11 @@ Grammar for all those registers is given in Figure~\ref{fig:nstar-common-express
 \begin{figure}[htb]
   \centering
 
-  \begin{prooftree}
-    \infer0{\Xi;\Gamma;\chi$, r : t$;\sigma;\epsilon\vdash^T_{code}$ r : t$}
-  \end{prooftree}
+  \framebox[\textwidth][c]{
+    \begin{prooftree}
+      \infer0{\Xi;\Gamma;\chi$, r : t$;\sigma;\epsilon\vdash^T_{code}$ r : t$}
+    \end{prooftree}
+  }
 
   \caption{Type inference rules for registers in \nstar}
   \label{fig:nstar-common-expressions-registers-typerules}
@@ -524,13 +581,16 @@ Grammar for pointer offsets is given in Figure~\ref{fig:nstar-common-expressions
 \begin{figure}[H]
   \centering
 
-  \scalebox{.5}{
-    \includegraphics{nstar/exprs/pointer-byte-offset-grammar}
-  }
-  \\
-  \scalebox{.5}{
-    \includegraphics{nstar/exprs/pointer-offset-grammar}
-  }
+  \framebox[\textwidth][c]{\parbox{\textwidth}{
+      \centering
+      \scalebox{.45}{
+        \includegraphics{nstar/exprs/pointer-byte-offset-grammar}
+      }
+      \\
+      \scalebox{.5}{
+        \includegraphics{nstar/exprs/pointer-offset-grammar}
+      }
+  }}
 
   \caption{Grammar for pointer offsets.}
   \label{fig:nstar-common-expressions-pointeroffsets-grammar}
@@ -539,26 +599,29 @@ Grammar for pointer offsets is given in Figure~\ref{fig:nstar-common-expressions
 \begin{figure}[H]
   \centering
 
-  \begin{prooftree}
-    \hypo{\Gamma\vdash^K$ t : k$}
-    \hypo{\Xi;\Gamma;\chi;\sigma;\epsilon\vdash^T_{code}$ p : *t$}
-    \hypo{\Xi;\Gamma;\chi;\sigma;\epsilon\vdash^T_{code}$ o : s64$}
-    \infer3[raw pointer byte offset]{\Xi;\Gamma;\chi;\sigma;\epsilon\vdash^T_{code}$ o(p) : *t$}
-  \end{prooftree}
-  \\\vspace{\baselineskip}
-  \begin{prooftree}
-    \hypo{\Gamma\vdash^K$ t : k$}
-    \hypo{\Xi;\Gamma;\chi;\sigma;\epsilon\vdash^T_{code}$ p : *t$}
-    \hypo{\Xi;\Gamma;\chi;\sigma;\epsilon\vdash^T_{code}$ o : s64$}
-    \infer3[raw pointer base offset]{\Xi;\Gamma;\chi;\sigma;\epsilon\vdash^T_{code}$ p[o] : *t$}
-  \end{prooftree}
-  \\\vspace{\baselineskip}
-  \begin{prooftree}
-    \hypo{\Gamma\vdash^K$ t$_1$ : Tn$_0$, t$_2$ : Tn$_1$, \ldots, t$_m$ : Tn$_{m-1}}
-    \infer[no rule, rule margin=1.0ex]1{$n$_0$, n$_1$, \ldots, n$_p\in\mathbb{N}$\hspace{1.5em}$%
-                                        \Xi;\Gamma;\chi;\sigma;\epsilon\vdash^T_{code}$ p : *(t$_1$, t$_2$, \ldots, t$_m$)$}
-    \infer1[structure pointer offset]{\Xi;\Gamma;\chi;\sigma;\epsilon\vdash^T_{code}$ p[n$_i$] : *t$_{i-1}}
-  \end{prooftree}
+  \framebox[\textwidth][c]{\parbox{\textwidth}{
+      \centering
+      \begin{prooftree}
+        \hypo{\Gamma\vdash^K$ t : k$}
+        \hypo{\Xi;\Gamma;\chi;\sigma;\epsilon\vdash^T_{code}$ p : *t$}
+        \hypo{\Xi;\Gamma;\chi;\sigma;\epsilon\vdash^T_{code}$ o : s64$}
+        \infer3[raw pointer byte offset]{\Xi;\Gamma;\chi;\sigma;\epsilon\vdash^T_{code}$ o(p) : *t$}
+      \end{prooftree}
+      \\\vspace{\baselineskip}
+      \begin{prooftree}
+        \hypo{\Gamma\vdash^K$ t : k$}
+        \hypo{\Xi;\Gamma;\chi;\sigma;\epsilon\vdash^T_{code}$ p : *t$}
+        \hypo{\Xi;\Gamma;\chi;\sigma;\epsilon\vdash^T_{code}$ o : s64$}
+        \infer3[raw pointer base offset]{\Xi;\Gamma;\chi;\sigma;\epsilon\vdash^T_{code}$ p[o] : *t$}
+      \end{prooftree}
+      \\\vspace{\baselineskip}
+      \begin{prooftree}
+        \hypo{\Gamma\vdash^K$ t$_1$ : Tn$_0$, t$_2$ : Tn$_1$, \ldots, t$_m$ : Tn$_{m-1}}
+        \infer[no rule, rule margin=1.0ex]1{$n$_0$, n$_1$, \ldots, n$_p\in\mathbb{N}$\hspace{1.5em}$%
+          \Xi;\Gamma;\chi;\sigma;\epsilon\vdash^T_{code}$ p : *(t$_1$, t$_2$, \ldots, t$_m$)$}
+        \infer1[structure pointer offset]{\Xi;\Gamma;\chi;\sigma;\epsilon\vdash^T_{code}$ p[n$_i$] : *t$_{i-1}}
+      \end{prooftree}
+  }}
 
   \caption{Type inference rules for pointer offsets.}
   \label{fig:nstar-common-expressions-pointeroffsets-typerules}
@@ -586,17 +649,21 @@ However, some restrictions apply to labels in order to make the type-checking me
 
 \begin{figure}[htb]
   \centering
-  \scalebox{.5}{
-    \includegraphics{nstar/sections/code-1}
-  }
-  \\
-  \scalebox{.5}{
-    \includegraphics{nstar/sections/code-2}
-  }
-  \\
-  \scalebox{.5}{
-     \includegraphics{nstar/sections/code-3}
-  }
+
+  \framebox[\textwidth][c]{\parbox{\textwidth}{
+      \centering
+      \scalebox{.5}{
+        \includegraphics{nstar/sections/code-1}
+      }
+      \\
+      \scalebox{.5}{
+        \includegraphics{nstar/sections/code-2}
+      }
+      \\
+      \scalebox{.5}{
+        \includegraphics{nstar/sections/code-3}
+      }
+  }}
 
   \caption{Grammar for \texttt{code} sections.}
   \label{fig:nstar-common-sections-code-grammar}
@@ -615,18 +682,22 @@ The grammar of those sections is given in Figure~\ref{fig:nstar-common-sections-
 
 \begin{figure}[htb]
   \centering
-  \scalebox{.5}{
-    \includegraphics{nstar/sections/data-1}
-  }\\
-  \scalebox{.5}{
-    \includegraphics{nstar/sections/data-2}
-  }\\
-  \scalebox{.5}{
-    \includegraphics{nstar/sections/data-3}
-  }\\
-  \scalebox{.5}{
-    \includegraphics{nstar/sections/data-4}
-  }
+
+  \framebox[\textwidth][c]{\parbox{\textwidth}{
+      \centering
+      \scalebox{.5}{
+        \includegraphics{nstar/sections/data-1}
+      }\\
+      \scalebox{.5}{
+        \includegraphics{nstar/sections/data-2}
+      }\\
+      \scalebox{.5}{
+        \includegraphics{nstar/sections/data-3}
+      }\\
+      \scalebox{.5}{
+        \includegraphics{nstar/sections/data-4}
+      }
+  }}
 
   \caption{Grammar for the \texttt{data}, \texttt{rodata} and \texttt{udata} sections.}
   \label{fig:nstar-common-sections-data-grammar}
@@ -652,8 +723,11 @@ The grammar showing this is given in figure~\ref{fig:nstar-common-sections-exter
 
 \begin{figure}[htb]
   \centering
-  \scalebox{.47}{
-    \includegraphics{nstar/sections/externcode-grammar}
+
+  \framebox[\textwidth][c]{
+    \scalebox{.47}{
+      \includegraphics{nstar/sections/externcode-grammar}
+    }
   }
 
   \caption{Grammar for the \texttt{extern.code} file section.}
@@ -669,8 +743,11 @@ The grammar for this section is given in Figure~\ref{fig:nstar-common-sections-e
 
 \begin{figure}[htb]
   \centering
-  \scalebox{.45}{
-    \includegraphics{nstar/sections/externdata-grammar}
+
+  \framebox[\textwidth][c]{
+    \scalebox{.45}{
+      \includegraphics{nstar/sections/externdata-grammar}
+    }
   }
 
   \caption{Grammar for the \texttt{extern.data} and \texttt{extern.rodata} sections.}
@@ -685,17 +762,21 @@ Their grammar is given in Figure~\ref{fig:nstar-common-constvalue-grammar} and t
 
 \begin{figure}[htb]
   \centering
-  \scalebox{.5}{
-    \includegraphics{nstar/constants/integer-grammar}
-  }
-  \\
-  \scalebox{.5}{
-    \includegraphics{nstar/constants/character-grammar}
-  }
-  \\
-  \scalebox{.5}{
-    \includegraphics{nstar/constants/array-grammar}
-  }
+
+  \framebox[\textwidth][c]{\parbox{\textwidth}{
+      \centering
+      \scalebox{.5}{
+        \includegraphics{nstar/constants/integer-grammar}
+      }
+      \\
+      \scalebox{.5}{
+        \includegraphics{nstar/constants/character-grammar}
+      }
+      \\
+      \scalebox{.5}{
+        \includegraphics{nstar/constants/array-grammar}
+      }
+  }}
 
   \caption{Grammar for constant values.}
   \label{fig:nstar-common-constvalue-grammar}
@@ -704,29 +785,32 @@ Their grammar is given in Figure~\ref{fig:nstar-common-constvalue-grammar} and t
 \begin{figure}[htb]
   \centering
 
-  \begin{prooftree}
-    \hypo{$d is a signed integer constant$}
-    \hypo{$t $\in\{$s8, s16, s32, s64$\}}
-    \infer2{\Gamma\vdash^T_{data}$ d : t$}
-  \end{prooftree}
-  \\\vspace{\baselineskip}
-  \begin{prooftree}
-    \hypo{$d is an unsigned integer constant$}
-    \hypo{$t $\in\{$u8, u16, u32, u64$\}}
-    \infer2{\Gamma\vdash^T_{data}$ d : t$}
-  \end{prooftree}
-  \\\vspace{\baselineskip}
-  \begin{prooftree}
-    \hypo{$c is a character constant$}
-    \infer1{\Gamma\vdash^T_{data}$ c : char$}
-  \end{prooftree}
-  \\\vspace{\baselineskip}
-  \begin{prooftree}
-    \hypo{$n : $\mathbb{N}}
-    \hypo{\Gamma\vdash^K$ t : Tn$}
-    \hypo{\Gamma\vdash^T_{data}$ c$_1$, c$_2$, \ldots, c$_n$ : t$}
-    \infer3{\Gamma\vdash^T_{data}$ [c$_1$, c$_2$, \ldots, c$_n$] : *t$}
-  \end{prooftree}
+  \framebox[\textwidth][c]{\parbox{\textwidth}{
+      \centering
+      \begin{prooftree}
+        \hypo{$d is a signed integer constant$}
+        \hypo{$t $\in\{$s8, s16, s32, s64$\}}
+        \infer2{\Gamma\vdash^T_{data}$ d : t$}
+      \end{prooftree}
+      \\\vspace{\baselineskip}
+      \begin{prooftree}
+        \hypo{$d is an unsigned integer constant$}
+        \hypo{$t $\in\{$u8, u16, u32, u64$\}}
+        \infer2{\Gamma\vdash^T_{data}$ d : t$}
+      \end{prooftree}
+      \\\vspace{\baselineskip}
+      \begin{prooftree}
+        \hypo{$c is a character constant$}
+        \infer1{\Gamma\vdash^T_{data}$ c : char$}
+      \end{prooftree}
+      \\\vspace{\baselineskip}
+      \begin{prooftree}
+        \hypo{$n : $\mathbb{N}}
+        \hypo{\Gamma\vdash^K$ t : Tn$}
+        \hypo{\Gamma\vdash^T_{data}$ c$_1$, c$_2$, \ldots, c$_n$ : t$}
+        \infer3{\Gamma\vdash^T_{data}$ [c$_1$, c$_2$, \ldots, c$_n$] : *t$}
+      \end{prooftree}
+  }}
 
   \caption{Type inference rules for constant values.}
   \label{fig:nstar-common-constvalue-typerules}
@@ -809,9 +893,13 @@ Type inference rules are given in Figure~\ref{fig:nstar-instructionset-mv-typeru
 
 \begin{figure}[H]
   \centering
-  \scalebox{.5}{
-    \includegraphics{nstar/instructions/mov-grammar}
+
+  \framebox[\textwidth][c]{
+    \scalebox{.5}{
+      \includegraphics{nstar/instructions/mov-grammar}
+    }
   }
+
   \caption{Grammar of the \texttt{mv} instruction.}
   \label{fig:nstar-instructionset-mv-grammar}
 \end{figure}
@@ -819,19 +907,22 @@ Type inference rules are given in Figure~\ref{fig:nstar-instructionset-mv-typeru
 \begin{figure}[H]
   \centering
 
-  \begin{prooftree}
-    \hypo{$r, d are registers$}
-    \hypo{\Xi;\Gamma;\chi;\sigma;\epsilon\vdash^T_{code}$ r : $\forall$().ctx$}
-    \infer2[move cont from register to register]{\Xi;\Gamma;\chi;\sigma;$ r $\vdash^I$ mv r, d $\dashv\chi,$ d : $\forall$().ctx$;\sigma;$ d$}
-  \end{prooftree}
-  \\\vspace{\baselineskip}
-  \begin{prooftree}
-    \hypo{$r is a register$}
-    \hypo{$n $\leq 8}
-    \hypo{\Gamma\vdash^K$ t : Tn$}
-    \hypo{\Xi;\Gamma;\chi;\sigma;\epsilon\vdash^T_{code}$ e : t$}
-    \infer4[move value to register]{\Xi;\Gamma;\chi;\sigma;\epsilon\vdash^I$ mv e, r $\dashv\chi\setminus$r, r : t$;\sigma;\epsilon}
-  \end{prooftree}
+  \framebox[\textwidth][c]{\parbox{\textwidth}{
+      \centering
+      \begin{prooftree}
+        \hypo{$r, d are registers$}
+        \hypo{\Xi;\Gamma;\chi;\sigma;\epsilon\vdash^T_{code}$ r : $\forall$().ctx$}
+        \infer2[move cont from register to register]{\Xi;\Gamma;\chi;\sigma;$ r $\vdash^I$ mv r, d $\dashv\chi,$ d : $\forall$().ctx$;\sigma;$ d$}
+      \end{prooftree}
+      \\\vspace{\baselineskip}
+      \begin{prooftree}
+        \hypo{$r is a register$}
+        \hypo{$n $\leq 8}
+        \hypo{\Gamma\vdash^K$ t : Tn$}
+        \hypo{\Xi;\Gamma;\chi;\sigma;\epsilon\vdash^T_{code}$ e : t$}
+        \infer4[move value to register]{\Xi;\Gamma;\chi;\sigma;\epsilon\vdash^I$ mv e, r $\dashv\chi\setminus$r, r : t$;\sigma;\epsilon}
+      \end{prooftree}
+  }}
 
   \caption{Type inference rules for the \texttt{mv} instruction.}
   \label{fig:nstar-instructionset-mv-typerules}
@@ -845,8 +936,10 @@ Grammar and inference rules are given in Figure~\ref{fig:nstar-instructionset-ss
 \begin{figure}[H]
   \centering
 
-  \scalebox{.5}{
-    \includegraphics{nstar/instructions/sst-grammar}
+  \framebox[\textwidth][c]{
+    \scalebox{.5}{
+      \includegraphics{nstar/instructions/sst-grammar}
+    }
   }
 
   \caption{Grammar for the \texttt{sst} instruction.}
@@ -856,25 +949,28 @@ Grammar and inference rules are given in Figure~\ref{fig:nstar-instructionset-ss
 \begin{figure}[H]
   \centering
 
-  \begin{prooftree}
-    \hypo{$r is a register$}
-    \hypo{$n $\in\mathbb{N}}
-    \hypo{\hat{\sigma}=$ t$_0$::t$_1$::\ldots::t$_p$::s$}
-    \infer[no rule, rule margin=1.0ex]3{\Gamma\vdash^K$ t : T8\hspace{1.5em}$%
-                                        $n $\leq$ p$}
-    \infer[no rule, rule margin=1.0ex]1{\hat{\sigma}^\prime=\hat{\sigma}[\forall$().ctx$\setminus$t$_n]$\hspace{1.5em}$%
-                                        \Xi;\Gamma;\chi;\hat{\sigma};\epsilon\vdash^T_{code}$ r : $\forall$().ctx\hspace{1.5em}$%
-                                        $t$_n\sim$ t$}
-    \infer1[store cont from register to stack]{\Xi;\Gamma;\chi;\hat{\sigma};$ r $\vdash^I$ sst r, n $\dashv\chi;\hat{\sigma}^\prime;$ n$}
-  \end{prooftree}
-  \\\vspace{\baselineskip}
-  \begin{prooftree}
-    \hypo{$n $\in\mathbb{N}}
-    \hypo{\hat{\sigma}=$ t$_0$::t$_1$::\ldots::t$_p$::s$}
-    \hypo{$n $\leq$ p$}
-    \hypo{\Xi;\Gamma;\chi;\hat{\sigma};\epsilon\vdash^T_{code}$ e : t$_n}
-    \infer4[store value in stack]{\Xi;\Gamma;\chi;\hat{\sigma};\epsilon\vdash^I$ sst e, n $\dashv\chi;\hat{\sigma};\epsilon}
-  \end{prooftree}
+  \framebox[\textwidth][c]{\parbox{\textwidth}{
+      \centering
+      \begin{prooftree}
+        \hypo{$r is a register$}
+        \hypo{$n $\in\mathbb{N}}
+        \hypo{\hat{\sigma}=$ t$_0$::t$_1$::\ldots::t$_p$::s$}
+        \infer[no rule, rule margin=1.0ex]3{\Gamma\vdash^K$ t : T8\hspace{1.5em}$%
+          $n $\leq$ p$}
+        \infer[no rule, rule margin=1.0ex]1{\hat{\sigma}^\prime=\hat{\sigma}[\forall$().ctx$\setminus$t$_n]$\hspace{1.5em}$%
+          \Xi;\Gamma;\chi;\hat{\sigma};\epsilon\vdash^T_{code}$ r : $\forall$().ctx\hspace{1.5em}$%
+          $t$_n\sim$ t$}
+        \infer1[store cont from register to stack]{\Xi;\Gamma;\chi;\hat{\sigma};$ r $\vdash^I$ sst r, n $\dashv\chi;\hat{\sigma}^\prime;$ n$}
+      \end{prooftree}
+      \\\vspace{\baselineskip}
+      \begin{prooftree}
+        \hypo{$n $\in\mathbb{N}}
+        \hypo{\hat{\sigma}=$ t$_0$::t$_1$::\ldots::t$_p$::s$}
+        \hypo{$n $\leq$ p$}
+        \hypo{\Xi;\Gamma;\chi;\hat{\sigma};\epsilon\vdash^T_{code}$ e : t$_n}
+        \infer4[store value in stack]{\Xi;\Gamma;\chi;\hat{\sigma};\epsilon\vdash^I$ sst e, n $\dashv\chi;\hat{\sigma};\epsilon}
+      \end{prooftree}
+  }}
 
 
   \caption{Type inference rules for the \texttt{sst} instruction.}
@@ -889,8 +985,10 @@ Grammar and inference rules are given in Figure~\ref{fig:nstar-instructionset-sl
 \begin{figure}[H]
   \centering
 
-  \scalebox{.5}{
-    \includegraphics{nstar/instructions/sld-grammar}
+  \framebox[\textwidth][c]{
+    \scalebox{.5}{
+      \includegraphics{nstar/instructions/sld-grammar}
+    }
   }
 
   \caption{Grammar for the \texttt{sld} instruction.}
@@ -900,24 +998,27 @@ Grammar and inference rules are given in Figure~\ref{fig:nstar-instructionset-sl
 \begin{figure}[H]
   \centering
 
-  \begin{prooftree}
-    \hypo{$r is a register$}
-    \hypo{$n $\in\mathbb{N}}
-    \hypo{$n $\leq$ p$}
-    \infer[no rule, rule margin=1.0ex]3{\hat{\sigma}=$ t$_0$::t$_1$::\ldots::t$_p$::s\hspace{1.5em}$%
-                                        $t$_n\sim\forall$().ctx$}
-    \infer1[load cont from stack in register]{\Xi;\Gamma;\chi;\hat{\sigma};$ n $\vdash^I$ sld n, r $\dashv\chi,$ r : t$_n;\hat{\sigma};$ r$}
-  \end{prooftree}
-  \\\vspace{\baselineskip}
-  \begin{prooftree}
-    \hypo{$r is a register$}
-    \hypo{$n, k $\in\mathbb{N}}
-    \infer[no rule, rule margin=1.0ex]2{$n $\leq$ p\hspace{1.5em}$%
-                                        $k $\leq8$\hspace{1.5em}$%
-                                        \hat{\sigma}=$ t$_0$::t$_1$::\ldots::t$_p$::s\hspace{1.5em}$%
-                                        \Gamma\vdash^K$ t$_n$ : Tk$}
-    \infer1[load value from stack]{\Xi;\Gamma;\chi;\hat{\sigma};\epsilon\vdash^I$ sld n, r $\dashv\chi,$ r : t$_n;\hat{\sigma};\epsilon}
-  \end{prooftree}
+  \framebox[\textwidth][c]{\parbox{\textwidth}{
+      \centering
+      \begin{prooftree}
+        \hypo{$r is a register$}
+        \hypo{$n $\in\mathbb{N}}
+        \hypo{$n $\leq$ p$}
+        \infer[no rule, rule margin=1.0ex]3{\hat{\sigma}=$ t$_0$::t$_1$::\ldots::t$_p$::s\hspace{1.5em}$%
+          $t$_n\sim\forall$().ctx$}
+        \infer1[load cont from stack in register]{\Xi;\Gamma;\chi;\hat{\sigma};$ n $\vdash^I$ sld n, r $\dashv\chi,$ r : t$_n;\hat{\sigma};$ r$}
+      \end{prooftree}
+      \\\vspace{\baselineskip}
+      \begin{prooftree}
+        \hypo{$r is a register$}
+        \hypo{$n, k $\in\mathbb{N}}
+        \infer[no rule, rule margin=1.0ex]2{$n $\leq$ p\hspace{1.5em}$%
+          $k $\leq8$\hspace{1.5em}$%
+          \hat{\sigma}=$ t$_0$::t$_1$::\ldots::t$_p$::s\hspace{1.5em}$%
+          \Gamma\vdash^K$ t$_n$ : Tk$}
+        \infer1[load value from stack]{\Xi;\Gamma;\chi;\hat{\sigma};\epsilon\vdash^I$ sld n, r $\dashv\chi,$ r : t$_n;\hat{\sigma};\epsilon}
+      \end{prooftree}
+  }}
 
   \caption{Type inference rules for the \texttt{sld} instruction.}
   \label{fig:nstar-instructionset-sld-typerules}
@@ -931,8 +1032,10 @@ The grammar and inference rules are given in Figure~\ref{fig:nstar-instructionse
 \begin{figure}[H]
   \centering
 
-  \scalebox{.5}{
-    \includegraphics{nstar/instructions/st-grammar}
+  \framebox[\textwidth][c]{
+    \scalebox{.5}{
+      \includegraphics{nstar/instructions/st-grammar}
+    }
   }
 
   \caption{Grammar for the \texttt{st} instruction.}
@@ -942,19 +1045,22 @@ The grammar and inference rules are given in Figure~\ref{fig:nstar-instructionse
 \begin{figure}[H]
   \centering
 
-  \begin{prooftree}
-    \hypo{\Xi;\Gamma;\chi;\sigma;\epsilon\vdash^T_{code}$ e : t$}
-    \hypo{$e $\neq\epsilon}
-    \hypo{\Xi;\Gamma;\chi;\sigma;\epsilon\vdash^T_{code}$ o(p) : *t$}
-    \infer3[store value in pointer byte offset]{\Xi;\Gamma;\chi;\sigma;\epsilon\vdash^I$ st e, o(p) $\dashv\chi;\sigma;\epsilon}
-  \end{prooftree}
-  \\\vspace{\baselineskip}
-  \begin{prooftree}
-    \hypo{\Xi;\Gamma;\chi;\sigma;\epsilon\vdash^T_{code}$ e : t$}
-    \hypo{$e $\neq\epsilon}
-    \hypo{\Xi;\Gamma;\chi;\sigma;\epsilon\vdash^T_{code}$ p[o] : *t$}
-    \infer3[store value in pointer base offset]{\Xi;\Gamma;\chi;\sigma;\epsilon\vdash^I$ st e, p[o] $\dashv\chi;\sigma;\epsilon}
-  \end{prooftree}
+  \framebox[\textwidth][c]{\parbox{\textwidth}{
+      \centering
+      \begin{prooftree}
+        \hypo{\Xi;\Gamma;\chi;\sigma;\epsilon\vdash^T_{code}$ e : t$}
+        \hypo{$e $\neq\epsilon}
+        \hypo{\Xi;\Gamma;\chi;\sigma;\epsilon\vdash^T_{code}$ o(p) : *t$}
+        \infer3[store value in pointer byte offset]{\Xi;\Gamma;\chi;\sigma;\epsilon\vdash^I$ st e, o(p) $\dashv\chi;\sigma;\epsilon}
+      \end{prooftree}
+      \\\vspace{\baselineskip}
+      \begin{prooftree}
+        \hypo{\Xi;\Gamma;\chi;\sigma;\epsilon\vdash^T_{code}$ e : t$}
+        \hypo{$e $\neq\epsilon}
+        \hypo{\Xi;\Gamma;\chi;\sigma;\epsilon\vdash^T_{code}$ p[o] : *t$}
+        \infer3[store value in pointer base offset]{\Xi;\Gamma;\chi;\sigma;\epsilon\vdash^I$ st e, p[o] $\dashv\chi;\sigma;\epsilon}
+      \end{prooftree}
+  }}
 
   \caption{Type inference rules for the \texttt{st} instruction.}
   \label{fig:nstar-instructionset-st-typerules}
@@ -968,8 +1074,10 @@ Grammar and inference rules are given in Figure~\ref{fig:nstar-instructionset-ld
 \begin{figure}[H]
   \centering
 
-  \scalebox{.5}{
-    \includegraphics{nstar/instructions/ld-grammar}
+  \framebox[\textwidth][c]{
+    \scalebox{.5}{
+      \includegraphics{nstar/instructions/ld-grammar}
+    }
   }
 
   \caption{Grammar for the \texttt{ld} instruction.}
@@ -979,19 +1087,22 @@ Grammar and inference rules are given in Figure~\ref{fig:nstar-instructionset-ld
 \begin{figure}[H]
   \centering
 
-  \begin{prooftree}
-    \hypo{$r is a register$}
-    \hypo{$r $\neq\epsilon}
-    \hypo{\Xi;\Gamma;\chi;\sigma;\epsilon\vdash^T_{code}$ o(p) : *t$}
-    \infer3[load value from pointer byte offset]{\Xi;\Gamma;\chi;\sigma;\epsilon\vdash^I$ ld o(p), r $\dashv\chi,$ r : t$;\sigma;\epsilon}
-  \end{prooftree}
-  \\\vspace{\baselineskip}
-  \begin{prooftree}
-    \hypo{$r is a register$}
-    \hypo{$r $\neq\epsilon}
-    \hypo{\Xi;\Gamma;\chi;\sigma;\epsilon\vdash^T_{code}$ p[o] : *t$}
-    \infer3[load value from pointer base offset]{\Xi;\Gamma;\chi;\sigma;\epsilon\vdash^I$ ld p[o], r $\dashv\chi,$ r : t$;\sigma;\epsilon}
-  \end{prooftree}
+  \framebox[\textwidth][c]{\parbox{\textwidth}{
+      \centering
+      \begin{prooftree}
+        \hypo{$r is a register$}
+        \hypo{$r $\neq\epsilon}
+        \hypo{\Xi;\Gamma;\chi;\sigma;\epsilon\vdash^T_{code}$ o(p) : *t$}
+        \infer3[load value from pointer byte offset]{\Xi;\Gamma;\chi;\sigma;\epsilon\vdash^I$ ld o(p), r $\dashv\chi,$ r : t$;\sigma;\epsilon}
+      \end{prooftree}
+      \\\vspace{\baselineskip}
+      \begin{prooftree}
+        \hypo{$r is a register$}
+        \hypo{$r $\neq\epsilon}
+        \hypo{\Xi;\Gamma;\chi;\sigma;\epsilon\vdash^T_{code}$ p[o] : *t$}
+        \infer3[load value from pointer base offset]{\Xi;\Gamma;\chi;\sigma;\epsilon\vdash^I$ ld p[o], r $\dashv\chi,$ r : t$;\sigma;\epsilon}
+      \end{prooftree}
+  }}
 
   \caption{Type inference rules for the \texttt{ld} instruction.}
   \label{fig:nstar-instructionset-ld-typerules}
@@ -1005,8 +1116,10 @@ Grammar and inference rules are respectively given in Figure~\ref{fig:nstar-inst
 \begin{figure}[H]
   \centering
 
-  \scalebox{.5}{
-    \includegraphics{nstar/instructions/jmp-grammar}
+  \framebox[\textwidth][c]{
+    \scalebox{.5}{
+      \includegraphics{nstar/instructions/jmp-grammar}
+    }
   }
 
   \caption{Grammar of the \texttt{jmp} instruction.}
@@ -1016,11 +1129,13 @@ Grammar and inference rules are respectively given in Figure~\ref{fig:nstar-inst
 \begin{figure}[H]
   \centering
 
-  \begin{prooftree}
-    \hypo{\Xi;\Gamma;\chi;\sigma;\epsilon\vdash^T_{code}$ l<$\vec{v}$> : $\forall$().\{ $\chi^\prime$ | $\sigma\to\epsilon$ \}$}
-    \hypo{\chi\sim\chi^\prime}
-    \infer2[jump to label]{\Xi;\Gamma;\chi;\sigma;\epsilon\vdash^I$ jmp l<$\vec{v}$> $\dashv\chi;\sigma;\epsilon}
-  \end{prooftree}
+  \framebox[\textwidth][c]{
+    \begin{prooftree}
+      \hypo{\Xi;\Gamma;\chi;\sigma;\epsilon\vdash^T_{code}$ l<$\vec{v}$> : $\forall$().\{ $\chi^\prime$ | $\sigma\to\epsilon$ \}$}
+      \hypo{\chi\sim\chi^\prime}
+      \infer2[jump to label]{\Xi;\Gamma;\chi;\sigma;\epsilon\vdash^I$ jmp l<$\vec{v}$> $\dashv\chi;\sigma;\epsilon}
+    \end{prooftree}
+  }
 
   \caption{Type inference rules for the \texttt{jmp} instruction.}
   \label{fig:nstar-instructionset-jmp-typerules}
@@ -1036,8 +1151,10 @@ Grammar and inference rules are given in Figure~\ref{fig:nstar-instructionset-ca
 \begin{figure}[H]
   \centering
 
-  \scalebox{.5}{
-    \includegraphics{nstar/instructions/call-grammar}
+  \framebox[\textwidth][c]{
+    \scalebox{.5}{
+      \includegraphics{nstar/instructions/call-grammar}
+    }
   }
 
   \caption{Grammar of the \texttt{call} instruction.}
@@ -1047,24 +1164,27 @@ Grammar and inference rules are given in Figure~\ref{fig:nstar-instructionset-ca
 \begin{figure}[H]
   \centering
 
-  \begin{prooftree}
-    \hypo{$r is a register$}
-    \hypo{\Xi;\Gamma;\chi;\sigma;\epsilon\vdash^T_{code}$ l<$\vec{v}$> : $\forall$().\{ $\hat{\chi}$ | $\sigma\to$ r \}$}
-    \infer[no rule, rule margin=1.0ex]2{\Xi;\Gamma;\hat{\chi};\hat{\sigma};$ r $\vdash^T_{code}$ r : $\forall$().\{ $\chi^\prime$ | $\sigma^\prime\to\epsilon^\prime$ \}\hspace{1.5em}$%
-                                        \chi\sim\hat{\chi}}
+  \framebox[\textwidth][c]{\parbox{\textwidth}{
+      \centering
+      \begin{prooftree}
+        \hypo{$r is a register$}
+        \hypo{\Xi;\Gamma;\chi;\sigma;\epsilon\vdash^T_{code}$ l<$\vec{v}$> : $\forall$().\{ $\hat{\chi}$ | $\sigma\to$ r \}$}
+        \infer[no rule, rule margin=1.0ex]2{\Xi;\Gamma;\hat{\chi};\hat{\sigma};$ r $\vdash^T_{code}$ r : $\forall$().\{ $\chi^\prime$ | $\sigma^\prime\to\epsilon^\prime$ \}\hspace{1.5em}$%
+          \chi\sim\hat{\chi}}
 
-    \infer1[function call]{\Xi;\Gamma;\chi;\sigma;\epsilon\vdash^I$ call l<$\vec{v}$> $\dashv\chi;\sigma;\epsilon}
-  \end{prooftree}
-  \\\vspace{\baselineskip}
-  \begin{prooftree}
-    \hypo{$n $\in\mathbb{N}}
-    \hypo{$n $\leq$ p$}
-    \hypo{\Xi;\Gamma;\chi;\sigma;\epsilon\vdash^T_{code}$ l<$\vec{v}$> : $\forall$().\{ $\hat{\chi}$ | $\sigma\to$ n \}$}
-    \infer[no rule, rule margin=1.0ex]3{$t$_n\sim\forall$().\{ $\chi^\prime$ | $\sigma^\prime\to\epsilon^\prime$ \}\hspace{1.5em}$%
-                                        \chi\sim\hat{\chi}$\hspace{1.5em}$%
-                                        \sigma=$ t$_0$::t$_1$::\ldots::t$_p$::s$}
-    \infer1[function call]{\Xi;\Gamma;\chi;\sigma;\epsilon\vdash^I$ call l<$\vec{v}$> $\dashv\chi;\sigma;\epsilon}
-  \end{prooftree}
+        \infer1[function call]{\Xi;\Gamma;\chi;\sigma;\epsilon\vdash^I$ call l<$\vec{v}$> $\dashv\chi;\sigma;\epsilon}
+      \end{prooftree}
+      \\\vspace{\baselineskip}
+      \begin{prooftree}
+        \hypo{$n $\in\mathbb{N}}
+        \hypo{$n $\leq$ p$}
+        \hypo{\Xi;\Gamma;\chi;\sigma;\epsilon\vdash^T_{code}$ l<$\vec{v}$> : $\forall$().\{ $\hat{\chi}$ | $\sigma\to$ n \}$}
+        \infer[no rule, rule margin=1.0ex]3{$t$_n\sim\forall$().\{ $\chi^\prime$ | $\sigma^\prime\to\epsilon^\prime$ \}\hspace{1.5em}$%
+          \chi\sim\hat{\chi}$\hspace{1.5em}$%
+          \sigma=$ t$_0$::t$_1$::\ldots::t$_p$::s$}
+        \infer1[function call]{\Xi;\Gamma;\chi;\sigma;\epsilon\vdash^I$ call l<$\vec{v}$> $\dashv\chi;\sigma;\epsilon}
+      \end{prooftree}
+  }}
 
   \caption{Type inference rules for the \texttt{call} instruction.}
   \label{fig:nstar-instructionset-call-typerules}
@@ -1079,8 +1199,10 @@ Grammar is given in Figure~\ref{fig:nstar-instructionset-ret-grammar} and type i
 \begin{figure}[H]
   \centering
 
-  \scalebox{.5}{
-    \includegraphics{nstar/instructions/ret-grammar}
+  \framebox[\textwidth][c]{
+    \scalebox{.5}{
+      \includegraphics{nstar/instructions/ret-grammar}
+    }
   }
 
   \caption{Grammar for the \texttt{ret} instruction.}
@@ -1090,12 +1212,14 @@ Grammar is given in Figure~\ref{fig:nstar-instructionset-ret-grammar} and type i
 \begin{figure}[H]
   \centering
 
-  \begin{prooftree}
-    \hypo{$r is a register$}
-    \hypo{\Xi;\Gamma;\chi;\sigma;$ r $\vdash^T_{code}$ r : $\forall$().\{ $\chi^\prime$ | $\sigma\to\epsilon$ \}$}
-    \hypo{\chi\sim\chi^\prime}
-    \infer3[return to caller in register]{\Xi;\Gamma;\chi;\sigma;$ r $\vdash^I$ ret $\dashv\chi;\sigma;$ r$}
-  \end{prooftree}
+  \framebox[\textwidth][c]{
+    \begin{prooftree}
+      \hypo{$r is a register$}
+      \hypo{\Xi;\Gamma;\chi;\sigma;$ r $\vdash^T_{code}$ r : $\forall$().\{ $\chi^\prime$ | $\sigma\to\epsilon$ \}$}
+      \hypo{\chi\sim\chi^\prime}
+      \infer3[return to caller in register]{\Xi;\Gamma;\chi;\sigma;$ r $\vdash^I$ ret $\dashv\chi;\sigma;$ r$}
+    \end{prooftree}
+  }
 
   \caption{Type inference rules for the \texttt{ret} instruction.}
   \label{fig:nstar-instructionset-ret-typerules}
@@ -1109,8 +1233,10 @@ Grammar and type inference rules are respectively given in Figure~\ref{fig:nstar
 \begin{figure}[H]
   \centering
 
-  \scalebox{.5}{
-    \includegraphics{nstar/instructions/nop-grammar}
+  \framebox[\textwidth][c]{
+    \scalebox{.5}{
+      \includegraphics{nstar/instructions/nop-grammar}
+    }
   }
 
   \caption{Grammar for the \texttt{nop} instruction.}
@@ -1120,9 +1246,11 @@ Grammar and type inference rules are respectively given in Figure~\ref{fig:nstar
 \begin{figure}[H]
   \centering
 
-  \begin{prooftree}
-    \infer0{\Xi;\Gamma;\chi;\sigma;\epsilon\vdash^I$ nop $\dashv\chi;\sigma;\epsilon}
-  \end{prooftree}
+  \framebox[\textwidth][c]{
+    \begin{prooftree}
+      \infer0{\Xi;\Gamma;\chi;\sigma;\epsilon\vdash^I$ nop $\dashv\chi;\sigma;\epsilon}
+    \end{prooftree}
+  }
 
   \caption{Type inference rules for the \texttt{nop} instruction.}
   \label{fig:nstar-instructionset-nop-typerules}
@@ -1136,8 +1264,10 @@ Grammar and type inference rules are given in Figure~\ref{fig:nstar-instructions
 \begin{figure}[H]
   \centering
 
-  \scalebox{.5}{
-    \includegraphics{nstar/instructions/salloc-grammar}
+  \framebox[\textwidth][c]{
+    \scalebox{.5}{
+      \includegraphics{nstar/instructions/salloc-grammar}
+    }
   }
 
   \caption{Grammar for the \texttt{salloc} instruction.}
@@ -1147,19 +1277,22 @@ Grammar and type inference rules are given in Figure~\ref{fig:nstar-instructions
 \begin{figure}[H]
   \centering
 
-  \begin{prooftree}
-    \hypo{$n, m $\in\mathbb{N}}
-    \hypo{\Gamma\vdash^K$ t : Tm$}
-    \hypo{\sigma^\prime=$ t::$\sigma}
-    \infer3[\texttt{salloc} with stack continuation]{\Xi;\Gamma;\chi;\sigma;$ n $\vdash^I$ salloc t $\dashv\chi;\sigma^\prime;$ n$+1}
-  \end{prooftree}
-  \\\vspace{\baselineskip}
-  \begin{prooftree}
-    \hypo{$m $\in\mathbb{N}}
-    \hypo{\Gamma\vdash^K$ t : Tm$}
-    \hypo{\sigma^\prime=$ t::$\sigma}
-    \infer3{\Xi;\Gamma;\chi;\sigma;\epsilon\vdash^I$ salloc t $\dashv\chi;\sigma^\prime;\epsilon}
-  \end{prooftree}
+  \framebox[\textwidth][c]{\parbox{\textwidth}{
+      \centering
+      \begin{prooftree}
+        \hypo{$n, m $\in\mathbb{N}}
+        \hypo{\Gamma\vdash^K$ t : Tm$}
+        \hypo{\sigma^\prime=$ t::$\sigma}
+        \infer3[\texttt{salloc} with stack continuation]{\Xi;\Gamma;\chi;\sigma;$ n $\vdash^I$ salloc t $\dashv\chi;\sigma^\prime;$ n$+1}
+      \end{prooftree}
+      \\\vspace{\baselineskip}
+      \begin{prooftree}
+        \hypo{$m $\in\mathbb{N}}
+        \hypo{\Gamma\vdash^K$ t : Tm$}
+        \hypo{\sigma^\prime=$ t::$\sigma}
+        \infer3{\Xi;\Gamma;\chi;\sigma;\epsilon\vdash^I$ salloc t $\dashv\chi;\sigma^\prime;\epsilon}
+      \end{prooftree}
+  }}
 
   \caption{Type inference rules for the \texttt{salloc} instruction.}
   \label{fig:nstar-instructionset-salloc-typerules}
@@ -1173,8 +1306,10 @@ Grammar and type inference rules are respectively given in Figure~\ref{fig:nstar
 \begin{figure}[H]
   \centering
 
-  \scalebox{.5}{
-    \includegraphics{nstar/instructions/sfree-grammar}
+  \framebox[\textwidth][c]{
+    \scalebox{.5}{
+      \includegraphics{nstar/instructions/sfree-grammar}
+    }
   }
 
   \caption{Grammar for the \texttt{sfree} instruction.}
@@ -1184,19 +1319,22 @@ Grammar and type inference rules are respectively given in Figure~\ref{fig:nstar
 \begin{figure}[H]
   \centering
 
-  \begin{prooftree}
-    \hypo{$n $\geq 1}
-    \hypo{$n $\leq$ p$}
-    \hypo{\sigma=$ t$_0$::t$_1$::\ldots::t$_p$::s$}
-    \hypo{\sigma^\prime=$ t$_1$::\ldots::t$_p$::s$}
-    \infer4[\texttt{sfree} with stack continuation]{\Xi;\Gamma;\chi;\sigma;$ n $\vdash^I$ sfree $\dashv\chi;\sigma^\prime;$ n$-1}
-  \end{prooftree}
-  \\\vspace{\baselineskip}
-  \begin{prooftree}
-    \hypo{\sigma=$ t$_0$::t$_1$::\ldots::t$_p$::s$}
-    \hypo{\sigma^\prime=$ t$_1$::\ldots::t$_p$::s$}
-    \infer2{\Xi;\Gamma;\chi;\sigma;\epsilon\vdash^I$ sfree $\dashv\chi;\sigma^\prime;\epsilon}
-  \end{prooftree}
+  \framebox[\textwidth][c]{\parbox{\textwidth}{
+      \centering
+      \begin{prooftree}
+        \hypo{$n $\geq 1}
+        \hypo{$n $\leq$ p$}
+        \hypo{\sigma=$ t$_0$::t$_1$::\ldots::t$_p$::s$}
+        \hypo{\sigma^\prime=$ t$_1$::\ldots::t$_p$::s$}
+        \infer4[\texttt{sfree} with stack continuation]{\Xi;\Gamma;\chi;\sigma;$ n $\vdash^I$ sfree $\dashv\chi;\sigma^\prime;$ n$-1}
+      \end{prooftree}
+      \\\vspace{\baselineskip}
+      \begin{prooftree}
+        \hypo{\sigma=$ t$_0$::t$_1$::\ldots::t$_p$::s$}
+        \hypo{\sigma^\prime=$ t$_1$::\ldots::t$_p$::s$}
+        \infer2{\Xi;\Gamma;\chi;\sigma;\epsilon\vdash^I$ sfree $\dashv\chi;\sigma^\prime;\epsilon}
+      \end{prooftree}
+  }}
 
   \caption{Type inference rules for the \texttt{sfree} instruction.}
   \label{fig:nstar-instructionset-sfree-typerules}
