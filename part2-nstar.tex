@@ -1424,7 +1424,7 @@ This section describes the operational semantics of the core instructions descri
 
 Describing the operational semantics makes use of a specific notation:
 \begin{itemize}
-  \item $(H | \chi | \sigma | C)$ is the evaluation context composed of several subcontexts:
+  \item $(H \mid \chi \mid \sigma \mid C)$ is the evaluation context composed of several subcontexts:
         \begin{itemize}
           \item $H = H_{C} \cup H_{D}$ is the global heap, composed of two smaller heaps: $H_{C}$ is the heap containing all the code, as well as labels and $H_{D}$ is the heap containing any data binding;
           \item $\chi$ is the current set of bound registers, associated to their values. It may be the empty set $\cdot$ which means that no register is currently bound (or at least that no register can be read);
@@ -1439,3 +1439,42 @@ Describing the operational semantics makes use of a specific notation:
         \end{prooftree}
       \end{center}
 \end{itemize}
+
+\begin{figure}[H]
+  \centering
+
+  \framebox[\textwidth][c]{
+    \parbox{\textwidth}{
+      \centering
+
+      \begin{prooftree}
+        \hypo{\text{r is a register}}
+        \infer1[reduc(jmp)]{(H \mid \chi \mid \sigma \mid \text{jmp r}; C) \vDash (H \mid \chi \mid \sigma \mid H_C[\chi[\text{r}]]; C)}
+      \end{prooftree}
+      \\\vspace{\baselineskip}
+      \begin{prooftree}
+        \hypo{\text{l is a label}}
+        \infer1[reduc(jmp)]{(H \mid \chi \mid \sigma \mid \text{jmp l}; C) \vDash (H \mid \chi \mid \sigma \mid H_C[l]; C)}
+      \end{prooftree}
+      \\\vspace{\baselineskip}
+      \begin{prooftree}
+        \infer0[reduc(halt)]{(H \mid \chi \mid \sigma \mid \text{halt}; C) \vDash (H \mid \chi \mid \sigma \mid \cdot)}
+      \end{prooftree}
+      \\\vspace{\baselineskip}
+      \begin{prooftree}
+        \infer0[reduc(salloc)]{(H \mid \chi \mid \sigma \mid \text{salloc n}; C) \vDash (H \mid \chi \mid \cdot^\text{n}\dblcolon\sigma \mid C)}
+      \end{prooftree}
+      \\\vspace{\baselineskip}
+      \begin{prooftree}
+        \infer0[reduc(sfree)]{(H \mid \chi \mid \cdot^\text{n}\dblcolon\sigma \mid \text{sfree n}; C) \vDash (H \mid \chi \mid \sigma \mid C)}
+      \end{prooftree}
+      \\\vspace{\baselineskip}
+      \begin{prooftree}
+        \infer0[reduc(sld)]{(H \mid \chi \mid \sigma \mid \text{sld n, s, r}; C) \vDash (H \mid \chi, \chi[\text{r}] \gets (\sigma - \text{n})^\text{s} \mid \sigma \mid C)}
+      \end{prooftree}
+    }
+  }
+
+  \caption{Description of the reduction steps of the NSAM.}
+  \label{fig:nstar-nsam-opsem-reductionsteps}
+\end{figure}
