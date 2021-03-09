@@ -1393,3 +1393,27 @@ A rough translation of some \nstar\ instructions will be proposed as a simple be
   \caption{The beginning of a small translation model from \nstar\ to the NSAM core. \textbf{$\chi;\sigma;\epsilon\vdash\text{i} \rightsquigarrow \textit{i}$} is the translation from the \nstar\ typed instruction \textbf{$\chi;\sigma;\epsilon\vdash\text{i}$} into the NSAM core instruction \textbf{$\textit{i}$}.}
   \label{fig:nstar-nsam-translation-nstar-nsam}
 \end{figure}
+
+\section{Core instructions}\label{sec:nstar-nsam-core}
+
+The NSAM is composed of several core instructions which all form a subset of the available instructions in \nstar.
+These instructions are described in Figure~\ref{fig:nstar-nsam-core-instructions}.
+
+\begin{longtable}[H]{p{0.45\textwidth}p{0.45\textwidth}}
+  \toprule
+  Instruction & Description \\
+  \midrule \endhead
+  \texttt{jmp l} & Transfers the control flow to the code address pointed by the label \texttt{l} \\
+  \texttt{salloc n} & Allocates a space of \texttt{n} bytes on top of the stack \\
+  \texttt{sfree n} & Pops a space of \texttt{n} bytes off the top of the stack \\
+  \texttt{halt} & Stops the execution of code by emptying the code buffer \\
+  \texttt{mv s, d} & Moves a value (either a literal value or a value taken from a register) into the destination register \texttt{d} \\
+  \texttt{sld n, s, r} & Copies \texttt{s} bytes taken \texttt{n} bytes from the top of the stack into the register \texttt{r} \\
+  \texttt{sst r, n} & Copies the value in the register \texttt{r} to \texttt{n} bytes from the top of the stack \\
+  \texttt{ld o(p), s, r} & Copies \texttt{s} bytes at the address \texttt{p + o} into the register \texttt{r} \\
+  \texttt{st r, o(p)} & Copies the value in the register \texttt{r} into the memory space at the address \texttt{p + o} \\
+  \bottomrule
+
+  \caption{The core instructions of the NSAM along with a small description of each one of them.}
+  \label{fig:nstar-nsam-core-instructions}
+\end{longtable}
