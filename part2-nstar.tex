@@ -15,11 +15,11 @@ TALx86 is basically NASM with a type system, targetting only the x86 architectur
 \vspace{\baselineskip}
 
 \nstar's goal is to assist users with a simple but powerful type system, yet still allowing for low-level data manipulation.
-But before even being a usable programming language, \nstar aims at being a compiler backend (much like for example LLVM), and is used that way in the Zilch project. Differences with other compiler backends are mostly the type-system, allowing the compilation of Zilch source code into type-safe instructions.
+But before even being a usable programming language, \nstar\ aims at being a compiler backend (much like for example LLVM), and is used that way in the Zilch project. Differences with other compiler backends are mostly the type-system, allowing the compilation of Zilch source code into type-safe instructions.
 
 \vspace{\baselineskip}
 
-Because \nstar supports compiling to multiple architectures, using different grammars, describing \nstar will at first be platform-agnostic, treating common aspects between all CPU architectures, and then will be divided into multiple categories, explaining in more details some features on a per-architecture basis\footnote{Note that the target executable format (ELF, PE, \ldots) is also considered as an architecture-specific thing, but should not influence \nstar much.}.
+Because \nstar\ supports compiling to multiple architectures, using different grammars, describing \nstar\ will at first be platform-agnostic, treating common aspects between all CPU architectures, and then will be divided into multiple categories, explaining in more details some features on a per-architecture basis\footnote{Note that the target executable format (ELF, PE, \ldots) is also considered as an architecture-specific thing, but should not influence \nstar\ much.}.
 
 \section*{Small notes on the notation used in the next chapters}\label{sec:nstar-abstract-notation}
 
@@ -60,12 +60,12 @@ Because \nstar supports compiling to multiple architectures, using different gra
 
 \section{Types}\label{sec:nstar-common-ts}
 
-One of the differences between classical assembly languages and \nstar is its type system.
-Compared to other higher level programming languages like Java, C++, etc, \nstar has a very simple yet powerful and expressive enough type system.
+One of the differences between classical assembly languages and \nstar\ is its type system.
+Compared to other higher level programming languages like Java, C++, etc, \nstar\ has a very simple yet powerful and expressive enough type system.
 
 In programming, types are used mostly to prove at compile-time that a given program should behave well if it type-checks. While this works for more elaborated programming languages like Haskell, Idris, etc, most type systems aren't expressive enough to absolutely guarantee that everything will work at run-time (in fact, there is no possible way of doing this, because for example a memory allocation may fail, and this cannot be checked at compile-time). However, we can try to guarantee as much as possible.
 
-\nstar doesn't try to solve this issue, because it would be really hard to target a dependently typed assembly language from a non-dependently typed programming language. But where all used assembly languages do not even consider types (only numbers, in fact), \nstar embeds a powerful type system used to remove the possibility of bugs (like incorrect structure addresses passed as a parameter function, or incoherent types in some instructions).
+\nstar\ doesn't try to solve this issue, because it would be really hard to target a dependently typed assembly language from a non-dependently typed programming language. But where all used assembly languages do not even consider types (only numbers, in fact), \nstar\ embeds a powerful type system used to remove the possibility of bugs (like incorrect structure addresses passed as a parameter function, or incoherent types in some instructions).
 
 \subsection{Kinds}\label{subsec:nstar-common-ts-kinds}
 
@@ -541,7 +541,7 @@ Grammar and inference rules are given respectively in Figure~\ref{fig:nstar-comm
 
 \subsection{Registers}\label{subsec:nstar-common-expressions-registers}
 
-Registers in \nstar are abstracted away from the target architectures.
+Registers in \nstar\ are abstracted away from the target architectures.
 Instead of manipulating registers \texttt{\%eax} or \texttt{\%rsp} or \texttt{\$a2}, which all are platform-specific, there are 6 general purpose registers in \nstar, named \texttt{r0} to \texttt{r5}.
 They can be 4 to 8 bytes large depending on the target architecture mappings.
 
@@ -631,12 +631,12 @@ Although offsetting a pointer works with any expression as the offset (as long a
 
 \section{File sections}\label{sec:nstar-common-sections}
 
-Sections in \nstar serve the exact same purpose as in other assembly languages. They divide a file into multiple parts depending on what the semantics of the current section is supposed to be (code, data, etc).
+Sections in \nstar\ serve the exact same purpose as in other assembly languages. They divide a file into multiple parts depending on what the semantics of the current section is supposed to be (code, data, etc).
 Section names obviously differ from one target format to another. As an example, the ``\texttt{.rela.dyn}'' section from the ELF format may not exist in the PE format.
 
-\nstar tries to unify target formats section names (simplifying targetting \nstar as a compiler backend) by having a fixed set of section names, all with different meanings. While you can put anything anywhere in classical assembly languages, this is not the case in \nstar.
+\nstar\ tries to unify target formats section names (simplifying targetting \nstar\ as a compiler backend) by having a fixed set of section names, all with different meanings. While you can put anything anywhere in classical assembly languages, this is not the case in \nstar.
 
-Sections in \nstar can be named ``\texttt{data}'', ``\texttt{code}'', ``\texttt{rodata}'', ``\texttt{udata}'' or ``\texttt{extern}''. Each of them has defined semantics as described below.
+Sections in \nstar\ can be named ``\texttt{data}'', ``\texttt{code}'', ``\texttt{rodata}'', ``\texttt{udata}'' or ``\texttt{extern}''. Each of them has defined semantics as described below.
 
 \subsection{The \texttt{code} section}\label{subsec:nstar-common-sections-code}
 
@@ -818,12 +818,12 @@ Their grammar is given in Figure~\ref{fig:nstar-common-constvalue-grammar} and t
 
 \section{Restrictions applied to branching}\label{sec:nstar-common-bs-restrictions}
 
-Branching ((un-)\ conditional jumps, calls, etc) is restricted in \nstar in order to prevent stack leaks, unknown caller address return or even missing return values.
+Branching ((un-)\ conditional jumps, calls, etc) is restricted in \nstar\ in order to prevent stack leaks, unknown caller address return or even missing return values.
 It also is restricted not to integrate some sort of scoping, which would add some (mostly useless) complexity when using/generating \nstar.
 
 \subsection{Returning to a known code-space address}\label{subsec:nstar-common-bs-restrictions-ret}
 
-\nstar offers what we call ``continuations'', which are a mean of easily controlling the instruction control flow of the program.
+\nstar\ offers what we call ``continuations'', which are a mean of easily controlling the instruction control flow of the program.
 Thanks to that, this is actually easy to check whether we would be returning to some valid piece of code: the continuation part of th context must be bound to something of the form $\forall().ctx$.
 When anything else is in the continuation (in fact, it cannot be, because we do not allow overwriting the continuation --- which can be worked around by moving the continuation somewhere else before), it is strictly impossible to either \texttt{call} or \texttt{jmp} to a label, or \texttt{ret} from a piece of code, which would yield a very nasty undefined behavior at runtime in mainstream assembly languages.
 
