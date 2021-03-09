@@ -1417,3 +1417,25 @@ These instructions are described in Figure~\ref{fig:nstar-nsam-core-instructions
   \caption{The core instructions of the NSAM along with a small description of each one of them.}
   \label{fig:nstar-nsam-core-instructions}
 \end{longtable}
+
+\section{Operational semantics}\label{sec:nstar-nsam-opsem}
+
+This section describes the operational semantics of the core instructions described in Section~\ref{sec:nstar-nsam-core}~``\nameref{sec:nstar-nsam-core}''.
+
+Describing the operational semantics makes use of a specific notation:
+\begin{itemize}
+  \item $(H | \chi | \sigma | C)$ is the evaluation context composed of several subcontexts:
+        \begin{itemize}
+          \item $H = H_{C} \cup H_{D}$ is the global heap, composed of two smaller heaps: $H_{C}$ is the heap containing all the code, as well as labels and $H_{D}$ is the heap containing any data binding;
+          \item $\chi$ is the current set of bound registers, associated to their values. It may be the empty set $\cdot$ which means that no register is currently bound (or at least that no register can be read);
+          \item $\sigma$ is the current stack. It may be the empty stack $\cdot$ or the stack constructor $v^{n} \dblcolon s$, which means that there is a value $v$ of size $n$ on top of the stack $s$;
+          \item $C$ is the code buffer, and contains either no instruction (denotated as $\cdot$), one instruction or a sequence of multiple instructions, written as $i; I$;
+        \end{itemize}
+  \item A reduction step $\zeta \vDash \zeta^{\prime}$ is a step taking the context $\zeta$ and outputting the new context $\zeta^{\prime}$ (which may or may not be the same as $\zeta$);
+  \item Sometimes, pre-conditions are needed in order to choose which reduction step to apply. This notation will be used to describe reduction steps: \begin{center}
+        \begin{prooftree}
+          \hypo{\text{preconditions}}
+          \infer1[reduc(i)]{\zeta\vDash\zeta^\prime}
+        \end{prooftree}
+      \end{center}
+\end{itemize}
