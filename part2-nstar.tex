@@ -1445,32 +1445,95 @@ Describing the operational semantics makes use of a specific notation:
 
   \framebox[\textwidth][c]{
     \parbox{\textwidth}{
+      \footnotesize
       \centering
 
       \begin{prooftree}
         \hypo{\text{r is a register}}
-        \infer1[reduc(jmp)]{(H \mid \chi \mid \sigma \mid \text{jmp r}; C) \vDash (H \mid \chi \mid \sigma \mid H_C[\chi[\text{r}]]; C)}
+        \infer1{(H \mid \chi \mid \sigma \mid \text{jmp r}; C) \vDash (H \mid \chi \mid \sigma \mid \text{deref}\ H_C[\chi[\text{r}]]^8; C)}
+      \end{prooftree}\hspace{1.5em}
+      \begin{prooftree}
+        \hypo{\text{l is a label}}
+        \infer1{(H \mid \chi \mid \sigma \mid \text{jmp l}; C) \vDash (H \mid \chi \mid \sigma \mid \text{deref}\  H_C[l]^8; C)}
+      \end{prooftree}
+      \\\vspace{\baselineskip}
+      \begin{prooftree}
+        \infer0{(H \mid \chi \mid \sigma \mid \text{halt}; C) \vDash (H \mid \chi \mid \sigma \mid \cdot)}
+      \end{prooftree}
+      \\\vspace{\baselineskip}
+      \begin{prooftree}
+        \infer0{(H \mid \chi \mid \sigma \mid \text{salloc n}; C) \vDash (H \mid \chi \mid \cdot^\text{n}\dblcolon\sigma \mid C)}
+      \end{prooftree}\hspace{1.5em}
+      \begin{prooftree}
+        \infer0{(H \mid \chi \mid \cdot^\text{n}\dblcolon\sigma \mid \text{sfree n}; C) \vDash (H \mid \chi \mid \sigma \mid C)}
+      \end{prooftree}
+      \\\vspace{\baselineskip}
+      \begin{prooftree}
+        \infer0{(H \mid \chi \mid \sigma \mid \text{sld n, s, r}; C) \vDash (H \mid \chi, \chi[\text{r}] \gets (\sigma - \text{n})^\text{s} \mid \sigma \mid C)}
+      \end{prooftree}
+      \\\vspace{\baselineskip}
+      \begin{prooftree}
+        \infer0{(H \mid \chi \mid \sigma \mid \text{sst r, n}; C) \vDash (H \mid \chi \mid (\sigma - \text{n})^8 \gets \chi[\text{r}] \mid C)}
+      \end{prooftree}
+      \\\vspace{\baselineskip}
+      \begin{prooftree}
+        \hypo{\text{s is a register}}
+        \infer1{(H \mid \chi \mid \sigma \mid \text{mv s, d}; C) \vDash (H \mid \chi, \chi[\text{d}] \gets \chi[\text{s}] \mid \sigma \mid C)}
+      \end{prooftree}\hspace{1.5em}
+      \begin{prooftree}
+        \hypo{\text{l is a label}}
+        \infer1{(H \mid \chi \mid \sigma \mid \text{mv l, d}; C) \vDash (H \mid \chi, \chi[\text{d}] \gets H_C[l]^8 \mid \sigma \mid C)}
+      \end{prooftree}
+      \\\vspace{\baselineskip}
+      \begin{prooftree}
+        \hypo{\text{v is a value}}
+        \infer1{(H \mid \chi \mid \sigma \mid \text{mv v, d}; C) \vDash (H \mid \chi, \chi[\text{d}] \gets \text{v} \mid \sigma \mid C)}
       \end{prooftree}
       \\\vspace{\baselineskip}
       \begin{prooftree}
         \hypo{\text{l is a label}}
-        \infer1[reduc(jmp)]{(H \mid \chi \mid \sigma \mid \text{jmp l}; C) \vDash (H \mid \chi \mid \sigma \mid H_C[l]; C)}
+        \hypo{\text{r is a register}}
+        \infer2{(H \mid \chi \mid \sigma \mid \text{ld r(l), s, d}; C) \vDash (H \mid \chi, \chi[\text{d}] \gets H_D[\text{l} + \chi[\text{r}]]^\text{s} \mid \sigma \mid C)}
       \end{prooftree}
       \\\vspace{\baselineskip}
       \begin{prooftree}
-        \infer0[reduc(halt)]{(H \mid \chi \mid \sigma \mid \text{halt}; C) \vDash (H \mid \chi \mid \sigma \mid \cdot)}
+        \hypo{\text{l is a label}}
+        \hypo{\text{o} \in \mathbb{Z}}
+        \infer2{(H \mid \chi \mid \sigma \mid \text{ld o(l), s, d}; C) \vDash (H \mid \chi, \chi[\text{d}] \gets H_D[\text{l} + \text{o}]^\text{s} \mid \sigma \mid C)}
       \end{prooftree}
       \\\vspace{\baselineskip}
       \begin{prooftree}
-        \infer0[reduc(salloc)]{(H \mid \chi \mid \sigma \mid \text{salloc n}; C) \vDash (H \mid \chi \mid \cdot^\text{n}\dblcolon\sigma \mid C)}
+        \hypo{\text{r and o are registers}}
+        \infer1{(H \mid \chi \mid \sigma \mid \text{ld o(r), s, d}; C) \vDash (H \mid \chi, \chi[\text{d}] \gets H_D[\chi[\text{r}] + \chi[\text{o}]]^\text{s} \mid \sigma \mid C)}
       \end{prooftree}
       \\\vspace{\baselineskip}
       \begin{prooftree}
-        \infer0[reduc(sfree)]{(H \mid \chi \mid \cdot^\text{n}\dblcolon\sigma \mid \text{sfree n}; C) \vDash (H \mid \chi \mid \sigma \mid C)}
+        \hypo{\text{r is a register}}
+        \hypo{\text{o} \in \mathbb{Z}}
+        \infer2{(H \mid \chi \mid \sigma \mid \text{ld o(r), s, d}; C) \vDash (H \mid \chi, \chi[\text{d}] \gets H_D[\chi[\text{r}] + \text{o}]^\text{s} \mid \sigma \mid C)}
       \end{prooftree}
       \\\vspace{\baselineskip}
       \begin{prooftree}
-        \infer0[reduc(sld)]{(H \mid \chi \mid \sigma \mid \text{sld n, s, r}; C) \vDash (H \mid \chi, \chi[\text{r}] \gets (\sigma - \text{n})^\text{s} \mid \sigma \mid C)}
+        \hypo{\text{r is a register}}
+        \hypo{\text{o} \in \mathbb{Z}}
+        \infer2{(H \mid \chi \mid \sigma \mid \text{st s, o(r)}; C) \vDash (H, H_D[\chi[\text{r}] + \text{o}]^8 \gets \chi[s] \mid \chi \mid \sigma \mid C)}
+      \end{prooftree}
+      \\\vspace{\baselineskip}
+      \begin{prooftree}
+        \hypo{\text{r and o are registers}}
+        \infer1{(H \mid \chi \mid \sigma \mid \text{st s, o(r)}; C) \vDash (H, H_D[\chi[\text{r}] + \chi[\text{o}]]^8 \gets \chi[s] \mid \chi \mid \sigma \mid C)}
+      \end{prooftree}
+      \\\vspace{\baselineskip}
+      \begin{prooftree}
+        \hypo{\text{l is a label}}
+        \hypo{\text{o} \in \mathbb{Z}}
+        \infer2{(H \mid \chi \mid \sigma \mid \text{st s, o(l)}; C) \vDash (H, H_D[H_D[\text{l}]^8 + \text{o}]^8 \gets \chi[s] \mid \chi \mid \sigma \mid C)}
+      \end{prooftree}
+      \\\vspace{\baselineskip}
+      \begin{prooftree}
+        \hypo{\text{l is a label}}
+        \hypo{\text{o is a register}}
+        \infer2{(H \mid \chi \mid \sigma \mid \text{st s, o(l)}; C) \vDash (H, H_D[H_D[\text{l}]^8 + \chi[\text{o}]]^8 \gets \chi[s] \mid \chi \mid \sigma \mid C)}
       \end{prooftree}
     }
   }
