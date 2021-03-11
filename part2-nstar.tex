@@ -1469,11 +1469,11 @@ Describing the operational semantics makes use of a specific notation:
       \end{prooftree}
       \\\vspace{\baselineskip}
       \begin{prooftree}
-        \infer0{(H \mid \chi \mid \sigma \mid \text{sld n, s, r}; C) \vDash (H \mid \chi, \chi[\text{r}] \gets (\sigma - \text{n})^\text{s} \mid \sigma \mid C)}
+        \infer0{(H \mid \chi \mid \cdot^\text{n}\dblcolon\text{v}^s\dblcolon\sigma \mid \text{sld n, s, r}; C) \vDash (H \mid \chi, \chi[\text{r}] \gets \text{v} \mid \cdot^\text{n}\dblcolon\text{v}^s\dblcolon\sigma \mid C)}
       \end{prooftree}
       \\\vspace{\baselineskip}
       \begin{prooftree}
-        \infer0{(H \mid \chi \mid \sigma \mid \text{sst r, n}; C) \vDash (H \mid \chi \mid (\sigma - \text{n})^8 \gets \chi[\text{r}] \mid C)}
+        \infer0{(H \mid \chi \mid \cdot^\text{n}\dblcolon\cdot^8\dblcolon\sigma \mid \text{sst r, n}; C) \vDash (H \mid \chi \mid \cdot^\text{n}\dblcolon\chi[\text{r}]\dblcolon\sigma \mid C)}
       \end{prooftree}
       \\\vspace{\baselineskip}
       \begin{prooftree}
