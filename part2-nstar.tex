@@ -1410,8 +1410,8 @@ These instructions are described in Figure~\ref{fig:nstar-nsam-core-instructions
   \texttt{mv s, d} & Moves a value (either a literal value or a value taken from a register) into the destination register \texttt{d} \\
   \texttt{sld n, s, r} & Copies \texttt{s} bytes taken \texttt{n} bytes from the top of the stack into the register \texttt{r} \\
   \texttt{sst r, n} & Copies the value in the register \texttt{r} to \texttt{n} bytes from the top of the stack \\
-  \texttt{ld o(p), s, r} & Copies \texttt{s} bytes at the address \texttt{p + o} into the register \texttt{r} \\
-  \texttt{st r, o(p)} & Copies the value in the register \texttt{r} into the memory space at the address \texttt{p + o} \\
+  \texttt{ld o, p, s, r} & Copies \texttt{s} bytes at the address \texttt{p + o} into the register \texttt{r} \\
+  \texttt{st r, o, p} & Copies the value in the register \texttt{r} into the memory space at the address \texttt{p + o} \\
   \bottomrule
 
   \caption{The core instructions of the NSAM along with a small description of each one of them.}
@@ -1493,47 +1493,47 @@ Describing the operational semantics makes use of a specific notation:
       \begin{prooftree}
         \hypo{\text{l is a label}}
         \hypo{\text{r is a register}}
-        \infer2{(H \mid \chi \mid \sigma \mid \text{ld r(l), s, d}; C) \vDash (H \mid \chi, \chi[\text{d}] \gets H_D[\text{l} + \chi[\text{r}]]^\text{s} \mid \sigma \mid C)}
+        \infer2{(H \mid \chi \mid \sigma \mid \text{ld r, l, s, d}; C) \vDash (H \mid \chi, \chi[\text{d}] \gets H_D[\text{l} + \chi[\text{r}]]^\text{s} \mid \sigma \mid C)}
       \end{prooftree}
       \\\vspace{\baselineskip}
       \begin{prooftree}
         \hypo{\text{l is a label}}
         \hypo{\text{o} \in \mathbb{Z}}
-        \infer2{(H \mid \chi \mid \sigma \mid \text{ld o(l), s, d}; C) \vDash (H \mid \chi, \chi[\text{d}] \gets H_D[\text{l} + \text{o}]^\text{s} \mid \sigma \mid C)}
+        \infer2{(H \mid \chi \mid \sigma \mid \text{ld o, l, s, d}; C) \vDash (H \mid \chi, \chi[\text{d}] \gets H_D[\text{l} + \text{o}]^\text{s} \mid \sigma \mid C)}
       \end{prooftree}
       \\\vspace{\baselineskip}
       \begin{prooftree}
         \hypo{\text{r and o are registers}}
-        \infer1{(H \mid \chi \mid \sigma \mid \text{ld o(r), s, d}; C) \vDash (H \mid \chi, \chi[\text{d}] \gets H_D[\chi[\text{r}] + \chi[\text{o}]]^\text{s} \mid \sigma \mid C)}
+        \infer1{(H \mid \chi \mid \sigma \mid \text{ld o, r, s, d}; C) \vDash (H \mid \chi, \chi[\text{d}] \gets H_D[\chi[\text{r}] + \chi[\text{o}]]^\text{s} \mid \sigma \mid C)}
       \end{prooftree}
       \\\vspace{\baselineskip}
       \begin{prooftree}
         \hypo{\text{r is a register}}
         \hypo{\text{o} \in \mathbb{Z}}
-        \infer2{(H \mid \chi \mid \sigma \mid \text{ld o(r), s, d}; C) \vDash (H \mid \chi, \chi[\text{d}] \gets H_D[\chi[\text{r}] + \text{o}]^\text{s} \mid \sigma \mid C)}
+        \infer2{(H \mid \chi \mid \sigma \mid \text{ld o, r, s, d}; C) \vDash (H \mid \chi, \chi[\text{d}] \gets H_D[\chi[\text{r}] + \text{o}]^\text{s} \mid \sigma \mid C)}
       \end{prooftree}
       \\\vspace{\baselineskip}
       \begin{prooftree}
         \hypo{\text{r is a register}}
         \hypo{\text{o} \in \mathbb{Z}}
-        \infer2{(H \mid \chi \mid \sigma \mid \text{st s, o(r)}; C) \vDash (H, H_D[\chi[\text{r}] + \text{o}]^8 \gets \chi[s] \mid \chi \mid \sigma \mid C)}
+        \infer2{(H \mid \chi \mid \sigma \mid \text{st s, o, r}; C) \vDash (H, H_D[\chi[\text{r}] + \text{o}]^8 \gets \chi[s] \mid \chi \mid \sigma \mid C)}
       \end{prooftree}
       \\\vspace{\baselineskip}
       \begin{prooftree}
         \hypo{\text{r and o are registers}}
-        \infer1{(H \mid \chi \mid \sigma \mid \text{st s, o(r)}; C) \vDash (H, H_D[\chi[\text{r}] + \chi[\text{o}]]^8 \gets \chi[s] \mid \chi \mid \sigma \mid C)}
+        \infer1{(H \mid \chi \mid \sigma \mid \text{st s, o, r}; C) \vDash (H, H_D[\chi[\text{r}] + \chi[\text{o}]]^8 \gets \chi[s] \mid \chi \mid \sigma \mid C)}
       \end{prooftree}
       \\\vspace{\baselineskip}
       \begin{prooftree}
         \hypo{\text{l is a label}}
         \hypo{\text{o} \in \mathbb{Z}}
-        \infer2{(H \mid \chi \mid \sigma \mid \text{st s, o(l)}; C) \vDash (H, H_D[H_D[\text{l}]^8 + \text{o}]^8 \gets \chi[s] \mid \chi \mid \sigma \mid C)}
+        \infer2{(H \mid \chi \mid \sigma \mid \text{st s, o, l}; C) \vDash (H, H_D[\text{l} + \text{o}]^8 \gets \chi[s] \mid \chi \mid \sigma \mid C)}
       \end{prooftree}
       \\\vspace{\baselineskip}
       \begin{prooftree}
         \hypo{\text{l is a label}}
         \hypo{\text{o is a register}}
-        \infer2{(H \mid \chi \mid \sigma \mid \text{st s, o(l)}; C) \vDash (H, H_D[H_D[\text{l}]^8 + \chi[\text{o}]]^8 \gets \chi[s] \mid \chi \mid \sigma \mid C)}
+        \infer2{(H \mid \chi \mid \sigma \mid \text{st s, o, l}; C) \vDash (H, H_D[\text{l} + \chi[\text{o}]]^8 \gets \chi[s] \mid \chi \mid \sigma \mid C)}
       \end{prooftree}
     }
   }
