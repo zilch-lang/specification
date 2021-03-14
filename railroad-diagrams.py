@@ -79,26 +79,15 @@ def nop_instruction():
 	return mk_diagram('nop-instruction', inner)
 
 def code_line():
-	inner = Stack(
-		Sequence(
-			Optional(
-				Terminal('global')
-			),
-			NonTerminal('identifier'),
-			Terminal(':'),
-			NonTerminal('label-type'),
-			Terminal('=')
+	inner = Sequence(
+		Optional(
+			Terminal('global')
 		),
-		Choice(
-			1,
-			NonTerminal('instruction_block'),
-			Sequence(
-				Terminal('unsafe'),
-				Terminal('{'),
-				NonTerminal('instruction_block'),
-				Terminal('}')
-			)
-		)
+		NonTerminal('identifier'),
+		Terminal(':'),
+		NonTerminal('label-type'),
+		Terminal('='),
+		NonTerminal('instruction-block')
 	)
 
 	return mk_diagram('code-line', inner)
@@ -525,4 +514,4 @@ def salloc_instruction():
 
 	return mk_diagram('salloc-instruction', inner)
 
-ptr_offset().writeSvg(sys.stdout.write)
+code_line().writeSvg(sys.stdout.write)
