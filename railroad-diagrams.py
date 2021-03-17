@@ -514,4 +514,20 @@ def salloc_instruction():
 
 	return mk_diagram('salloc-instruction', inner)
 
-code_line().writeSvg(sys.stdout.write)
+def include_section():
+	inner = Sequence(
+		Terminal('include'),
+		Terminal('{'),
+		ZeroOrMore(
+			Sequence(
+				Terminal('"'),
+				NonTerminal('file-path'),
+				Terminal('"')
+			)
+		),
+		Terminal('}')
+	)
+
+	return mk_diagram('include-section', inner)
+
+include_section().writeSvg(sys.stdout.write)

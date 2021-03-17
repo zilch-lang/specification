@@ -638,6 +638,8 @@ Section names obviously differ from one target format to another. As an example,
 
 Sections in \nstar\ can be named ``\texttt{data}'', ``\texttt{code}'', ``\texttt{rodata}'', ``\texttt{udata}'' or ``\texttt{extern}''. Each of them has defined semantics as described below.
 
+There is also a special \texttt{include} section describing whih file to include in the scope of the current one.
+
 \subsection{The \texttt{code} section}\label{subsec:nstar-common-sections-code}
 
 The \texttt{code} section is the section containing all executable instructions (basically, as the name implies, code).
@@ -752,6 +754,28 @@ The grammar for this section is given in Figure~\ref{fig:nstar-common-sections-e
 
   \caption{Grammar for the \texttt{extern.data} and \texttt{extern.rodata} sections.}
   \label{fig:nstar-common-sections-extern-data-grammar}
+\end{figure}
+
+\subsection{The special \texttt{include} section}\label{subsec:nstar-common-sections-include}
+
+The \texttt{include} section, in its simplest form, is used to bring the scope of another file into the current one (the one containing the section).
+This is very useful when needing to include interface files (files containing just an \texttt{extern.code} section, providing an interface for a specific library) or even when wanting to split a project into multiple parts.
+
+Operationally, the \texttt{include} section behaves as if it was replaced with the content of every file in it (modulo cyclic includes, which must be forbidden).
+
+The grammar is described in Figure~\ref{fig:nstar-common-sections-include-grammar}.
+
+\begin{figure}[htb]
+  \centering
+
+  \framebox[\textwidth][c]{
+    \scalebox{.5}{
+      \includegraphics{nstar/sections/include}
+    }
+  }
+
+  \caption{Grammar for the special \texttt{include} section.}
+  \label{fig:nstar-common-sections-include-grammar}
 \end{figure}
 
 \section{Constant values}\label{sec:nstar-common-constvalue}
