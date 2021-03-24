@@ -530,4 +530,11 @@ def include_section():
 
 	return mk_diagram('include-section', inner)
 
-include_section().writeSvg(sys.stdout.write)
+def bang_type():
+	inner = Sequence(
+		Terminal('!')
+	)
+
+	return mk_diagram('bang-type', inner)
+
+bang_type().writeSvg(sys.stdout.write)

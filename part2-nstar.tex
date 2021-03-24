@@ -211,6 +211,40 @@ However, it is possible to use the literal \texttt{\$0} (which represents a poin
   \label{fig:nstar-common-ts-atomic-kindrules}
 \end{figure}
 
+\subsection{The effectful type}\label{subsec:nstar-common-ts-effect}
+
+The effectful type, also known as ``bang type'', is a type used to denote that some computation \textit{may} completely overwrite a value somewhere, potentially changing its type.
+Its use is mainly in context types, to indicate that a function may change a register during its computation, therefore that it must be caller-saved.
+
+Grammar and kind inference rules are given in Figure~\ref{fig:nstar-common-ts-effect-syntax} and Figure~\ref{fig:nstar-common-ts-effect-kindrules}.
+
+\begin{figure}[htb]
+  \centering
+
+  \framebox[\textwidth][c]{\parbox{\textwidth}{
+      \centering
+      \scalebox{.5}{
+        \includegraphics{nstar/types/bang-syntax}
+      }
+    }}
+
+  \caption{Grammar for bang types.}
+  \label{fig:nstar-common-ts-effect-syntax}
+\end{figure}
+
+\begin{figure}[htb]
+  \centering
+
+  \framebox[\textwidth][c]{
+    \begin{prooftree}
+      \infer0{\Gamma\vdash^K$ ! : k$}
+    \end{prooftree}
+  }
+
+  \caption{Type inference rules for bang types.}
+  \label{fig:nstar-common-ts-effect-kindrules}
+\end{figure}
+
 \subsection{Context types}\label{subsec:nstar-common-ts-records}
 
 Record types (or contexts) are mappings from registers to types, which also hold information about the current stack, as well as the return continuation.
