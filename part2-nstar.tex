@@ -976,9 +976,10 @@ Type inference rules are given in Figure~\ref{fig:nstar-instructionset-mv-typeru
       \begin{prooftree}
         \hypo{$r is a register$}
         \hypo{$n $\leq 8}
-        \hypo{\Gamma\vdash^K$ t : Tn$}
-        \hypo{\Xi;\Gamma;\chi;\sigma;\epsilon\vdash^T_{code}$ e : t$}
-        \infer4[move value to register]{\Xi;\Gamma;\chi;\sigma;\epsilon\vdash^I$ mv e, r $\dashv\chi\setminus$r, r : t$;\sigma;\epsilon}
+        \infer[no rule, rule margin=1ex]2{\Gamma\vdash^K$ t : Tn\hspace{1.5em}$
+                                          \Xi;\Gamma;\chi;\sigma;\epsilon\vdash^T_{code}$ e : t\hspace{1.5em}$
+                                          $t $\neq$ !$}
+        \infer1[move value to register]{\Xi;\Gamma;\chi;\sigma;\epsilon\vdash^I$ mv e, r $\dashv\chi\setminus$r, r : t$;\sigma;\epsilon}
       \end{prooftree}
   }}
 
@@ -1026,7 +1027,8 @@ Grammar and inference rules are given in Figure~\ref{fig:nstar-instructionset-ss
         \hypo{\hat{\sigma}=$ t$_0$::t$_1$::\ldots::t$_p$::s$}
         \hypo{$n $\leq$ p$}
         \hypo{\Xi;\Gamma;\chi;\hat{\sigma};\epsilon\vdash^T_{code}$ e : t$_n}
-        \infer4[store value in stack]{\Xi;\Gamma;\chi;\hat{\sigma};\epsilon\vdash^I$ sst e, n $\dashv\chi;\hat{\sigma};\epsilon}
+        \hypo{$t$_n\neq$ !$}
+        \infer5[store value in stack]{\Xi;\Gamma;\chi;\hat{\sigma};\epsilon\vdash^I$ sst e, n $\dashv\chi;\hat{\sigma};\epsilon}
       \end{prooftree}
   }}
 
@@ -1107,16 +1109,18 @@ The grammar and inference rules are given in Figure~\ref{fig:nstar-instructionse
       \centering
       \begin{prooftree}
         \hypo{\Xi;\Gamma;\chi;\sigma;\epsilon\vdash^T_{code}$ e : t$}
-        \hypo{$e $\neq\epsilon}
-        \hypo{\Xi;\Gamma;\chi;\sigma;\epsilon\vdash^T_{code}$ o(p) : *t$}
-        \infer3[store value in pointer byte offset]{\Xi;\Gamma;\chi;\sigma;\epsilon\vdash^I$ st e, o(p) $\dashv\chi;\sigma;\epsilon}
+        \infer[no rule, rule margin=1ex]1{$e $\neq\epsilon$\hspace{1.5em}$
+                                          $t $\neq$ !\hspace{1.5em}$
+                                          \Xi;\Gamma;\chi;\sigma;\epsilon\vdash^T_{code}$ o(p) : *t$}
+        \infer1[store value in pointer byte offset]{\Xi;\Gamma;\chi;\sigma;\epsilon\vdash^I$ st e, o(p) $\dashv\chi;\sigma;\epsilon}
       \end{prooftree}
       \\\vspace{\baselineskip}
       \begin{prooftree}
         \hypo{\Xi;\Gamma;\chi;\sigma;\epsilon\vdash^T_{code}$ e : t$}
-        \hypo{$e $\neq\epsilon}
-        \hypo{\Xi;\Gamma;\chi;\sigma;\epsilon\vdash^T_{code}$ p[o] : *t$}
-        \infer3[store value in pointer base offset]{\Xi;\Gamma;\chi;\sigma;\epsilon\vdash^I$ st e, p[o] $\dashv\chi;\sigma;\epsilon}
+        \infer[no rule, rule margin=1ex]1{$e $\neq\epsilon$\hspace{1.5em}$
+                                          $t $\neq$ !\hspace{1.5em}$
+                                          \Xi;\Gamma;\chi;\sigma;\epsilon\vdash^T_{code}$ p[o] : *t$}
+        \infer1[store value in pointer base offset]{\Xi;\Gamma;\chi;\sigma;\epsilon\vdash^I$ st e, p[o] $\dashv\chi;\sigma;\epsilon}
       \end{prooftree}
   }}
 
