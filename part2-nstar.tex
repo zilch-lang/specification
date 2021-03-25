@@ -1231,8 +1231,9 @@ Grammar and inference rules are given in Figure~\ref{fig:nstar-instructionset-ca
       \begin{prooftree}
         \hypo{$r is a register$}
         \hypo{\Xi;\Gamma;\chi;\sigma;\epsilon\vdash^T_{code}$ l<$\vec{v}$> : $\forall$().\{ $\hat{\chi}$ | $\sigma\to$ r \}$}
-        \infer[no rule, rule margin=1.0ex]2{\Xi;\Gamma;\hat{\chi};\hat{\sigma};$ r $\vdash^T_{code}$ r : $\forall$().\{ $\chi^\prime$ | $\sigma^\prime\to\epsilon^\prime$ \}\hspace{1.5em}$%
-          \chi\sim\hat{\chi}}
+        \infer[no rule, rule margin=1.0ex]2{\Xi;\Gamma;\hat{\chi};\hat{\sigma};$ r $\vdash^T_{code}$ r : $\forall$().\{ $\chi^\prime\oplus\rho$ | $\sigma^\prime\to\epsilon^\prime$ \}\hspace{1.5em}$%
+                                            \chi\sim\hat{\chi}$\hspace{1.5em}$%
+                                            \bigwedge_{\text{r}\in\text{bang}(\hat{\chi})} $r $\not\in\rho}
 
         \infer1[function call]{\Xi;\Gamma;\chi;\sigma;\epsilon\vdash^I$ call l<$\vec{v}$> $\dashv\chi;\sigma;\epsilon}
       \end{prooftree}
@@ -1241,9 +1242,10 @@ Grammar and inference rules are given in Figure~\ref{fig:nstar-instructionset-ca
         \hypo{$n $\in\mathbb{N}}
         \hypo{$n $\leq$ p$}
         \hypo{\Xi;\Gamma;\chi;\sigma;\epsilon\vdash^T_{code}$ l<$\vec{v}$> : $\forall$().\{ $\hat{\chi}$ | $\sigma\to$ n \}$}
-        \infer[no rule, rule margin=1.0ex]3{$t$_n\sim\forall$().\{ $\chi^\prime$ | $\sigma^\prime\to\epsilon^\prime$ \}\hspace{1.5em}$%
-          \chi\sim\hat{\chi}$\hspace{1.5em}$%
-          \sigma=$ t$_0$::t$_1$::\ldots::t$_p$::s$}
+        \infer[no rule, rule margin=1.0ex]3{$t$_n\sim\forall$().\{ $\chi^\prime\oplus\rho$ | $\sigma^\prime\to\epsilon^\prime$ \}\hspace{1.5em}$%
+                                            \chi\sim\hat{\chi}$\hspace{1.5em}$%
+                                            \sigma=$ t$_0$::t$_1$::\ldots::t$_p$::s\hspace{1.5em}$%
+                                            \bigwedge_{\text{r}\in\text{bang}(\hat{\chi})} $r $\not\in\rho}
         \infer1[function call]{\Xi;\Gamma;\chi;\sigma;\epsilon\vdash^I$ call l<$\vec{v}$> $\dashv\chi;\sigma;\epsilon}
       \end{prooftree}
   }}
