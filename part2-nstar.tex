@@ -561,11 +561,10 @@ Grammar and inference rules are given respectively in Figure~\ref{fig:nstar-comm
 
   \framebox[\textwidth][c]{
     \begin{prooftree}
-      \hypo{$l : $\forall$($\vec{v}$).\{$\chi\oplus\rho$ | $\sigma\to\epsilon$\} $\in\Xi_c}
+      \hypo{$l : $\forall$($\vec{v}$).\{$\chi$ | $\sigma\to\epsilon$\} $\in\Xi_c}
       \hypo{\Gamma\vdash^K$ s$_1$ : k$_1$, s$_2$ : k$_2$, \ldots, s$_p$ : k$_p}
       \infer[no rule, rule margin=1.0ex]2{\vec{s}$ = $\{$ s$_1$ : k$_1$, s$_2$ : k$_2$, \ldots, s$_p$ : k$_p$ $\}$\hspace{1.5em}$%
-                                          \vec{s}\sim\vec{v}$\hspace{1.5em}$%
-                                          \bigwedge_{\text{r }\in\text{ bang}(\chi)} $r $\not\in\rho}
+                                          \vec{s}\sim\vec{v}$\hspace{1.5em}$}
       \infer1{\Xi;\Gamma;\chi;\sigma;\epsilon\vdash^T_{code}$ l<$\vec{s}$> : $\forall$().\{$\chi[\vec{v}\setminus\vec{s}]$ | $\sigma[\vec{v}\setminus\vec{s}]\to\epsilon[\vec{v}\setminus\vec{s}]$\}$}
     \end{prooftree}
   }
