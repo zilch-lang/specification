@@ -1230,10 +1230,11 @@ Grammar and inference rules are given in Figure~\ref{fig:nstar-instructionset-ca
       \centering
       \begin{prooftree}
         \hypo{$r is a register$}
-        \hypo{\Xi;\Gamma;\chi;\sigma;\epsilon\vdash^T_{code}$ l<$\vec{v}$> : $\forall$().\{ $\hat{\chi}$ | $\sigma\to$ r \}$}
-        \infer[no rule, rule margin=1.0ex]2{\Xi;\Gamma;\hat{\chi};\hat{\sigma};$ r $\vdash^T_{code}$ r : $\forall$().\{ $\chi^\prime\oplus\rho$ | $\sigma^\prime\to\epsilon^\prime$ \}\hspace{1.5em}$%
-                                            \chi\sim\hat{\chi}$\hspace{1.5em}$%
-                                            \bigwedge_{\text{r}\in\text{bang}(\hat{\chi})} $r $\not\in\rho}
+        \hypo{\rho=\chi^\prime\setminus\hat{\chi}^\prime}
+        \infer[no rule, rule margin=1ex]2{\Xi;\Gamma;\chi;\sigma;\epsilon\vdash^T_{code}$ l<$\vec{v}$> : $\forall$().\{ $\hat{\chi},$ r : $\forall().\{$ $\hat{\chi}^\prime$ | $\sigma^\prime\to\epsilon^\prime$ $\}$ | $\sigma\to$ r \}$}
+        \infer[no rule, rule margin=1.0ex]1{\Xi;\Gamma;\chi;\sigma;$ r $\vdash^T_{code}$ r : $\forall$().\{ $\chi^\prime$ | $\sigma^\prime\to\epsilon^\prime$ \}\hspace{1.5em}$%
+                                            \bigwedge_{\text{r}\in\text{bang}(\hat{\chi})} $r $\not\in\rho$\hspace{1.5em}$%
+                                            \chi\sim\hat{\chi}\cup\rho}
 
         \infer1[function call]{\Xi;\Gamma;\chi;\sigma;\epsilon\vdash^I$ call l<$\vec{v}$> $\dashv\chi;\sigma;\epsilon}
       \end{prooftree}
@@ -1241,10 +1242,13 @@ Grammar and inference rules are given in Figure~\ref{fig:nstar-instructionset-ca
       \begin{prooftree}
         \hypo{$n $\in\mathbb{N}}
         \hypo{$n $\leq$ p$}
-        \hypo{\Xi;\Gamma;\chi;\sigma;\epsilon\vdash^T_{code}$ l<$\vec{v}$> : $\forall$().\{ $\hat{\chi}$ | $\sigma\to$ n \}$}
-        \infer[no rule, rule margin=1.0ex]3{$t$_n\sim\forall$().\{ $\chi^\prime\oplus\rho$ | $\sigma^\prime\to\epsilon^\prime$ \}\hspace{1.5em}$%
-                                            \chi\sim\hat{\chi}$\hspace{1.5em}$%
-                                            \sigma=$ t$_0$::t$_1$::\ldots::t$_p$::s\hspace{1.5em}$%
+        \hypo{\Xi;\Gamma;\chi;\sigma;\epsilon\vdash^T_{code}$ l<$\vec{v}$> : $\forall$().\{ $\hat{\chi}$ | $\hat{\sigma}\to$ n \}$}
+        \infer[no rule, rule margin=1ex]3{\sigma=$ t$_0$::t$_1$::\ldots::t$_p$::s\hspace{1.5em}$%
+                                          \hat{\sigma}=\hat{\text{t}_0}$::$\hat{\text{t}_1}$::\ldots::$\hat{\text{t}_p}$::$\hat{\text{s}}$\hspace{1.5em}$%
+                                          \rho=\chi^\prime\setminus\hat{\chi}^\prime$\hspace{1.5em}$%
+                                          \chi\sim\hat{\chi}\cup\rho}
+        \infer[no rule, rule margin=1.0ex]1{$t$_n\sim\forall$().\{ $\chi^\prime$ | $\sigma^\prime\to\epsilon^\prime$ \}\hspace{1.5em}$%
+                                            \hat{\text{t}_n}\sim\forall$().\{ $\hat{\chi}^\prime$ | $\sigma^\prime\to\epsilon^\prime$ \}\hspace{1.5em}$%
                                             \bigwedge_{\text{r}\in\text{bang}(\hat{\chi})} $r $\not\in\rho}
         \infer1[function call]{\Xi;\Gamma;\chi;\sigma;\epsilon\vdash^I$ call l<$\vec{v}$> $\dashv\chi;\sigma;\epsilon}
       \end{prooftree}
