@@ -537,4 +537,40 @@ def bang_type():
 
 	return mk_diagram('bang-type', inner)
 
-bang_type().writeSvg(sys.stdout.write)
+def string_constant():
+    inner = Sequence(
+		Terminal("\""),
+		ZeroOrMore(
+			Choice(
+				1,
+				Sequence(
+					Terminal('\\'),
+					Choice(
+						1,
+						Sequence(
+							Terminal('x'),
+							NonTerminal('hex-digit'),
+							NonTerminal('hex-digit')
+						),
+						HorizontalChoice(
+							Terminal('n'),
+							Terminal('r'),
+							Terminal('\\'),
+							Terminal('0')
+						),
+						HorizontalChoice(
+							Terminal('t'),
+							Terminal('v'),
+							Terminal('e')
+						),
+					)
+				),
+				NonTerminal('ascii-character')
+			)
+		),
+		Terminal("\"")
+    )
+
+    return mk_diagram('string-constant', inner)
+
+string_constant().writeSvg(sys.stdout.write)

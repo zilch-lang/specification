@@ -815,7 +815,9 @@ The grammar is described in Figure~\ref{fig:nstar-common-sections-include-gramma
 \section{Constant values}\label{sec:nstar-common-constvalue}
 
 Constant values are some kind of values that can be used in the \texttt{data} and \texttt{rodata} sections\footnote{See Section~\ref{subsec:nstar-common-sections-data}~``\nameref{subsec:nstar-common-sections-data}''.}.
-They come in 3 flavors: integers, characters and arrays.
+They come in 4 flavors: integers, characters, arrays and strings (which are only arrays of characters).
+Note that strings are automatically null-terminated (i.e.\ a \texttt{\textbackslash 0} always lies at the end).
+
 Their grammar is given in Figure~\ref{fig:nstar-common-constvalue-grammar} and the type inference rules are given in Figure~\ref{fig:nstar-common-constvalue-typerules}.
 
 \begin{figure}[htb]
@@ -833,6 +835,10 @@ Their grammar is given in Figure~\ref{fig:nstar-common-constvalue-grammar} and t
       \\
       \scalebox{.5}{
         \includegraphics{nstar/constants/array-grammar}
+      }
+      \\
+      \scalebox{.5}{
+        \includegraphics{nstar/constants/string-grammar}
       }
   }}
 
@@ -867,6 +873,11 @@ Their grammar is given in Figure~\ref{fig:nstar-common-constvalue-grammar} and t
         \hypo{\Gamma\vdash^K$ t : Tn$}
         \hypo{\Gamma\vdash^T_{data}$ c$_1$, c$_2$, \ldots, c$_n$ : t$}
         \infer3{\Gamma\vdash^T_{data}$ [c$_1$, c$_2$, \ldots, c$_n$] : t$}
+      \end{prooftree}
+      \\\vspace{\baselineskip}
+      \begin{prooftree}
+        \hypo{$s is a string constant$}
+        \infer1{\Gamma\vdash^T_{data}$ s : s8$}
       \end{prooftree}
   }}
 
