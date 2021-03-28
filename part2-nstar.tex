@@ -1014,21 +1014,19 @@ Grammar and inference rules are given in Figure~\ref{fig:nstar-instructionset-ss
         \hypo{$r is a register$}
         \hypo{$n $\in\mathbb{N}}
         \hypo{\hat{\sigma}=$ t$_0$::t$_1$::\ldots::t$_p$::s$}
-        \infer[no rule, rule margin=1.0ex]3{\Gamma\vdash^K$ t : T8\hspace{1.5em}$%
-          $n $\leq$ p$}
-        \infer[no rule, rule margin=1.0ex]1{\hat{\sigma}^\prime=\hat{\sigma}[\forall$().ctx$\setminus$t$_n]$\hspace{1.5em}$%
-          \Xi;\Gamma;\chi;\hat{\sigma};\epsilon\vdash^T_{code}$ r : $\forall$().ctx\hspace{1.5em}$%
-          $t$_n\sim$ t$}
-        \infer1[store cont from register to stack]{\Xi;\Gamma;\chi;\hat{\sigma};$ r $\vdash^I$ sst r, n $\dashv\chi;\hat{\sigma}^\prime;$ n$}
+        \infer[no rule, rule margin=1.0ex]3{$n $\leq$ p\hspace{1.5em}$%
+                                            $t$_n\sim\forall$().ctx\hspace{1.5em}$%
+                                            \Xi;\Gamma;\chi;\hat{\sigma};\epsilon\vdash^T_{code}$ r : $\forall$().ctx$}
+        \infer1[store continuation in stack]{\Xi;\Gamma;\chi;\hat{\sigma};$ r $\vdash^I$ sst r, n $\dashv\chi;\hat{\sigma};$ n$}
       \end{prooftree}
       \\\vspace{\baselineskip}
       \begin{prooftree}
         \hypo{$n $\in\mathbb{N}}
         \hypo{\hat{\sigma}=$ t$_0$::t$_1$::\ldots::t$_p$::s$}
-        \hypo{$n $\leq$ p$}
-        \hypo{\Xi;\Gamma;\chi;\hat{\sigma};\epsilon\vdash^T_{code}$ e : t$_n}
-        \hypo{$t$_n\neq$ !$}
-        \infer5[store value in stack]{\Xi;\Gamma;\chi;\hat{\sigma};\epsilon\vdash^I$ sst e, n $\dashv\chi;\hat{\sigma};\epsilon}
+        \infer[no rule, rule margin=1ex]2{$n $\leq$ p\hspace{1.5em}$%
+                                          \Xi;\Gamma;\chi;\hat{\sigma};\epsilon\vdash^T_{code}$ e : t$_n$\hspace{1.5em}$%
+                                          $t$_n\neq$ !$}
+        \infer1[store value in stack]{\Xi;\Gamma;\chi;\hat{\sigma};\epsilon\vdash^I$ sst e, n $\dashv\chi;\hat{\sigma};\epsilon}
       \end{prooftree}
   }}
 
