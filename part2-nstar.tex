@@ -1569,6 +1569,7 @@ These instructions are described in Figure~\ref{fig:nstar-nsam-core-instructions
   \texttt{sst r, n} & Copies the value in the register \texttt{r} to \texttt{n} bytes from the top of the stack \\
   \texttt{ld o, p, s, r} & Copies \texttt{s} bytes at the address \texttt{p + o} into the register \texttt{r} \\
   \texttt{st r, o, p} & Copies the value in the register \texttt{r} into the memory space at the address \texttt{p + o} \\
+  \texttt{sref n, p, r} & Retrieves a pointer to \texttt{p} bytes long data located at \texttt{n} bytes onto the stack in the register \texttt{r} \\
   \bottomrule
 
   \caption{The core instructions of the NSAM along with a small description of each one of them.}
@@ -1691,6 +1692,10 @@ Describing the operational semantics makes use of a specific notation:
         \hypo{\text{l is a label}}
         \hypo{\text{o is a register}}
         \infer2{(H \mid \chi \mid \sigma \mid \text{st s, o, l}; C) \vDash (H, H_D[\text{l} + \chi[\text{o}]]^8 \gets \chi[s] \mid \chi \mid \sigma \mid C)}
+      \end{prooftree}
+      \\\vspace{\baselineskip}
+      \begin{prooftree}
+        \infer0{(H \mid \chi \mid \cdot^n\dblcolon v^p\dblcolon\sigma \mid \text{sref n, p, r}; C) \vDash (H \mid \chi, \chi[\text{r}] \gets \text{\&}v \mid \cdot^n\dblcolon v^p\dblcolon\sigma \mid C)}
       \end{prooftree}
     }
   }
