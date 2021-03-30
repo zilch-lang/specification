@@ -573,4 +573,14 @@ def string_constant():
 
     return mk_diagram('string-constant', inner)
 
-string_constant().writeSvg(sys.stdout.write)
+def sref_instruction():
+	inner = Sequence(
+		Terminal('sref'),
+		NonTerminal('positive-integer'),
+		Terminal(','),
+		NonTerminal('register')
+	)
+
+	return mk_diagram('sref-instruction', inner)
+
+sref_instruction().writeSvg(sys.stdout.write)

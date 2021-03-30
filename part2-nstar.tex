@@ -1263,9 +1263,55 @@ Grammar and type inference rules are respectively given in Figure~\ref{fig:nstar
   \label{fig:nstar-instructionset-stack-sfree-typerules}
 \end{figure}
 
+\subsection{\texttt{sref}}\label{subsec:nstar-instructionset-stack-sref}
+
+The \texttt{sref} instruction fetches a pointer (to be used by memory instructions) to some data available on the stack.
+This can be used to construct references to e.g.\ stack-allocated structures (which cannot be written to nor read from otherwise).
+The grammar and inference rules are given respectively n Figure~\ref{fig:nstar-instructionset-stack-sref-grammar} and Figure~\ref{fig:nstar-instructionset-stack-sref-typerules}.
+
+\begin{figure}[H]
+  \centering
+
+  \framebox[\textwidth][c]{
+    \scalebox{.5}{
+      \includegraphics{nstar/instructions/sref-grammar}
+    }
+  }
+
+  \caption{Grammar for the \texttt{sref} instruction.}
+  \label{fig:nstar-instructionset-stack-sref-grammar}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+
+  \framebox[\textwidth][c]{
+    \parbox{\textwidth}{
+      \centering
+
+      \begin{prooftree}
+        \hypo{$r is a register$}
+        \hypo{$n $\in\mathbb{N}}
+        \hypo{$n $\leq$ p$}
+        \infer[no rule, rule margin=1ex]3{\sigma=$ t$_0$::t$_1$::\ldots::t$_p$::s\hspace{1.5em}$%
+                                          $t$_n\nsim$ !\hspace{1.5em}$%
+                                          $t$_n\nsim\forall$().$\zeta$\hspace{1.5em}$%
+                                          \epsilon\neq$ n$}
+        \infer1{\Xi;\Gamma;\chi;\sigma;\epsilon\vdash^I$ sref n, r $\dashv\chi,$ r : *t$_n;\sigma;\epsilon}
+      \end{prooftree}
+    }
+  }
+
+  \caption{Type inference rules for the \texttt{sref} instruction.}
+  \label{fig:nstar-instructionset-stack-sref-typerules}
+\end{figure}
+
 \section{Memory handling instructions}\label{sec:nstar-instructionset-memory}
 
-\subsection{\texttt{ld}}\label{sec:nstar-instructionset-memory-ld}
+Memory instructions are instructions which can only operate on pointers to data.
+Those may be used to access data in the \texttt{data} sections or even \texttt{malloc}ed data.
+
+\subsection{\texttt{ld}}\label{subsec:nstar-instructionset-memory-ld}
 
 The \texttt{ld} instruction loads a value from a memory area into a register.
 Grammar and inference rules are given in Figure~\ref{fig:nstar-instructionset-memory-ld-grammar} and Figure~\ref{fig:nstar-instructionset-memory-ld-typerules}.
