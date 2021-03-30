@@ -1267,7 +1267,7 @@ Grammar and type inference rules are respectively given in Figure~\ref{fig:nstar
 
 The \texttt{sref} instruction fetches a pointer (to be used by memory instructions) to some data available on the stack.
 This can be used to construct references to e.g.\ stack-allocated structures (which cannot be written to nor read from otherwise).
-The grammar and inference rules are given respectively n Figure~\ref{fig:nstar-instructionset-stack-sref-grammar} and Figure~\ref{fig:nstar-instructionset-stack-sref-typerules}.
+The grammar and inference rules are given respectively in Figure~\ref{fig:nstar-instructionset-stack-sref-grammar} and Figure~\ref{fig:nstar-instructionset-stack-sref-typerules}.
 
 \begin{figure}[H]
   \centering
@@ -1305,6 +1305,27 @@ The grammar and inference rules are given respectively n Figure~\ref{fig:nstar-i
   \caption{Type inference rules for the \texttt{sref} instruction.}
   \label{fig:nstar-instructionset-stack-sref-typerules}
 \end{figure}
+
+Note that trying to write to a pointer to stack data which has been freed with \texttt{sfree} (as in Listing~\ref{lst:nstar-instructionset-stack-sref-ubexample}) is an Undefined Behavior.
+This is something that we cannot check (it could be possible with linear types) in \nstar\ because it goes beyond the type system described in this document.
+
+\begin{listing}[H]
+  \centering
+  \begin{minipage}{0.90\textwidth}
+    \begin{minted}[]{\nstarlexer}
+      ub_function: forall(s: Ts, e: Tc).{ %r5: forall().{| s -> e } | s -> %r5 }
+        = salloc s64
+        ; sref 0, %r0  # reference the newly allocated stack cell
+        ; sfree
+        ; st 0, (%r0)  # this is where our undefined behavior happens:
+                       #   we are trying to write `0`
+                       #     to a potentially discarded/voided cell.
+        ; ret
+    \end{minted}
+  \end{minipage}
+  \caption{An undefined behavior triggered through the use of \texttt{sref}.}
+  \label{lst:nstar-instructionset-stack-sref-ubexample}
+\end{listing}
 
 \section{Memory handling instructions}\label{sec:nstar-instructionset-memory}
 
