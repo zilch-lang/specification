@@ -24,7 +24,7 @@ class NStarLexer(RegexLexer):
             (r'[0-9]+', Number.Integer)
         ],
         'instructions': [
-            (r'(ret|mv|jmp|call|cmp|je)\b', Name.Builtin)
+            (r'(ret|mv|jmp|call|cmp|je|sfree|salloc|st|sref)\b', Name.Builtin)
         ],
         'registers': [
             (r'(%(r0|r1|r2|r3|r4|r5|sp|bp|ip))\b', Name.Constant)
@@ -33,7 +33,7 @@ class NStarLexer(RegexLexer):
             (r'(Ts|Ta|Tc|T4|T8|s8|s16|s32|s64|u8|u16|u32|u64)\b', Keyword.Type)
         ],
         'variables': [
-            (r'^([a-zA-Z]*)\:', Name.Variable),
+            (r'^([a-zA-Z_]*)\:', Name.Variable),
             (r'(jmp|call|je)( )([a-zA-Z]*)(\<.*?\>)?', bygroups(Keyword, Text, Name.Variable, Text))
         ],
         'root': [
