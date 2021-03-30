@@ -1032,8 +1032,8 @@ Grammar and inference rules are given in Figure~\ref{fig:nstar-instructionset-te
         \hypo{$n $\in\mathbb{N}}
         \hypo{$n $\leq$ p$}
         \hypo{\Xi;\Gamma;\chi;\sigma;$ n $\vdash^T_{code}$ l<$\vec{v}$> : $\forall$().\{ $\hat{\chi}$ | $\hat{\sigma}\to$ n \}$}
-        \infer[no rule, rule margin=1ex]3{\sigma=$ t$_0$::t$_1$::\ldots::t$_p$::s\hspace{1.5em}$%
-                                          \hat{\sigma}=\hat{\text{t}_0}$::$\hat{\text{t}_1}$::\ldots::$\hat{\text{t}_p}$::$\hat{\text{s}}$\hspace{1.5em}$%
+        \infer[no rule, rule margin=1ex]3{\sigma=$ t$_0\dblcolon$ t$_1\dblcolon$ \ldots $\dblcolon$ t$_p\dblcolon$ s\hspace{1.5em}$%
+                                          \hat{\sigma}=\hat{\text{t}_0}\dblcolon\hat{\text{t}_1}\dblcolon$ \ldots $\dblcolon\hat{\text{t}_p}\dblcolon$ $\hat{\text{s}}$\hspace{1.5em}$%
                                           \rho=\chi^\prime\setminus\hat{\chi}^\prime$\hspace{1.5em}$%
                                           \chi\sim\hat{\chi}\cup\rho}
         \infer[no rule, rule margin=1.0ex]1{$t$_n\sim\forall$().\{ $\chi^\prime$ | $\sigma^\prime\to\epsilon^\prime$ \}\hspace{1.5em}$%
@@ -1111,7 +1111,7 @@ Grammar and inference rules are given in Figure~\ref{fig:nstar-instructionset-st
         \hypo{$r is a register$}
         \hypo{$n $\in\mathbb{N}}
         \hypo{$n $\leq$ p$}
-        \infer[no rule, rule margin=1.0ex]3{\hat{\sigma}=$ t$_0$::t$_1$::\ldots::t$_p$::s\hspace{1.5em}$%
+        \infer[no rule, rule margin=1.0ex]3{\hat{\sigma}=$ t$_0\dblcolon$ t$_1\dblcolon$ \ldots $\dblcolon$ t$_p\dblcolon$ s\hspace{1.5em}$%
           $t$_n\sim\forall$().ctx$}
         \infer1[load cont from stack in register]{\Xi;\Gamma;\chi;\hat{\sigma};$ n $\vdash^I$ sld n, r $\dashv\chi,$ r : t$_n;\hat{\sigma};$ r$}
       \end{prooftree}
@@ -1121,7 +1121,7 @@ Grammar and inference rules are given in Figure~\ref{fig:nstar-instructionset-st
         \hypo{$n, k $\in\mathbb{N}}
         \infer[no rule, rule margin=1.0ex]2{$n $\leq$ p\hspace{1.5em}$%
           $k $\leq8$\hspace{1.5em}$%
-          \hat{\sigma}=$ t$_0$::t$_1$::\ldots::t$_p$::s\hspace{1.5em}$%
+          \hat{\sigma}=$ t$_0\dblcolon$ t$_1\dblcolon$ \ldots $\dblcolon$ t$_p\dblcolon$ s\hspace{1.5em}$%
           \Gamma\vdash^K$ t$_n$ : Tk$}
         \infer1[load value from stack]{\Xi;\Gamma;\chi;\hat{\sigma};\epsilon\vdash^I$ sld n, r $\dashv\chi,$ r : t$_n;\hat{\sigma};\epsilon}
       \end{prooftree}
@@ -1157,7 +1157,7 @@ Grammar and inference rules are given in Figure~\ref{fig:nstar-instructionset-st
       \begin{prooftree}
         \hypo{$r is a register$}
         \hypo{$n $\in\mathbb{N}}
-        \hypo{\hat{\sigma}=$ t$_0$::t$_1$::\ldots::t$_p$::s$}
+        \hypo{\hat{\sigma}=$ t$_0\dblcolon$ t$_1\dblcolon$ \ldots $\dblcolon$ t$_p\dblcolon$ s$}
         \infer[no rule, rule margin=1.0ex]3{$n $\leq$ p\hspace{1.5em}$%
                                             $t$_n\sim\forall$().ctx\hspace{1.5em}$%
                                             \Xi;\Gamma;\chi;\hat{\sigma};\epsilon\vdash^T_{code}$ r : $\forall$().ctx$}
@@ -1166,7 +1166,7 @@ Grammar and inference rules are given in Figure~\ref{fig:nstar-instructionset-st
       \\\vspace{\baselineskip}
       \begin{prooftree}
         \hypo{$n $\in\mathbb{N}}
-        \hypo{\hat{\sigma}=$ t$_0$::t$_1$::\ldots::t$_p$::s$}
+        \hypo{\hat{\sigma}=$ t$_0\dblcolon$ t$_1\dblcolon$ \ldots $\dblcolon$ t$_p\dblcolon$ s$}
         \infer[no rule, rule margin=1ex]2{$n $\leq$ p\hspace{1.5em}$%
                                           \Xi;\Gamma;\chi;\hat{\sigma};\epsilon\vdash^T_{code}$ e : t$_n$\hspace{1.5em}$%
                                           $t$_n\neq$ !$}
@@ -1205,14 +1205,14 @@ Grammar and type inference rules are given in Figure~\ref{fig:nstar-instructions
       \begin{prooftree}
         \hypo{$n, m $\in\mathbb{N}}
         \hypo{\Gamma\vdash^K$ t : Tm$}
-        \hypo{\sigma^\prime=$ t::$\sigma}
+        \hypo{\sigma^\prime=$ t $\dblcolon\sigma}
         \infer3[\texttt{salloc} with stack continuation]{\Xi;\Gamma;\chi;\sigma;$ n $\vdash^I$ salloc t $\dashv\chi;\sigma^\prime;$ n$+1}
       \end{prooftree}
       \\\vspace{\baselineskip}
       \begin{prooftree}
         \hypo{$m $\in\mathbb{N}}
         \hypo{\Gamma\vdash^K$ t : Tm$}
-        \hypo{\sigma^\prime=$ t::$\sigma}
+        \hypo{\sigma^\prime=$ t $\dblcolon\sigma}
         \infer3{\Xi;\Gamma;\chi;\sigma;\epsilon\vdash^I$ salloc t $\dashv\chi;\sigma^\prime;\epsilon}
       \end{prooftree}
   }}
@@ -1247,14 +1247,14 @@ Grammar and type inference rules are respectively given in Figure~\ref{fig:nstar
       \begin{prooftree}
         \hypo{$n $\geq 1}
         \hypo{$n $\leq$ p$}
-        \hypo{\sigma=$ t$_0$::t$_1$::\ldots::t$_p$::s$}
-        \hypo{\sigma^\prime=$ t$_1$::\ldots::t$_p$::s$}
+        \hypo{\sigma=$ t$_0\dblcolon$ t$_1\dblcolon$ \ldots $\dblcolon$ t$_p\dblcolon$ s$}
+        \hypo{\sigma^\prime=$ t$_1\dblcolon$ \ldots $\dblcolon$ t$_p\dblcolon$ s$}
         \infer4[\texttt{sfree} with stack continuation]{\Xi;\Gamma;\chi;\sigma;$ n $\vdash^I$ sfree $\dashv\chi;\sigma^\prime;$ n$-1}
       \end{prooftree}
       \\\vspace{\baselineskip}
       \begin{prooftree}
-        \hypo{\sigma=$ t$_0$::t$_1$::\ldots::t$_p$::s$}
-        \hypo{\sigma^\prime=$ t$_1$::\ldots::t$_p$::s$}
+        \hypo{\sigma=$ t$_0\dblcolon$ t$_1\dblcolon$ \ldots $\dblcolon$ t$_p\dblcolon$ s$}
+        \hypo{\sigma^\prime=$ t$_1\dblcolon$ \ldots $\dblcolon$ t$_p\dblcolon$ s$}
         \infer2{\Xi;\Gamma;\chi;\sigma;\epsilon\vdash^I$ sfree $\dashv\chi;\sigma^\prime;\epsilon}
       \end{prooftree}
   }}
@@ -1293,7 +1293,7 @@ The grammar and inference rules are given respectively in Figure~\ref{fig:nstar-
         \hypo{$r is a register$}
         \hypo{$n $\in\mathbb{N}}
         \hypo{$n $\leq$ p$}
-        \infer[no rule, rule margin=1ex]3{\sigma=$ t$_0$::t$_1$::\ldots::t$_p$::s\hspace{1.5em}$%
+        \infer[no rule, rule margin=1ex]3{\sigma=$ t$_0\dblcolon$ t$_1\dblcolon$ \ldots $\dblcolon$ t$_p\dblcolon$ s\hspace{1.5em}$%
                                           $t$_n\nsim$ !\hspace{1.5em}$%
                                           $t$_n\nsim\forall$().$\zeta$\hspace{1.5em}$%
                                           \epsilon\neq$ n$}
