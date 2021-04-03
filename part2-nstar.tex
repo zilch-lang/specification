@@ -1578,128 +1578,67 @@ These instructions are described in Figure~\ref{fig:nstar-nsam-core-instructions
 
 \section{Operational semantics}\label{sec:nstar-nsam-opsem}
 
-This section describes the operational semantics of the core instructions described in Section~\ref{sec:nstar-nsam-core}~``\nameref{sec:nstar-nsam-core}''.
-
-Describing the operational semantics makes use of a specific notation:
+This section describes the operational semantics of the core instructions described in Section~\ref{sec:nstar-nsam-core}~``\nameref{sec:nstar-nsam-core}''. It contains some specific notation as described below:
 \begin{itemize}
-  \item $(H \mid \chi \mid \sigma \mid C)$ is the evaluation context composed of several subcontexts:
+  \item $\zeta = (H, \chi, \sigma, C)$ is the evaluation context composed of several subcontexts:
         \begin{itemize}
           \item $H = H_{C} \cup H_{D}$ is the global heap, composed of two smaller heaps: $H_{C}$ is the heap containing all the code, as well as labels and $H_{D}$ is the heap containing any data binding;
           \item $\chi$ is the current set of bound registers, associated to their values. It may be the empty set $\cdot$ which means that no register is currently bound (or at least that no register can be read);
           \item $\sigma$ is the current stack. It may be the empty stack $\cdot$ or the stack constructor $v^{n} \dblcolon s$, which means that there is a value $v$ of size $n$ on top of the stack $s$;
-          \item $C$ is the code buffer, and contains either no instruction (denotated as $\cdot$), one instruction or a sequence of multiple instructions, written as $i; I$;
+          \item $C$ is the code buffer, and contains either no instruction (written as $\cdot$), one instruction or a sequence of multiple instructions, written as $i; I$;
         \end{itemize}
-  \item A reduction step $\zeta \vDash \zeta^{\prime}$ is a step taking the context $\zeta$ and outputting the new context $\zeta^{\prime}$ (which may or may not be the same as $\zeta$);
-  \item Sometimes, pre-conditions are needed in order to choose which reduction step to apply. This notation will be used to describe reduction steps: \begin{center}
-        \begin{prooftree}
-          \hypo{\text{preconditions}}
-          \infer1[reduc(i)]{\zeta\vDash\zeta^\prime}
-        \end{prooftree}
-      \end{center}
+  \item $v$ always denotes a literal value, $r, s, d$ registers, $l$ a label and $n, p, o$ literal integers;
+  \item A reduction step $\zeta \mapsto \zeta^{\prime}$ is a step taking the context $\zeta$ and outputting the new context $\zeta^{\prime}$ (which may or may not be the same as $\zeta$);
+  \item When multiple operations are defined for a single instruction, the rule matching the above notation rules should be applied;
 \end{itemize}
 
-\begin{figure}[H]
-  \centering
+\begin{xltabular}{\textwidth}{*{4}{>{\scriptsize}c}>{\tiny\bfseries}Y*{4}{>{\scriptsize}c}}
+  \toprule
+  {\footnotesize \bfseries heap} & {\footnotesize \bfseries env} & {\footnotesize \bfseries stack} & {\footnotesize \bfseries code} & $\mapsto$ & {\footnotesize \bfseries heap} & {\footnotesize \bfseries env} & {\footnotesize \bfseries stack} & {\footnotesize \bfseries code} \\
+  \midrule \endhead
 
-  \framebox[\textwidth][c]{
-    \parbox{\textwidth}{
-      \footnotesize
-      \centering
+  \multicolumn{9}{l}{\footnotesize \bfseries Control-flow instructions} \\
 
-      \begin{prooftree}
-        \hypo{\text{r is a register}}
-        \infer1{(H \mid \chi \mid \sigma \mid \text{jmp r}; C) \vDash (H \mid \chi \mid \sigma \mid \text{deref}\ H_C[\chi[\text{r}]]^8; C)}
-      \end{prooftree}\hspace{1.5em}
-      \begin{prooftree}
-        \hypo{\text{l is a label}}
-        \infer1{(H \mid \chi \mid \sigma \mid \text{jmp l}; C) \vDash (H \mid \chi \mid \sigma \mid \text{deref}\  H_C[l]^8; C)}
-      \end{prooftree}
-      \\\vspace{\baselineskip}
-      \begin{prooftree}
-        \infer0{(H \mid \chi \mid \sigma \mid \text{halt}; C) \vDash (H \mid \chi \mid \sigma \mid \cdot)}
-      \end{prooftree}
-      \\\vspace{\baselineskip}
-      \begin{prooftree}
-        \infer0{(H \mid \chi \mid \sigma \mid \text{salloc n}; C) \vDash (H \mid \chi \mid \cdot^\text{n}\dblcolon\sigma \mid C)}
-      \end{prooftree}\hspace{1.5em}
-      \begin{prooftree}
-        \infer0{(H \mid \chi \mid \cdot^\text{n}\dblcolon\sigma \mid \text{sfree n}; C) \vDash (H \mid \chi \mid \sigma \mid C)}
-      \end{prooftree}
-      \\\vspace{\baselineskip}
-      \begin{prooftree}
-        \infer0{(H \mid \chi \mid \cdot^\text{n}\dblcolon\text{v}^s\dblcolon\sigma \mid \text{sld n, s, r}; C) \vDash (H \mid \chi, \chi[\text{r}] \gets \text{v} \mid \cdot^\text{n}\dblcolon\text{v}^s\dblcolon\sigma \mid C)}
-      \end{prooftree}
-      \\\vspace{\baselineskip}
-      \begin{prooftree}
-        \infer0{(H \mid \chi \mid \cdot^\text{n}\dblcolon\cdot^8\dblcolon\sigma \mid \text{sst r, n}; C) \vDash (H \mid \chi \mid \cdot^\text{n}\dblcolon\chi[\text{r}]\dblcolon\sigma \mid C)}
-      \end{prooftree}
-      \\\vspace{\baselineskip}
-      \begin{prooftree}
-        \hypo{\text{s is a register}}
-        \infer1{(H \mid \chi \mid \sigma \mid \text{mv s, d}; C) \vDash (H \mid \chi, \chi[\text{d}] \gets \chi[\text{s}] \mid \sigma \mid C)}
-      \end{prooftree}\hspace{1.5em}
-      \begin{prooftree}
-        \hypo{\text{l is a label}}
-        \infer1{(H \mid \chi \mid \sigma \mid \text{mv l, d}; C) \vDash (H \mid \chi, \chi[\text{d}] \gets H_C[l]^8 \mid \sigma \mid C)}
-      \end{prooftree}
-      \\\vspace{\baselineskip}
-      \begin{prooftree}
-        \hypo{\text{v is a value}}
-        \infer1{(H \mid \chi \mid \sigma \mid \text{mv v, d}; C) \vDash (H \mid \chi, \chi[\text{d}] \gets \text{v} \mid \sigma \mid C)}
-      \end{prooftree}
-      \\\vspace{\baselineskip}
-      \begin{prooftree}
-        \hypo{\text{l is a label}}
-        \hypo{\text{r is a register}}
-        \infer2{(H \mid \chi \mid \sigma \mid \text{ld r, l, s, d}; C) \vDash (H \mid \chi, \chi[\text{d}] \gets H_D[\text{l} + \chi[\text{r}]]^\text{s} \mid \sigma \mid C)}
-      \end{prooftree}
-      \\\vspace{\baselineskip}
-      \begin{prooftree}
-        \hypo{\text{l is a label}}
-        \hypo{\text{o} \in \mathbb{Z}}
-        \infer2{(H \mid \chi \mid \sigma \mid \text{ld o, l, s, d}; C) \vDash (H \mid \chi, \chi[\text{d}] \gets H_D[\text{l} + \text{o}]^\text{s} \mid \sigma \mid C)}
-      \end{prooftree}
-      \\\vspace{\baselineskip}
-      \begin{prooftree}
-        \hypo{\text{r and o are registers}}
-        \infer1{(H \mid \chi \mid \sigma \mid \text{ld o, r, s, d}; C) \vDash (H \mid \chi, \chi[\text{d}] \gets H_D[\chi[\text{r}] + \chi[\text{o}]]^\text{s} \mid \sigma \mid C)}
-      \end{prooftree}
-      \\\vspace{\baselineskip}
-      \begin{prooftree}
-        \hypo{\text{r is a register}}
-        \hypo{\text{o} \in \mathbb{Z}}
-        \infer2{(H \mid \chi \mid \sigma \mid \text{ld o, r, s, d}; C) \vDash (H \mid \chi, \chi[\text{d}] \gets H_D[\chi[\text{r}] + \text{o}]^\text{s} \mid \sigma \mid C)}
-      \end{prooftree}
-      \\\vspace{\baselineskip}
-      \begin{prooftree}
-        \hypo{\text{r is a register}}
-        \hypo{\text{o} \in \mathbb{Z}}
-        \infer2{(H \mid \chi \mid \sigma \mid \text{st s, o, r}; C) \vDash (H, H_D[\chi[\text{r}] + \text{o}]^8 \gets \chi[s] \mid \chi \mid \sigma \mid C)}
-      \end{prooftree}
-      \\\vspace{\baselineskip}
-      \begin{prooftree}
-        \hypo{\text{r and o are registers}}
-        \infer1{(H \mid \chi \mid \sigma \mid \text{st s, o, r}; C) \vDash (H, H_D[\chi[\text{r}] + \chi[\text{o}]]^8 \gets \chi[s] \mid \chi \mid \sigma \mid C)}
-      \end{prooftree}
-      \\\vspace{\baselineskip}
-      \begin{prooftree}
-        \hypo{\text{l is a label}}
-        \hypo{\text{o} \in \mathbb{Z}}
-        \infer2{(H \mid \chi \mid \sigma \mid \text{st s, o, l}; C) \vDash (H, H_D[\text{l} + \text{o}]^8 \gets \chi[s] \mid \chi \mid \sigma \mid C)}
-      \end{prooftree}
-      \\\vspace{\baselineskip}
-      \begin{prooftree}
-        \hypo{\text{l is a label}}
-        \hypo{\text{o is a register}}
-        \infer2{(H \mid \chi \mid \sigma \mid \text{st s, o, l}; C) \vDash (H, H_D[\text{l} + \chi[\text{o}]]^8 \gets \chi[s] \mid \chi \mid \sigma \mid C)}
-      \end{prooftree}
-      \\\vspace{\baselineskip}
-      \begin{prooftree}
-        \infer0{(H \mid \chi \mid \cdot^n\dblcolon v^p\dblcolon\sigma \mid \text{sref n, p, r}; C) \vDash (H \mid \chi, \chi[\text{r}] \gets \text{\&}v \mid \cdot^n\dblcolon v^p\dblcolon\sigma \mid C)}
-      \end{prooftree}
-    }
-  }
 
-  \caption{Description of the reduction steps of the NSAM.}
-  \label{fig:nstar-nsam-opsem-reductionsteps}
-\end{figure}
+
+  $H$ & $\chi$ & $\sigma$ & jmp r$; C$ &  & $H$ & $\chi$ & $\sigma$ & ${}^{\ast}H_{C}[\chi[r]]; C$ \\
+  $H$ & $\chi$ & $\sigma$ & jmp l$; C$ &  & $H$ & $\chi$ & $\sigma$ & ${}^{\ast}H_{C}[l]; C$ \\
+
+  $H$ & $\chi$ & $\sigma$ & halt$; C$ &  & $H$ & $\chi$ & $\sigma$ & $\cdot$ \\
+
+  \midrule
+
+  \multicolumn{9}{l}{\footnotesize \bfseries Stack-handling instructions} \\
+
+  $H$ & $\chi$ & $\sigma$ & salloc n$; C$ &  & $H$ & $\chi$ & $\cdot^{n}\dblcolon\sigma$ & $C$ \\
+  $H$ & $\chi$ & $\cdot^{n}\dblcolon\sigma$ & sfree n$; C$ &  & $H$ & $\chi$ & $\sigma$ & $C$ \\
+  $H$ & $\chi$ & $\cdot^{n}\dblcolon v^{p}\dblcolon\sigma$ & sld n, p, r$; C$ &  & $H$ & $\chi, r \gets v$ & $\cdot^{n}\dblcolon v^{p}\dblcolon\sigma$ & $C$ \\
+  $H$ & $\chi$ & $\cdot^{n}\dblcolon\cdot^{p}\dblcolon\sigma$ & sst r, p, n$; C$ &  & $H$ & $\chi$ & $\cdot^{n}\dblcolon\chi[r]\dblcolon\sigma$ & $C$ \\
+  $H$ & $\chi$ & $\cdot^{n}\dblcolon v^{p}\dblcolon\sigma$ & sref n, p, r$; C$ &  & $H$ & $\chi, r \gets \&v$ & $\cdot^{n}\dblcolon v^{p}\dblcolon\sigma$ & $C$ \\
+
+  \midrule
+
+  \multicolumn{9}{l}{\footnotesize \bfseries Memory-handling instructions} \\
+
+  $H$ & $\chi$ & $\sigma$ & ld s, l, p, r$; C$ &  & $H$ & \makecell{\tiny$\chi, r \gets$\\\tiny${H_{D}[l + \chi[s]]}^{p}$} & $\sigma$ & $C$ \\
+  $H$ & $\chi$ & $\sigma$ & ld o, l, p, r$; C$ &  & $H$ & \makecell{\tiny$\chi, r \gets$\\\tiny${H_{D}[l + o]}^{p}$} & $\sigma$ & $C$ \\
+  $H$ & $\chi$ & $\sigma$ & ld s, r, p, d$;C$ &  & $H$ & \makecell{\tiny$\chi, d \gets$\\\tiny${H_{D}[\chi[r] + \chi[s]]}^{p}$} & $\sigma$ & $C$ \\
+  $H$ & $\chi$ & $\sigma$ & ld s, n, p, d$;C$ &  & $H$ & \makecell{\tiny$\chi, d \gets$\\\tiny${H_{D}[\chi[s] + n]}^{p}$} & $\sigma$ & $C$ \\
+  $H$ & $\chi$ & $\sigma$ & st s, n, d$; C$ &  & \makecell{\tiny$H, {H_{D}[\chi[d] + n]}^{8}$\\\tiny$ \gets \chi[s]$} & $\chi$ & $\sigma$ & $C$ \\
+  $H$ & $\chi$ & $\sigma$ & st s, r, d$; C$ &  & \makecell{\tiny$H, {H_{D}[\chi[d] + \chi[r]]}^{8}$\\\tiny$ \gets \chi[s]$} & $\chi$ & $\sigma$ & $C$ \\
+  $H$ & $\chi$ & $\sigma$ & st s, o, l$; C$ &  & \makecell{\tiny$H, {H_{D}[l + o]}^{8}$\\\tiny$ \gets \chi[s]$} & $\chi$ & $\sigma$ & $C$ \\
+  $H$ & $\chi$ & $\sigma$ & st s, r, l$; C$ &  & \makecell{\tiny$H, {H_{D}[l + \chi[o]]}^{8}$\\\tiny$ \gets \chi[s]$} & $\chi$ & $\sigma$ & $C$ \\
+
+  \midrule
+
+  \multicolumn{9}{l}{\footnotesize \bfseries Register instructions} \\
+
+  $H$ & $\chi$ & $\sigma$ & mv s, d$; C$ &  & $H$ & $\chi, d \gets \chi[s]$ & $\sigma$ & $C$ \\
+  $H$ & $\chi$ & $\sigma$ & mv l, r$; C$ &  & $H$ & $\chi, r \gets {H_{C}[l]}^{8}$ & $\sigma$ & $C$ \\
+  $H$ & $\chi$ & $\sigma$ & mv v, r$; C$ &  & $H$ & $\chi, r \gets v$ & $\sigma$ & $C$ \\
+
+  \bottomrule
+
+  \caption{Operational semantics for the NASM.}
+  \label{fig:nstar-nsam-core-opsemantics}
+\end{xltabular}
