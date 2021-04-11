@@ -820,14 +820,15 @@ Note that strings are automatically null-terminated (i.e.\ a \texttt{\textbacksl
 
 Their grammar is given in Figure~\ref{fig:nstar-common-constvalue-grammar} and the type inference rules are given in Figure~\ref{fig:nstar-common-constvalue-toplevel-typerules} and Figure~\ref{fig:nstar-common-constvalue-embedded-typerules}.
 
-\underline{Note:} inference rules for constant values are divided into two parts, depending on whether they are ``top-level'' constants or not.
-A ``top-level'' constant is a constant that is found directly after the \texttt{=} symbol in a \texttt{data} binding.
-
-\begin{figure}[htb]
+\begin{figure}[H]
   \centering
 
   \framebox[\textwidth][c]{\parbox{\textwidth}{
       \centering
+      \scalebox{.5}{
+        \includegraphics{nstar/constants/string-character}
+      }
+      \\
       \scalebox{.5}{
         \includegraphics{nstar/constants/integer-grammar}
       }
@@ -843,13 +844,20 @@ A ``top-level'' constant is a constant that is found directly after the \texttt{
       \scalebox{.5}{
         \includegraphics{nstar/constants/string-grammar}
       }
+      \\
+      \scalebox{.5}{
+        \includegraphics{nstar/constants/struct-grammar}
+      }
   }}
 
   \caption{Grammar for constant values.}
   \label{fig:nstar-common-constvalue-grammar}
 \end{figure}
 
-\begin{figure}[htb]
+\underline{Note:} inference rules for constant values are divided into two parts, depending on whether they are ``top-level'' constants or not.
+A ``top-level'' constant is a constant that is found directly after the \texttt{=} symbol in a \texttt{data} binding.
+
+\begin{figure}[H]
   \centering
 
   \framebox[\textwidth][c]{\parbox{\textwidth}{

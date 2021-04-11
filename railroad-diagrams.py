@@ -37,32 +37,7 @@ def mk_diagram(name, nodes):
 def character_immediate():
     inner = Sequence(
 		Terminal("'"),
-		Choice(
-			1,
-			Sequence(
-				Terminal('\\'),
-				Choice(
-					1,
-					Sequence(
-						Terminal('x'),
-						NonTerminal('hex-digit'),
-						NonTerminal('hex-digit')
-					),
-					HorizontalChoice(
-						Terminal('n'),
-						Terminal('r'),
-						Terminal('\\'),
-						Terminal('0')
-					),
-					HorizontalChoice(
-						Terminal('t'),
-						Terminal('v'),
-						Terminal('e')
-					),
-				)
-			),
-			NonTerminal('ascii-character')
-		),
+		NonTerminal('string-character'),
 		Terminal("'")
     )
 
@@ -541,32 +516,7 @@ def string_constant():
     inner = Sequence(
 		Terminal("\""),
 		ZeroOrMore(
-			Choice(
-				1,
-				Sequence(
-					Terminal('\\'),
-					Choice(
-						1,
-						Sequence(
-							Terminal('x'),
-							NonTerminal('hex-digit'),
-							NonTerminal('hex-digit')
-						),
-						HorizontalChoice(
-							Terminal('n'),
-							Terminal('r'),
-							Terminal('\\'),
-							Terminal('0')
-						),
-						HorizontalChoice(
-							Terminal('t'),
-							Terminal('v'),
-							Terminal('e')
-						),
-					)
-				),
-				NonTerminal('ascii-character')
-			)
+			NonTerminal('string-character')
 		),
 		Terminal("\"")
     )
@@ -583,4 +533,51 @@ def sref_instruction():
 
 	return mk_diagram('sref-instruction', inner)
 
-sref_instruction().writeSvg(sys.stdout.write)
+def string_character():
+	inner = Choice(
+		1,
+		Sequence(
+			Terminal('\\'),
+			Choice(
+				1,
+				Sequence(
+					Terminal('x'),
+					NonTerminal('hex-digit'),
+					NonTerminal('hex-digit')
+				),
+				HorizontalChoice(
+					Terminal('n'),
+					Terminal('r'),
+					Terminal('\\'),
+					Terminal('0')
+				),
+				HorizontalChoice(
+					Terminal('t'),
+					Terminal('v'),
+					Terminal('e')
+				),
+			)
+		),
+		NonTerminal('ascii-character')
+	)
+
+	return mk_diagram('string-character', inner)
+
+def struct_constant():
+	inner = Sequence(
+		Terminal('('),
+		ZeroOrMore(
+			Choice(
+				1,
+				NonTerminal('integer-value'),
+				NonTerminal('character-value'),
+				NonTerminal('structure-constant')
+			),
+			Terminal(',')
+		),
+		Terminal(')')
+	)
+
+	return mk_diagram('structure-constant', inner)
+
+struct_constant().writeSvg(sys.stdout.write)
