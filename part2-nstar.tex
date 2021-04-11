@@ -854,7 +854,19 @@ Their grammar is given in Figure~\ref{fig:nstar-common-constvalue-grammar} and t
       \begin{prooftree}
         \hypo{$d is a signed integer constant$}
         \hypo{$t $\in\{$s8, s16, s32, s64$\}}
+        \infer2[top-level constant]{\Gamma\vdash^T_{data}$ d : *t$}
+      \end{prooftree}
+      \\\vspace{\baselineskip}
+      \begin{prooftree}
+        \hypo{$d is a signed integer constant$}
+        \hypo{$t $\in\{$s8, s16, s32, s64$\}}
         \infer2{\Gamma\vdash^T_{data}$ d : t$}
+      \end{prooftree}
+      \\\vspace{\baselineskip}
+      \begin{prooftree}
+        \hypo{$d is an unsigned integer constant$}
+        \hypo{$t $\in\{$u8, u16, u32, u64$\}}
+        \infer2[top-level constant]{\Gamma\vdash^T_{data}$ d : *t$}
       \end{prooftree}
       \\\vspace{\baselineskip}
       \begin{prooftree}
@@ -865,20 +877,25 @@ Their grammar is given in Figure~\ref{fig:nstar-common-constvalue-grammar} and t
       \\\vspace{\baselineskip}
       \begin{prooftree}
         \hypo{$c is a character constant$}
-        \infer1{\Gamma\vdash^T_{data}$ c : char$}
+        \infer1[top-level constant]{\Gamma\vdash^T_{data}$ c : *s8$}
+      \end{prooftree}\hspace{1.5em}
+      \begin{prooftree}
+        \hypo{$s is a string constant$}
+        \infer1{\Gamma\vdash^T_{data}$ s : *s8$}
+      \end{prooftree}
+      \\\vspace{\baselineskip}
+      \begin{prooftree}
+        \hypo{$c is a character constant$}
+        \infer1{\Gamma\vdash^T_{data}$ c : s8$}
       \end{prooftree}
       \\\vspace{\baselineskip}
       \begin{prooftree}
         \hypo{$n : $\mathbb{N}}
         \hypo{\Gamma\vdash^K$ t : Tn$}
         \hypo{\Gamma\vdash^T_{data}$ c$_1$, c$_2$, \ldots, c$_n$ : t$}
-        \infer3{\Gamma\vdash^T_{data}$ [c$_1$, c$_2$, \ldots, c$_n$] : t$}
+        \infer3{\Gamma\vdash^T_{data}$ [c$_1$, c$_2$, \ldots, c$_n$] : *t$}
       \end{prooftree}
       \\\vspace{\baselineskip}
-      \begin{prooftree}
-        \hypo{$s is a string constant$}
-        \infer1{\Gamma\vdash^T_{data}$ s : s8$}
-      \end{prooftree}
   }}
 
   \caption{Type inference rules for constant values.}
