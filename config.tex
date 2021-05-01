@@ -34,10 +34,25 @@
 
 \definecolor{mintedbg}{rgb}{.96,.96,.96}
 
-\setminted{breaklines=true, mathescape=true, breaksymbolleft={}, autogobble=true, bgcolor=mintedbg, xleftmargin=\parindent, xrightmargin=\parindent}
+\setminted{
+  breaklines=true,
+  mathescape=true,
+  breaksymbolleft={},
+  autogobble=true,
+  xleftmargin=\parindent,
+  xrightmargin=\parindent,
+  frame=single,
+  framerule=\fboxrule,
+  framesep=1.5\fboxsep,
+  style=xcode,
+}
 \makesavenoteenv{minted}
 
+\BeforeBeginEnvironment{minted}{\begin{minipage}{\textwidth}}
+\AfterEndEnvironment{minted}{\end{minipage}}
+
 \def\nstarlexer{lexer/nstar.py:NStarLexer -x}
+\def\zilchlexer{lexer/zilch.py:ZilchLexer -x}
 
 \setcounter{tocdepth}{4}
 \setcounter{secnumdepth}{4}
@@ -87,3 +102,5 @@
     pdftitle={The magical Zilch book},
     bookmarks=true,
 }
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
