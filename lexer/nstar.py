@@ -24,17 +24,17 @@ class NStarLexer(RegexLexer):
             (r'[0-9]+', Number.Integer)
         ],
         'instructions': [
-            (r'(ret|mv|jmp|call|cmp|je|sfree|salloc|st|sref)\b', Name.Builtin)
+            (r'(ret|mv|jmp|call|cmp|je|sfree|salloc|st|sref)\b', Name.Builtin.Pseudo)
         ],
         'registers': [
-            (r'(%(r0|r1|r2|r3|r4|r5|sp|bp|ip))\b', Name.Constant)
+            (r'(%(r0|r1|r2|r3|r4|r5))\b', Name.Builtin.Pseudo)
         ],
         'types': [
             (r'(Ts|Ta|Tc|T4|T8|s8|s16|s32|s64|u8|u16|u32|u64)\b', Keyword.Type)
         ],
         'variables': [
-            (r'^([a-zA-Z_]*)\:', Name.Variable),
-            (r'(jmp|call|je)( )([a-zA-Z]*)(\<.*?\>)?', bygroups(Keyword, Text, Name.Variable, Text))
+            (r'^([a-zA-Z_]*)\:', Name.Label),
+            (r'(jmp|call|je)( )([a-zA-Z]*)(\<.*?\>)?', bygroups(Name.Builtin.Pseudo, Text, Name.Label, Text))
         ],
         'root': [
             include('commentsandwhitespace'),
