@@ -1,6 +1,6 @@
 from railroad import *
 
-MY_STYLE = '''\
+NSTAR_STYLE = '''\
 	svg.railroad-diagram {
 		background-color:rgba(0,0,0,0);
 	}
@@ -31,10 +31,44 @@ MY_STYLE = '''\
 	}
 '''
 
-def mk_diagram(name, nodes):
-    return Diagram(Start('complex', name), nodes, type='complex', css=MY_STYLE)
+ZILCH_STYLE = '''\
+	svg.railroad-diagram {
+		background-color:rgba(0,0,0,0);
+	}
+	svg.railroad-diagram path {
+		stroke-width:3;
+		stroke:black;
+		fill:rgba(0,0,0,0);
+	}
+	svg.railroad-diagram text {
+		font:bold 14px monospace;
+		text-anchor:middle;
+	}
+	svg.railroad-diagram text.label{
+		text-anchor:start;
+	}
+	svg.railroad-diagram text.comment{
+		font:italic 12px monospace;
+	}
+	svg.railroad-diagram rect{
+		stroke-width:3;
+		stroke:black;
+		fill:hsl(209,73%,55%);
+	}
+	svg.railroad-diagram rect.group-box {
+		stroke: gray;
+		stroke-dasharray: 10 5;
+		fill: none;
+	}
+'''
 
-def character_immediate():
+def mk_diagram(name, nodes):
+    return Diagram(Start('complex', name), nodes, type='complex', css=NSTAR_STYLE)
+def mk_diagram2(name, nodes):
+    return Diagram(Start('complex', name), nodes, type='complex', css=ZILCH_STYLE)
+
+
+def nstar_character_immediate():
     inner = Sequence(
 		Terminal("'"),
 		NonTerminal('string-character'),
@@ -43,17 +77,17 @@ def character_immediate():
 
     return mk_diagram('character-immediate', inner)
 
-def character_constant():
+def nstar_character_constant():
     return character_immediate()
 
-def nop_instruction():
+def nstar_nop_instruction():
 	inner = Sequence(
 		Terminal('nop')
 	)
 
 	return mk_diagram('nop-instruction', inner)
 
-def code_line():
+def nstar_code_line():
 	inner = Sequence(
 		Optional(
 			Terminal('global')
@@ -67,7 +101,7 @@ def code_line():
 
 	return mk_diagram('code-line', inner)
 
-def data_section():
+def nstar_data_section():
 	inner = Sequence(
 		Terminal('section'),
 		Choice(
@@ -84,7 +118,7 @@ def data_section():
 
 	return mk_diagram('data-section', inner)
 
-def extern_data_section():
+def nstar_extern_data_section():
 	inner = Sequence(
 		Terminal('section'),
 		Choice(
@@ -108,7 +142,7 @@ def extern_data_section():
 
 	return mk_diagram('extern.data-section', inner)
 
-def label_type():
+def nstar_label_type():
 	inner = Sequence(
 		Choice(
 			0,
@@ -131,7 +165,7 @@ def label_type():
 
 	return mk_diagram('label-type', inner)
 
-def context_type():
+def nstar_context_type():
 	inner = Sequence(
 		Terminal('{'),
 		ZeroOrMore(
@@ -155,7 +189,7 @@ def context_type():
 
 	return mk_diagram('context-type', inner)
 
-def cont_type():
+def nstar_cont_type():
 	inner = Choice(
 		1,
 		Group(
@@ -174,7 +208,7 @@ def cont_type():
 
 	return mk_diagram('cont-type', inner)
 
-def kind():
+def nstar_kind():
 	inner = Choice(
 		1,
 		Terminal('Ta'),
@@ -188,7 +222,7 @@ def kind():
 
 	return mk_diagram('kind', inner)
 
-def instruction_block():
+def nstar_instruction_block():
 	inner = Choice(
 		1,
 		Sequence(
@@ -212,7 +246,7 @@ def instruction_block():
 
 	return mk_diagram('instruction-block', inner)
 
-def code_section():
+def nstar_code_section():
 	inner = Sequence(
 		Terminal('section'),
 		Terminal('code'),
@@ -225,7 +259,7 @@ def code_section():
 
 	return mk_diagram('code-section', inner)
 
-def jmp_instruction():
+def nstar_jmp_instruction():
 	inner = Sequence(
 		Terminal('jmp'),
 		Group(
@@ -236,7 +270,7 @@ def jmp_instruction():
 
 	return mk_diagram('jmp-instruction', inner)
 
-def call_instruction():
+def nstar_call_instruction():
 	inner = Sequence(
 		Terminal('call'),
 		Group(
@@ -247,7 +281,7 @@ def call_instruction():
 
 	return mk_diagram('call-instruction', inner)
 
-def ptr_byte_offset():
+def nstar_ptr_byte_offset():
 	inner = Sequence(
 		Group(
 			Choice(
@@ -281,7 +315,7 @@ def ptr_byte_offset():
 
 	return mk_diagram('pointer-byte-offset', inner)
 
-def ptr_offset():
+def nstar_ptr_offset():
 	inner = Sequence(
 		Group(
 			Choice(
@@ -305,7 +339,7 @@ def ptr_offset():
 
 	return mk_diagram('pointer-offset', inner)
 
-def label_specialization():
+def nstar_label_specialization():
 	inner = Sequence(
 		NonTerminal('identifier'),
 		Optional(
@@ -322,7 +356,7 @@ def label_specialization():
 
 	return mk_diagram('label-value', inner)
 
-def register():
+def nstar_register():
 	inner = Sequence(
 		Terminal('%'),
 		Choice(
@@ -342,7 +376,7 @@ def register():
 
 	return mk_diagram('register', inner)
 
-def udata_section():
+def nstar_udata_section():
 	inner = Sequence(
 		Terminal('section'),
 		Terminal('udata'),
@@ -355,7 +389,7 @@ def udata_section():
 
 	return mk_diagram('udata-section', inner)
 
-def data_line():
+def nstar_data_line():
 	inner = Sequence(
 		Optional(
 			Terminal('global')
@@ -369,7 +403,7 @@ def data_line():
 
 	return mk_diagram('data-line', inner)
 
-def udata_line():
+def nstar_udata_line():
 	inner = Sequence(
 		Optional(
 			Terminal('global')
@@ -381,7 +415,7 @@ def udata_line():
 
 	return mk_diagram('udata-line', inner)
 
-def mv_instruction():
+def nstar_mv_instruction():
 	inner = Sequence(
 		Terminal('mv'),
 		Group(
@@ -402,7 +436,7 @@ def mv_instruction():
 
 	return mk_diagram('mv-instruction', inner)
 
-def sst_instruction():
+def nstar_sst_instruction():
 	inner = Sequence(
 		Terminal('sst'),
 		Group(
@@ -422,7 +456,7 @@ def sst_instruction():
 
 	return mk_diagram('sst-instruction', inner)
 
-def sld_instruction():
+def nstar_sld_instruction():
 	inner = Sequence(
 		Terminal('sld'),
 		Group(
@@ -438,7 +472,7 @@ def sld_instruction():
 
 	return mk_diagram('sld-instruction', inner)
 
-def st_instruction():
+def nstar_st_instruction():
 	inner = Sequence(
 		Terminal('st'),
 		Group(
@@ -458,7 +492,7 @@ def st_instruction():
 
 	return mk_diagram('st-instruction', inner)
 
-def ld_instruction():
+def nstar_ld_instruction():
 	inner = Sequence(
 		Terminal('ld'),
 		Group(
@@ -474,14 +508,14 @@ def ld_instruction():
 
 	return mk_diagram('ld-instruction', inner)
 
-def sfree_instruction():
+def nstar_sfree_instruction():
 	inner = Sequence(
 		Terminal('sfree')
 	)
 
 	return mk_diagram('sfree-instruction', inner)
 
-def salloc_instruction():
+def nstar_salloc_instruction():
 	inner = Sequence(
 		Terminal('salloc'),
 		NonTerminal('type')
@@ -489,7 +523,7 @@ def salloc_instruction():
 
 	return mk_diagram('salloc-instruction', inner)
 
-def include_section():
+def nstar_include_section():
 	inner = Sequence(
 		Terminal('include'),
 		Terminal('{'),
@@ -505,14 +539,14 @@ def include_section():
 
 	return mk_diagram('include-section', inner)
 
-def bang_type():
+def nstar_bang_type():
 	inner = Sequence(
 		Terminal('!')
 	)
 
 	return mk_diagram('bang-type', inner)
 
-def string_constant():
+def nstar_string_constant():
     inner = Sequence(
 		Terminal("\""),
 		ZeroOrMore(
@@ -523,7 +557,7 @@ def string_constant():
 
     return mk_diagram('string-constant', inner)
 
-def sref_instruction():
+def nstar_sref_instruction():
 	inner = Sequence(
 		Terminal('sref'),
 		NonTerminal('positive-integer'),
@@ -533,7 +567,7 @@ def sref_instruction():
 
 	return mk_diagram('sref-instruction', inner)
 
-def string_character():
+def nstar_string_character():
 	inner = Choice(
 		1,
 		Sequence(
@@ -563,7 +597,7 @@ def string_character():
 
 	return mk_diagram('string-character', inner)
 
-def struct_constant():
+def nstar_struct_constant():
 	inner = Sequence(
 		Terminal('('),
 		ZeroOrMore(
@@ -580,4 +614,71 @@ def struct_constant():
 
 	return mk_diagram('structure-constant', inner)
 
-struct_constant().writeSvg(sys.stdout.write)
+##################################################################################""
+
+def zilch_function_definition():
+	inner = Stack(
+		Sequence(
+			Terminal('def'),
+			Optional(
+				Sequence(
+					Terminal('{'),
+					ZeroOrMore(
+						Sequence(
+							NonTerminal('identifier'),
+							Optional(
+								Sequence(
+									Terminal(':'),
+									NonTerminal('kind')
+								)
+							)
+						),
+						Terminal(',')
+					),
+					Terminal('}')
+				)
+			),
+			Optional(
+				Sequence(
+					Terminal('['),
+					ZeroOrMore(
+						NonTerminal('type'),
+						Terminal(',')
+					),
+					Terminal(']')
+				)
+			)
+		),
+		Sequence(
+			NonTerminal('identifier'),
+			Terminal('('),
+			ZeroOrMore(
+				Sequence(
+					NonTerminal('identifier'),
+					Optional(
+						Sequence(
+							Terminal(':'),
+							NonTerminal('type')
+						)
+					)
+				),
+				Terminal(',')
+			),
+			Terminal(')'),
+			Optional(
+				Sequence(
+					Terminal(':'),
+					NonTerminal('type')
+				)
+			),
+			Terminal(':='),
+			NonTerminal('expression')
+		)
+	)
+
+	return mk_diagram2('function-definition', inner)
+
+
+
+
+zilch_function_definition().writeSvg(sys.stdout.write)

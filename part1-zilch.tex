@@ -1,3 +1,19 @@
 \part{The language}\label{part:zilch}
 
+\chapter{Introduction}\label{chap:zilch-introduction}
+
+Low-level programming is programming with a few abstractions over the hardware.
+For example, assembly languages mostly provide no or very little abstractions over CPU instructions (having one instruction set per target).
+Functional programming is a kind of programming focused around functions and their composition.
+However, because of this, many functional programming languages have a tendancy to be quite slow, at least compared to ``ordinary'' imperative programming languages.
+
+\href{http://www.ats-lang.org/}{ATS} is one of those programming languages claiming to be both functional and quite low-level.
+It compiles to C (therefore has a free FFI), has a complex dependent type system and many other things making it kind of great.
+But ATS is hard to learn, because it has so much stuff\ldots
+
+Yet Zilch is also a low-level functional programming language.
+But the goal is to design a not-so-hard to learn programming language, while still having strong guarantees about the code written\footnote{When this was written, Zilch was far from production-ready, so most
+of the guarantees have not yet been described here.}.
+Prior knowledge about ML-style programming is still recommended before trying to tackle Zilch, but anybody without this kind of knowledge should also be able to learn Zilch fairly easily.
+
 Coming soon\ldots
