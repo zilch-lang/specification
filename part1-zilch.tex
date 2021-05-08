@@ -18,3 +18,26 @@ Prior knowledge about ML-style programming is still recommended before trying to
 
 This part will try to describe and formalize (at least a bit, but some parts may be left informal) the Zilch programming language, going from the usual syntax onto the operational semantics.
 Implementation details (such as error messages, program optimisations, \ldots) will not be covered by this document.
+
+\section*{Some notes on the notation used}\label{sec:zilch-introduction-notation}
+
+Zilch is really not a small programming language.
+Because of that, sometimes we need some specific notation to described things like inference rules.
+
+The mainly used notation is described here, but not necessarily everything will be described (sometimes, a little bit of common sense helps to understand).
+
+\begin{itemize}
+  \item Grammar
+        \begin{figure}[H]
+          \centering
+          \scalebox{.5}{
+            \includegraphics{grammar-template-2}
+          }
+        \end{figure}
+        \begin{itemize}
+          \item Sharp rectangles describe that another rule is to be used there (the name of the rule is given in the rectangle);
+          \item Rounded rectangles describe terminal tokens, i.e.\ pieces of string that must be litterally matched;
+          \item The name of the grammar rule defined is given in the top-left corner of the diagram.
+                A rule matches if and only if it is possible to go from the left to the right, only following the rails;
+        \end{itemize}
+\end{itemize}
