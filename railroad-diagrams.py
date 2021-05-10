@@ -840,5 +840,38 @@ def zilch_number():
 
 	return mk_diagram2('number', inner)
 
+def zilch_string():
+	inner = Sequence(
+		Terminal('"'),
+		ZeroOrMore(
+			Choice(
+				1,
+				NonTerminal('any espace sequence'),
+				Group(
+					NonTerminal('any character'),
+					'≠ "'
+				)
+			)
+		),
+		Terminal('"')
+	)
 
-zilch_number().writeSvg(sys.stdout.write)
+	return mk_diagram2('string', inner)
+
+def zilch_character():
+	inner = Sequence(
+		Terminal("'"),
+		Choice(
+			1,
+			NonTerminal('any escape sequence'),
+			Group(
+				NonTerminal('any character'),
+				"≠ '"
+			)
+		),
+		Terminal("'")
+	)
+
+	return mk_diagram2('character', inner)
+
+zilch_character().writeSvg(sys.stdout.write)

@@ -130,3 +130,43 @@ A floating point number must always have digits on both sides of the dot (i.e.\ 
   \caption{Numeric lexical units.}
   \label{fig:zilch-grammar-lexical-numbers-grammar}
 \end{figure}
+
+\subsection{String and character literals}\label{subsec:zilch-grammar-lexical-strings}
+
+Strings are arrays of characters.
+However, because it is tedious to write such arrays, we provide syntactic sugar to make it easier.
+
+String literals are enclosed in double quotes \verb|"|, and character literal are enclosed in single quotes \verb|'|.
+They can contain any character (both graphical and whitespaces), but some characters may be easier to type.
+These basically have ``shorthands'' defined as escape sequences, each defined in Table~\ref{table:zilch-grammar-lexical-strings-escapesequences}.
+Note that, while double and single quotes may be escaped, these may not necessarily be in respectively character and string literals.
+
+Multiple string literals directly next to each other (as in \verb|"abc" "def"|) are concatenated into one (so \verb|"abcdef"|).
+
+\begin{figure}[H]
+  \centering
+
+  \scalebox{.5}{
+    \includegraphics{zilch/lexicon/string}
+  }
+  \\
+  \scalebox{.5}{
+    \includegraphics{zilch/lexicon/character}
+  }
+
+  \caption{String and character lexical units.}
+  \label{fig:zilch-grammar-lexical-strings-grammar}
+\end{figure}
+
+\begin{table}[htb]
+  \begin{tabularx}{\textwidth}{*{5}{Y}}
+    \toprule
+    \verb|\a| & \verb|\b| & \verb|\f| & \verb|\n| & \verb|\r| \\
+    \verb|\t| & \verb|\v| & \verb|\\| & \verb|\"| & \verb|\'| \\
+    \bottomrule
+  \end{tabularx}
+
+  \caption{All available escape sequences.}
+  \label{table:zilch-grammar-lexical-strings-escapesequences}
+\end{table}
+
