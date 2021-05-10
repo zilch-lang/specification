@@ -97,3 +97,20 @@ Mixfix operators also do not allow keywords as backbones (that is, \texttt{\_->\
   \label{fig:zilch-grammar-lexical-identifiers-grammar}
 \end{figure}
 
+\subsection{Whitespaces}\label{subsec:zilch-grammar-lexical-whitespaces}
+
+Whitespace tokens are basically word separators.
+Because of that, comments are also counted as whitespaces, despite not really being an invisible sequence.
+However, because of how mixfix operators are parsed, the sequence \verb|_--_...| corresponds to the two tokens \verb|<underscore>| and \verb|<comment _...>|, not \verb|<identifier _--_...>| (same goes for any mixfix operator that has \verb|--| as a backbone; but again, \verb|_--*_| \textit{is a valid operator}).
+
+\begin{figure}[H]
+  \centering
+
+  \scalebox{.5}{
+    \includegraphics{zilch/lexicon/whitespaces}
+  }
+
+  \caption{Whitespace lexical units.}
+  \label{fig:zilh-grammar-lexical-whitespaces-grammar}
+\end{figure}
+

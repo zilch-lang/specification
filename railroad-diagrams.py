@@ -759,4 +759,22 @@ def zilch_special():
 
 	return mk_diagram2('special', inner)
 
-zilch_special().writeSvg(sys.stdout.write)
+def zilch_whitespaces():
+	inner = OneOrMore(
+		Choice(
+			1,
+			NonTerminal('any invisible character'),
+			Sequence(
+				Terminal('--'),
+				ZeroOrMore(
+					NonTerminal('any character')
+				),
+				Terminal('end of line')
+			)
+		)
+	)
+
+	return mk_diagram2('whitespaces', inner)
+
+
+zilch_whitespaces().writeSvg(sys.stdout.write)
