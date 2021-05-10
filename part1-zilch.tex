@@ -111,6 +111,22 @@ However, because of how mixfix operators are parsed, the sequence \verb|_--_...|
   }
 
   \caption{Whitespace lexical units.}
-  \label{fig:zilh-grammar-lexical-whitespaces-grammar}
+  \label{fig:zilch-grammar-lexical-whitespaces-grammar}
 \end{figure}
 
+\subsection{Numerical tokens}\label{subsec:zilch-grammar-lexical-numbers}
+
+There are two kinds of numerical tokens: integers and floating points.
+While floating points are always written using decimal digits, integers may be written using decimal digits, octal digits (if prefixed by \verb|0o| or \verb|0O|), hexadecimal digits (if prefixed by \verb|0x| or \verb|0X|) or binary digits (if prefixed by \verb|0b| or \verb|0B|).
+A floating point number must always have digits on both sides of the dot (i.e.\ it is impossible to write \verb|0.| as in other programming languages) because it could else be mistaken with the dot syntax.
+
+\begin{figure}[H]
+  \centering
+
+  \scalebox{.5}{
+    \includegraphics{zilch/lexicon/number}
+  }
+
+  \caption{Numeric lexical units.}
+  \label{fig:zilch-grammar-lexical-numbers-grammar}
+\end{figure}

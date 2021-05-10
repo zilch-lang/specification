@@ -776,5 +776,69 @@ def zilch_whitespaces():
 
 	return mk_diagram2('whitespaces', inner)
 
+def zilch_number():
+	inner = Choice(
+		2,
+		Group(
+			Sequence(
+				Terminal('0'),
+				HorizontalChoice(
+					Terminal('b'),
+					Terminal('B')
+				),
+				OneOrMore(
+					NonTerminal('binary digit')
+				)
+			),
+			'binary integer literal'
+		),
+		Group(
+			Sequence(
+				Terminal('0'),
+				HorizontalChoice(
+					Terminal('o'),
+					Terminal('O')
+				),
+				OneOrMore(
+					NonTerminal('octal digit')
+				)
+			),
+			'octal integer literal'
+		),
+		Group(
+			Sequence(
+				Terminal('0'),
+				HorizontalChoice(
+					Terminal('x'),
+					Terminal('X')
+				),
+				OneOrMore(
+					NonTerminal('hexadecimal digit')
+				)
+			),
+			'hexadecimal integer literal'
+		),
+		Group(
+			Sequence(
+				OneOrMore(
+					NonTerminal('decimal digit')
+				),
+				Terminal('.'),
+				OneOrMore(
+					NonTerminal('decimal digit')
+				)
+			),
+			'floating point literal'
+		),
+		Group(
+			OneOrMore(
+				NonTerminal('decimal digit')
+			),
+			'decimal integer literal'
+		)
+	)
 
-zilch_whitespaces().writeSvg(sys.stdout.write)
+	return mk_diagram2('number', inner)
+
+
+zilch_number().writeSvg(sys.stdout.write)
