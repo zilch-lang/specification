@@ -678,7 +678,85 @@ def zilch_function_definition():
 
 	return mk_diagram2('function-definition', inner)
 
+def zilch_identifier():
+	inner = Group(
+		Sequence(
+			Group(
+				NonTerminal('printable'),
+				'∉ special'
+			),
+			ZeroOrMore(
+				Group(
+					NonTerminal('printable'),
+					'∉ special'
+				)
+			)
+		),
+		'∉ keywords'
+	)
 
+	return mk_diagram2('identifier', inner)
 
+def zilch_keywords():
+	inner = Choice(
+		1,
+		HorizontalChoice(
+			Terminal('forall'),
+			Terminal('∀'),
+			Terminal('def'),
+			Terminal('enum'),
+			Terminal('record'),
+			Terminal('class'),
+			Terminal('impl'),
+			Terminal('where')
+		),
+		HorizontalChoice(
+			Terminal('do'),
+			Terminal('type'),
+			Terminal('case'),
+			Terminal('of'),
+			Terminal('module'),
+			Terminal('fn'),
+			Terminal('foreign'),
+			Terminal('as')
+		),
+		HorizontalChoice(
+			Terminal('import'),
+			Terminal('export'),
+			Terminal('perm'),
+			Terminal('if'),
+			Terminal('then'),
+			Terminal('else'),
+			Terminal('pattern')
+		),
+		HorizontalChoice(
+			Terminal(':='),
+			Terminal('<-'),
+			Terminal('<:'),
+			Terminal('->'),
+			Terminal('→'),
+			Terminal('←'),
+			Terminal('≔'),
+			Terminal('_'),
+			Terminal('·'),
+			Terminal('.'),
+			Terminal('--')
+		)
+	)
 
-zilch_function_definition().writeSvg(sys.stdout.write)
+	return mk_diagram2('keywords', inner)
+
+def zilch_special():
+	inner = HorizontalChoice(
+		Terminal('('),
+		Terminal(')'),
+		Terminal('['),
+		Terminal(']'),
+		Terminal('{'),
+		Terminal('}'),
+		Terminal(',')
+	)
+
+	return mk_diagram2('special', inner)
+
+zilch_special().writeSvg(sys.stdout.write)

@@ -41,3 +41,59 @@ The mainly used notation is described here, but not necessarily everything will 
                 A rule matches if and only if it is possible to go from the left to the right, only following the rails;
         \end{itemize}
 \end{itemize}
+
+\chapter{Grammar of Zilch programs}\label{chap:zilch-grammar}
+
+A Zilch program is comprised of three different levels, each included in the next one:
+\begin{itemize}
+  \item The expression level, where an expression denotes a value which has a statically determined type;
+  \item The declaration level, containing all function definitions, type definitions, type classes declarations, etc;
+  \item The module level, where imports and module declarations live in;
+\end{itemize}
+
+\noindent Because it is not easy to materialize indentation properties in the grammar, it will instead be marked using the non-terminals\footnote{Those symbols are reserved and actually used as terminals, so we put them as non-terminals to remove any ambiguation.} \texttt{\{}, \texttt{\}} and \texttt{;}.
+Note that these are not actually present in the source code, and are only a mean of hinting an indentation change.
+\texttt{x \{ y; z \}} really means \texttt{x} followed by \texttt{y} which may be more indented or on the same line, and \texttt{z} which must be aligned with the beginning of \texttt{y}.
+It therefore describes both layouts:
+
+\noindent\begin{minted}{\zilchlexer}
+  -- `y` on the same line as `x`:
+  x y
+    z
+  -- or `y` on a new line:
+  x
+    y
+    z
+\end{minted}
+
+\section{Lexicon}\label{sec:zilch-grammar-lexical}
+
+This section describes the lexical structure of any Zilch program.
+Note that the Unicode alternative syntax does not need to be supported, but makes the code look nicer.
+
+\subsection{Identifiers, operators and reserved words}\label{subsec:zilch-grammar-lexical-identifiers}
+
+Identifiers and operators are the same thing thanks to mixfix operators.
+They are composed of only printable characters which are not considered special, and must not form keywords.
+
+Mixfix operators also do not allow keywords as backbones (that is, \texttt{\_->\_} is not a valid mixfix operator because \texttt{->} is a keyword; however \texttt{\_->*\_} is valid because the backbone contains \texttt{->*}, not \texttt{->}).
+
+\begin{figure}[H]
+  \centering
+
+  \scalebox{.5}{
+    \includegraphics{zilch/lexicon/keywords}
+  }
+  \\
+  \scalebox{.5}{
+    \includegraphics{zilch/lexicon/special}
+  }
+  \\
+  \scalebox{.5}{
+    \includegraphics{zilch/lexicon/identifier}
+  }
+
+  \caption{Lexical units for identifiers.}
+  \label{fig:zilch-grammar-lexical-identifiers-grammar}
+\end{figure}
+
