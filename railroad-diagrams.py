@@ -979,7 +979,7 @@ def zilch_record():
 
 def zilch_basicexpr():
 	inner = Choice(
-		2,
+		3,
 		NonTerminal('literal'),
 		Group(
 			NonTerminal('identifier'),
@@ -997,8 +997,19 @@ def zilch_basicexpr():
 			'typed hole'
 		),
 		Group(
-			OneOrMore(
-				NonTerminal('expression')
+			Sequence(
+				NonTerminal('expression'),
+				Choice(
+					1,
+					NonTerminal('expression'),
+					Sequence(
+						Terminal('('),
+						ZeroOrMore(
+							NonTerminal('expression')
+						),
+						Terminal(')')
+					)
+				)
 			),
 			'function application'
 		),
