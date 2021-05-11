@@ -874,4 +874,144 @@ def zilch_character():
 
 	return mk_diagram2('character', inner)
 
-zilch_character().writeSvg(sys.stdout.write)
+def zilch_lambda():
+	inner = Sequence(
+		Terminal('fn'),
+		Choice(
+			0,
+			NonTerminal('identifier'),
+			Sequence(
+				Terminal('('),
+				ZeroOrMore(
+					NonTerminal('identifier'),
+					Terminal(',')
+				),
+				Terminal(')')
+			)
+		),
+		NonTerminal('expression')
+	)
+
+	return mk_diagram2('lambda', inner)
+
+def zilch_conditional():
+	inner = Sequence(
+		Terminal('if'),
+		NonTerminal('expression'),
+		Terminal('then'),
+		NonTerminal('expression'),
+		Terminal('else'),
+		NonTerminal('expression')
+	)
+
+	return mk_diagram2('conditional', inner)
+
+def zilch_do():
+	inner = Sequence(
+		Terminal('do'),
+		NonTerminal('{'),
+		Optional(
+			Sequence(
+				OneOrMore(
+					Choice(
+						1,
+						Sequence(
+							NonTerminal('identifier'),
+							HorizontalChoice(
+								Terminal('<-'),
+								Terminal('←')
+							),
+							NonTerminal('expression')
+						),
+						NonTerminal('expression')
+					),
+					NonTerminal(';')
+				),
+				NonTerminal(';')
+			)
+		),
+		NonTerminal('expression'),
+		NonTerminal('}')
+	)
+
+	return mk_diagram2('do', inner)
+
+def zilch_case():
+	inner = Sequence(
+		Terminal('case'),
+		NonTerminal('expression'),
+		Terminal('of'),
+		NonTerminal('{'),
+		OneOrMore(
+			Sequence(
+				NonTerminal('pattern'),
+				HorizontalChoice(
+					Terminal('->'),
+					Terminal('→')
+				),
+				NonTerminal('expression')
+			),
+			NonTerminal(';')
+		),
+		NonTerminal('}')
+	)
+
+	return mk_diagram2('case', inner)
+
+def zilch_record():
+	inner = Sequence(
+		Terminal('{'),
+		ZeroOrMore(
+			Sequence(
+				NonTerminal('identifier'),
+				HorizontalChoice(
+					Terminal(':='),
+					Terminal('≔')
+				),
+				NonTerminal('expression')
+			),
+			Terminal(',')
+		),
+		Terminal('}')
+	)
+
+	return mk_diagram2('record', inner)
+
+def zilch_basicexpr():
+	inner = Choice(
+		2,
+		NonTerminal('literal'),
+		Group(
+			NonTerminal('identifier'),
+			'variable'
+		),
+		Group(
+			HorizontalChoice(
+				Terminal('·'),
+				Terminal('_')
+			),
+			'lambda abstraction'
+		),
+		Group(
+			Terminal('?'),
+			'typed hole'
+		),
+		Group(
+			OneOrMore(
+				NonTerminal('expression')
+			),
+			'function application'
+		),
+		Group(
+			Sequence(
+				Terminal('('),
+				NonTerminal('expression'),
+				Terminal(')')
+			),
+			'parenthesized expression'
+		)
+	)
+
+	return mk_diagram2('expression-atom', inner)
+
+zilch_basicexpr().writeSvg(sys.stdout.write)

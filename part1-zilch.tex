@@ -170,3 +170,89 @@ Multiple string literals directly next to each other (as in \verb|"abc" "def"|) 
   \label{table:zilch-grammar-lexical-strings-escapesequences}
 \end{table}
 
+\section{Expressions}\label{sec:zilch-grammar-expressions}
+
+Expressions are the basic building block of Zilch.
+\textit{Everything} is an expression, from simple arithmetic like \texttt{3 + 6} to complex \texttt{do} blocks.
+
+Because of the presence of mixfix operators, it is harder to express a correct grammar.
+For conciseness sake, the disambiguation of mixfix operators into their correct application is left to a non-described process that we will simply refer to as ``desugaring''\footnote{Desugaring basically transforms an expression into a corresponding simpler expression to analyse later. E.g. \texttt{if c then t else e} is transformed into the simpler application \texttt{if\_then\_else\_ c t e}.}.
+
+\subsection{Lambda abstraction}\label{subsec:zilch-grammar-expressions-lambda}
+
+\begin{figure}[H]
+  \centering
+
+  \scalebox{.5}{
+    \includegraphics{zilch/expression/lambda}
+  }
+
+  \caption{Grammar for lambda abstractions.}
+  \label{fig:zilch-gramma-expressions-lambda-grammar}
+\end{figure}
+
+\subsection{Conditional}\label{subsec:zilch-grammar-expressions-conditional}
+
+\begin{figure}[H]
+  \centering
+
+  \scalebox{.5}{
+    \includegraphics{zilch/expression/conditional}
+  }
+
+  \caption{Grammar for conditional expressions.}
+  \label{fig:zilch-gramma-expressions-conditional-grammar}
+\end{figure}
+
+\subsection{Do block}\label{subsec:zilch-grammar-expressions-do}
+
+\begin{figure}[H]
+  \centering
+
+  \scalebox{.5}{
+    \includegraphics{zilch/expression/do}
+  }
+
+  \caption{Grammar for do blocks.}
+  \label{fig:zilch-gramma-expressions-do-grammar}
+\end{figure}
+
+\subsection{Pattern matching}\label{subsec:zilch-grammar-expressions-case}
+
+\begin{figure}[H]
+  \centering
+
+  \scalebox{.5}{
+    \includegraphics{zilch/expression/case}
+  }
+
+  \caption{Grammar for case expressions.}
+  \label{fig:zilch-gramma-expressions-case-grammar}
+\end{figure}
+
+\subsection{Record literals}\label{subsec:zilch-grammar-expressions-record}
+
+\begin{figure}[H]
+  \centering
+
+  \scalebox{.5}{
+    \includegraphics{zilch/expression/record}
+  }
+
+  \caption{Grammar for record literals.}
+  \label{fig:zilch-gramma-expressions-record-grammar}
+\end{figure}
+
+\subsection{Variables, operators and literals}\label{subsec:zilch-grammar-expressions-basicexpr}
+
+\begin{figure}[H]
+  \centering
+
+  \scalebox{.5}{
+    \includegraphics{zilch/expression/atom}
+  }
+
+  \caption{Grammar for expression atoms.}
+  \label{fig:zilch-gramma-expressions-atom-grammar}
+\end{figure}
+
