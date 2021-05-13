@@ -877,17 +877,13 @@ def zilch_character():
 def zilch_lambda():
 	inner = Sequence(
 		Terminal('fn'),
-		Choice(
-			0,
-			NonTerminal('identifier'),
-			Sequence(
-				Terminal('('),
-				ZeroOrMore(
-					NonTerminal('identifier'),
-					Terminal(',')
-				),
-				Terminal(')')
-			)
+		Sequence(
+			Terminal('('),
+			ZeroOrMore(
+				NonTerminal('identifier'),
+				Terminal(',')
+			),
+			Terminal(')')
 		),
 		NonTerminal('expression')
 	)
@@ -1025,4 +1021,4 @@ def zilch_basicexpr():
 
 	return mk_diagram2('expression-atom', inner)
 
-zilch_basicexpr().writeSvg(sys.stdout.write)
+zilch_lambda().writeSvg(sys.stdout.write)
