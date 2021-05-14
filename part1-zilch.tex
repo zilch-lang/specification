@@ -199,6 +199,17 @@ For example, both following alternatives are equivalent (because the lambda abst
   def mapper(y: u64)(x: u64): u64 := x + y * 2
   def f(y: u64, l: list u64): list u64 := map(mapper y, l)
 \end{minted}
+\vspace*{\baselineskip}
+
+\noindent Note that lambda abstractions cannot be recursive on their own, they need to be bound using a \texttt{def} declaration.
+
+There is also an alternative grammar for lambda abstractions, using wildcards abstractions.
+Sometimes, you have to write \verb|reduce(fn(acc, e) acc + e, 0, list)|, but it would be far more pleasant if it could be written as in Haskell, i.e. \verb|reduce (+) 0 list|.
+\verb|(+)| cannot unfortunately be written as is in Zilch.
+This is why there are wildcard abstractions: it allows writing \verb|reduce(_ + _, 0, list)| (note the extra spaces around the operator, even though \verb|_+_| would have also worked just fine here) which makes it cleaner looking.
+\verb|_ + _| is really syntactic sugar for \texttt{fn($x_0$) fn($x_1$) $x_0$ + $x_1$}.
+
+A simple rule to convert wildcard abstractions to explicit lambda abstractions is the following: for each wildcard $\cdot_i$ in an expression \verb|e| (assuming from the left to the right), assign an unique identifier $u_i$ and replace the wildcard with it (also increment $i$). If $i \neq 0$ at the end, then replace \verb|e| with the lambda abstraction \texttt{fn($u_0$, \ldots, $u_i$) e[$\cdot_0$\textbackslash$u_0$, \ldots, $\cdot_i$\textbackslash$u_i$]}.
 
 \begin{figure}[H]
   \centering

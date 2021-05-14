@@ -875,17 +875,24 @@ def zilch_character():
 	return mk_diagram2('character', inner)
 
 def zilch_lambda():
-	inner = Sequence(
-		Terminal('fn'),
-		Sequence(
-			Terminal('('),
-			ZeroOrMore(
-				NonTerminal('identifier'),
-				Terminal(',')
-			),
-			Terminal(')')
+	inner = Choice(
+		1,
+		HorizontalChoice(
+			Terminal('·'),
+			Terminal('_')
 		),
-		NonTerminal('expression')
+		Sequence(
+			Terminal('fn'),
+			Sequence(
+				Terminal('('),
+				ZeroOrMore(
+					NonTerminal('identifier'),
+					Terminal(',')
+				),
+				Terminal(')')
+			),
+			NonTerminal('expression')
+		)
 	)
 
 	return mk_diagram2('lambda', inner)
@@ -975,22 +982,11 @@ def zilch_record():
 
 def zilch_basicexpr():
 	inner = Choice(
-		3,
+		2,
 		NonTerminal('literal'),
 		Group(
 			NonTerminal('identifier'),
 			'variable'
-		),
-		Group(
-			HorizontalChoice(
-				Terminal('·'),
-				Terminal('_')
-			),
-			'lambda abstraction'
-		),
-		Group(
-			Terminal('?'),
-			'typed hole'
 		),
 		Group(
 			Sequence(
@@ -1010,6 +1006,10 @@ def zilch_basicexpr():
 			'function application'
 		),
 		Group(
+			Terminal('?'),
+			'typed hole'
+		),
+		Group(
 			Sequence(
 				Terminal('('),
 				NonTerminal('expression'),
@@ -1021,4 +1021,4 @@ def zilch_basicexpr():
 
 	return mk_diagram2('expression-atom', inner)
 
-zilch_lambda().writeSvg(sys.stdout.write)
+zilch_basicexpr().writeSvg(sys.stdout.write)
