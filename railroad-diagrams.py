@@ -673,6 +673,17 @@ def zilch_function_definition():
 			),
 			Terminal(':='),
 			NonTerminal('expression')
+		),
+		Optional(
+			Sequence(
+				Terminal('where'),
+				NonTerminal('{'),
+				OneOrMore(
+					NonTerminal('function-definition'),
+					NonTerminal(';')
+				),
+				NonTerminal('}')
+			)
 		)
 	)
 
@@ -1082,4 +1093,6 @@ def zilch_mixfix():
 
 	return mk_diagram2('mixfix', inner)
 
-zilch_mixfix().writeSvg(sys.stdout.write)
+
+
+zilch_function_definition().writeSvg(sys.stdout.write)
