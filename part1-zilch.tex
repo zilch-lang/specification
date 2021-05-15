@@ -258,6 +258,9 @@ If n-ary selectors are needed, chaining \texttt{if}s is the only solution.
 
 \subsection{Do block}\label{subsec:zilch-grammar-expressions-do}
 
+Do blocks are expressions allowing variable bindings, much-like the usual \texttt{let \ldots in \ldots} from functional programming (both are really the same thing in fact, but a prettier approach was taken with Zilch; chaining \texttt{let-in}s is not necessarily very pleasant to the eye).
+Note that a do block \textbf{must} finish with a simple expression, used as the return value of the whole block.
+
 \begin{figure}[H]
   \centering
 
