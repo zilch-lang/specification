@@ -1021,4 +1021,49 @@ def zilch_basicexpr():
 
 	return mk_diagram2('expression-atom', inner)
 
-zilch_basicexpr().writeSvg(sys.stdout.write)
+def zilch_pattern():
+	inner = Choice(
+		2,
+		NonTerminal('any non-string literal'),
+		HorizontalChoice(
+			Terminal('·'),
+			Terminal('_')
+		),
+		Group(
+			Sequence(
+				NonTerminal('identifier'),
+				Choice(
+					0,
+					NonTerminal('pattern'),
+					Sequence(
+						Terminal('('),
+						ZeroOrMore(
+							NonTerminal('pattern'),
+							Terminal(',')
+						),
+						Terminal(')')
+					)
+				)
+			),
+			'enum constructor'
+		),
+		Group(
+			Sequence(
+				Optional(
+					NonTerminal('identifier'),
+				),
+				OneOrMore(
+					NonTerminal('pattern'),
+					NonTerminal('identifier')
+				),
+				Optional(
+					NonTerminal('identifier')
+				)
+			),
+			'mixfix pattern synonym'
+		)
+	)
+
+	return mk_diagram2('pattern', inner)
+
+zilch_pattern().writeSvg(sys.stdout.write)
