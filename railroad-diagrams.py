@@ -1066,4 +1066,20 @@ def zilch_pattern():
 
 	return mk_diagram2('pattern', inner)
 
-zilch_pattern().writeSvg(sys.stdout.write)
+def zilch_mixfix():
+	inner = Sequence(
+		Optional(
+			NonTerminal('identifier')
+		),
+		OneOrMore(
+			NonTerminal('expression'),
+			NonTerminal('identifier')
+		),
+		Optional(
+			NonTerminal('identifier')
+		)
+	)
+
+	return mk_diagram2('mixfix', inner)
+
+zilch_mixfix().writeSvg(sys.stdout.write)
