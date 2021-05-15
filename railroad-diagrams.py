@@ -617,63 +617,10 @@ def nstar_struct_constant():
 ##################################################################################""
 
 def zilch_function_definition():
-	inner = Stack(
-		Sequence(
-			Terminal('def'),
-			Optional(
-				Sequence(
-					Terminal('{'),
-					ZeroOrMore(
-						Sequence(
-							NonTerminal('identifier'),
-							Optional(
-								Sequence(
-									Terminal(':'),
-									NonTerminal('kind')
-								)
-							)
-						),
-						Terminal(',')
-					),
-					Terminal('}')
-				)
-			),
-			Optional(
-				Sequence(
-					Terminal('['),
-					ZeroOrMore(
-						NonTerminal('type'),
-						Terminal(',')
-					),
-					Terminal(']')
-				)
-			)
-		),
-		Sequence(
-			NonTerminal('identifier'),
-			Terminal('('),
-			ZeroOrMore(
-				Sequence(
-					NonTerminal('identifier'),
-					Optional(
-						Sequence(
-							Terminal(':'),
-							NonTerminal('type')
-						)
-					)
-				),
-				Terminal(',')
-			),
-			Terminal(')'),
-			Optional(
-				Sequence(
-					Terminal(':'),
-					NonTerminal('type')
-				)
-			),
-			Terminal(':='),
-			NonTerminal('expression')
-		),
+	inner = Sequence(
+		NonTerminal('function-declaration'),
+		Terminal(':='),
+		NonTerminal('expression'),
 		Optional(
 			Sequence(
 				Terminal('where'),
@@ -1093,6 +1040,278 @@ def zilch_mixfix():
 
 	return mk_diagram2('mixfix', inner)
 
+def zilch_type():
+	inner = Sequence(
+		Terminal('type'),
+		NonTerminal('identifier'),
+		Optional(
+			Sequence(
+				Terminal('('),
+				ZeroOrMore(
+					Sequence(
+						NonTerminal('identifier'),
+						Optional(
+							Sequence(
+								Terminal(':'),
+								NonTerminal('kind')
+							)
+						)
+					),
+					Terminal(',')
+				),
+				Terminal(')')
+			)
+		),
+		Choice(
+			0,
+			Terminal(':='),
+			Terminal('≔')
+		),
+		NonTerminal('type')
+	)
+
+	return mk_diagram2('type-alias', inner)
+
+def zilch_enum():
+	inner = Stack(
+		Sequence(
+			Terminal('enum'),
+			NonTerminal('identifier'),
+			Optional(
+				Sequence(
+					Terminal('('),
+					ZeroOrMore(
+						Sequence(
+							NonTerminal('identifier'),
+							Optional(
+								Sequence(
+									Terminal(':'),
+									NonTerminal('kind')
+								)
+							)
+						),
+						Terminal(',')
+					),
+					Terminal(')')
+				)
+			)
+		),
+		Sequence(
+			Choice(
+				0,
+				Terminal(':='),
+				Terminal('≔')
+			),
+			NonTerminal('{'),
+			OneOrMore(
+				Sequence(
+					NonTerminal('identifier'),
+					NonTerminal('('),
+					ZeroOrMore(
+						NonTerminal('type'),
+						Terminal(',')
+					),
+					NonTerminal(')')
+				),
+				NonTerminal(';')
+			),
+			NonTerminal('}')
+		)
+	)
+
+	return mk_diagram2('enum', inner)
+
+def zilch_record():
+	inner = Stack(
+		Sequence(
+			Terminal('record'),
+			NonTerminal('identifier'),
+			Optional(
+				Sequence(
+					Terminal('('),
+					ZeroOrMore(
+						Sequence(
+							NonTerminal('identifier'),
+							Optional(
+								Sequence(
+									Terminal(':'),
+									NonTerminal('kind')
+								)
+							)
+						),
+						Terminal(',')
+					),
+					Terminal(')')
+				)
+			)
+		),
+		Sequence(
+			Choice(
+				0,
+				Terminal(':='),
+				Terminal('≔')
+			),
+			NonTerminal('{'),
+			OneOrMore(
+				Sequence(
+					NonTerminal('identifier'),
+					Terminal(':'),
+					NonTerminal('type')
+				),
+				NonTerminal(';')
+			),
+			NonTerminal('}')
+		)
+	)
+
+	return mk_diagram2('record', inner)
+
+def zilch_function_declaration():
+	inner = Stack(
+		Sequence(
+			Terminal('def'),
+			Optional(
+				Sequence(
+					Terminal('{'),
+					ZeroOrMore(
+						Sequence(
+							NonTerminal('identifier'),
+							Optional(
+								Sequence(
+									Terminal(':'),
+									NonTerminal('kind')
+								)
+							)
+						),
+						Terminal(',')
+					),
+					Terminal('}')
+				)
+			),
+			Optional(
+				Sequence(
+					Terminal('['),
+					ZeroOrMore(
+						NonTerminal('type'),
+						Terminal(',')
+					),
+					Terminal(']')
+				)
+			)
+		),
+		Sequence(
+			NonTerminal('identifier'),
+			Terminal('('),
+			ZeroOrMore(
+				Sequence(
+					NonTerminal('identifier'),
+					Optional(
+						Sequence(
+							Terminal(':'),
+							NonTerminal('type')
+						)
+					)
+				),
+				Terminal(',')
+			),
+			Terminal(')'),
+			Optional(
+				Sequence(
+					Terminal(':'),
+					NonTerminal('type')
+				)
+			)
+		)
+	)
+
+	return mk_diagram2('function-declaration', inner)
+
+def zilch_typeclass():
+	inner = Stack(
+		Sequence(
+			Terminal('class'),
+			NonTerminal('identifier'),
+			Terminal('('),
+			ZeroOrMore(
+				Sequence(
+					NonTerminal('identifier'),
+					Terminal(':'),
+					NonTerminal('kind')
+				),
+				Terminal(',')
+			),
+			Terminal(')'),
+			Optional(
+				Sequence(
+					Terminal('['),
+					ZeroOrMore(
+						NonTerminal('type'),
+						Terminal(',')
+					),
+					Terminal(']')
+				)
+			)
+		),
+		Sequence(
+			Choice(
+				0,
+				Terminal(':='),
+				Terminal('≔')
+			),
+			NonTerminal('{'),
+			ZeroOrMore(
+				NonTerminal('function-declaration'),
+				NonTerminal(';')
+			),
+			NonTerminal('}')
+		)
+	)
+
+	return mk_diagram2('type-class', inner)
+
+def zilch_impl():
+	inner = Stack(
+		Sequence(
+			Terminal('impl'),
+			Optional(
+				Sequence(
+					Terminal('{'),
+					ZeroOrMore(
+						NonTerminal('identifier'),
+						Optional(
+							Sequence(
+								Terminal(':'),
+								NonTerminal('kind')
+							)
+						)
+					),
+					Terminal('}')
+				)
+			),
+			NonTerminal('identifier'),
+			Terminal('('),
+			ZeroOrMore(
+				NonTerminal('type'),
+				Terminal(',')
+			),
+			Terminal(')')
+		),
+		Sequence(
+			Choice(
+				0,
+				Terminal(':='),
+				Terminal('≔')
+			),
+			NonTerminal('{'),
+			ZeroOrMore(
+				NonTerminal('function-definition'),
+				NonTerminal(';')
+			),
+			NonTerminal('}')
+		)
+	)
+
+	return mk_diagram2('type-class-impl', inner)
 
 
-zilch_function_definition().writeSvg(sys.stdout.write)
+zilch_function_declaration().writeSvg(sys.stdout.write)
