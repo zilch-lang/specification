@@ -210,6 +210,7 @@ This is why there are wildcard abstractions: it allows writing \verb|reduce(_ + 
 \verb|_ + _| is really syntactic sugar for \texttt{fn($x_0$) fn($x_1$) $x_0$ + $x_1$}.
 
 A simple rule to convert wildcard abstractions to explicit lambda abstractions is the following: for each wildcard $\cdot_i$ in an expression \verb|e| (assuming from the left to the right), assign an unique identifier $u_i$ and replace the wildcard with it (also increment $i$). If $i \neq 0$ at the end, then replace \verb|e| with the lambda abstraction \texttt{fn($u_0$, \ldots, $u_i$) e[$\cdot_0$\textbackslash$u_0$, \ldots, $\cdot_i$\textbackslash$u_i$]}.
+Some examples are given in Table~\ref{table:zilch-grammar-expressions-lambda-translatewildcard}.
 
 \begin{figure}[H]
   \centering
@@ -221,6 +222,22 @@ A simple rule to convert wildcard abstractions to explicit lambda abstractions i
   \caption{Grammar for lambda abstractions.}
   \label{fig:zilch-gramma-expressions-lambda-grammar}
 \end{figure}
+
+\begin{table}[htb]
+  \begin{tabularx}{\textwidth}{YcY}
+    \toprule
+    From & \multirow{5}{*}{\textbf{$\rightsquigarrow$}} & To \\
+    \midrule
+    \verb|_ + 1| && \verb|fn(x0) x0 + 1| \\
+    \verb|f(_)| && \verb|fn(x0) f(x0)| \\
+    \verb|f(_ * 2)| && \verb|f(fn(x0) x0 * 2)| \\
+    \verb|f(_ * 2, _)| && \verb|fn(x0) f(fn(x1) x1 * 2, x0)| \\
+    \bottomrule
+  \end{tabularx}
+
+  \caption{Some examples of wildcard abstraction translation.}
+  \label{table:zilch-grammar-expressions-lambda-translatewildcard}
+\end{table}
 
 \subsection{Conditional}\label{subsec:zilch-grammar-expressions-conditional}
 
