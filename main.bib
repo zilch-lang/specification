@@ -57,3 +57,18 @@
   abstract  = {In previous work, we presented a Typed Assembly Language (TAL). TAL is sufficiently expressive to serve as a target language for compilers of high-level languages such as ML. This work assumed such a compiler would perform a continuation-passing style transform and eliminate the control stack by heap-allocating activation records. However, most compilers are based on stack allocation. This paper presents STAL, an extension of TAL with stack constructs and stack types to support the stack allocation style. We show that STAL is sufficiently expressive to support languages such as Java, Pascal, and ML; constructs such as exceptions and displays; and optimizations such as tail call elimination and callee-saves registers. This paper also formalizes the typing connection between CPS-based compilation and stack-based compilation and illustrates how STAL can formally model calling conventions by specifying them as formal translations of source function types to STAL types.},
   isbn      = {978-3-540-68308-7}
 }
+
+@inproceedings{mixfix-operators,
+  author = {Danielsson, Nils Anders and Norell, Ulf},
+  title = {Parsing Mixfix Operators},
+  year = {2008},
+  isbn = {9783642244513},
+  publisher = {Springer-Verlag},
+  address = {Berlin, Heidelberg},
+  abstract = {A simple grammar scheme for expressions containing mixfix operators is presented. The scheme is parameterised by a precedence relation which is only restricted to be a directed acyclic graph; this makes it possible to build up precedence relations in a modular way. Efficient and simple implementations of parsers for languages with user-defined mixfix operators, based on the grammar scheme, are also discussed. In the future we plan to replace the support for mixfix operators in the language Agda with a grammar scheme and an implementation based on this work.},
+  booktitle = {Proceedings of the 20th International Conference on Implementation and Application of Functional Languages},
+  pages = {80–99},
+  numpages = {20},
+  location = {Hatfield, UK},
+  series = {IFL'08}
+}

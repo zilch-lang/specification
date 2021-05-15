@@ -305,6 +305,12 @@ Pattern matching is achieved through the use of a \texttt{case} expression.
 
 \subsection{Mixfix operators}\label{subsec:zilch-grammar-expressions-mixfix}
 
+Mixfix disambiguation will not be covered in this document, because of how difficult it is.
+However, Ulf Norell's paper~\cite{mixfix-operators} about mixfix operators is a great resource for this.
+
+Note that, while \verb|_| is allowed in identifiers, having one in a mixfix backbone may not yield any parse result, because \verb|_| represents a hole when declaring the operator.
+Therefore, the operator \verb|_+_| cannot be used like \verb|0 _+_ 1| or \verb|0 +_ 1| (both give parse errors).
+
 \begin{figure}[H]
   \centering
 
