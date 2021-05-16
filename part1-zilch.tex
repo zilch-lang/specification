@@ -311,11 +311,16 @@ Record literals allow constructing records in the same fashion as in e.g.\ C.
 
 \subsection{Mixfix operators}\label{subsec:zilch-grammar-expressions-mixfix}
 
+Mixfix operators allow expressing n-ary operators.
+For example, in Haskell you can only define infix operators (that is, any operator of the form \verb|_<op>_|) and has a limited support for unary operators (prefix and postfix, \verb|<op>_| and \verb|_<op>|).
+Yet there are other kinds of operators.
+Operators may also be closed (\verb|<op>_<op>|), and contain more than two holes: \verb|if_then_else_| is a great example of ternary prefix operator.
+
 Mixfix disambiguation will not be covered in this document, because of how difficult it is.
-However, Ulf Norell's paper~\cite{mixfix-operators} about mixfix operators is a great resource for this.
+However, Ulf Norell's paper~\cite{mixfix-operators} about parsing mixfix operators is a great resource for this.
 
 Note that, while \verb|_| is allowed in identifiers, having one in a mixfix backbone may not yield any parse result, because \verb|_| represents a hole when declaring the operator.
-Therefore, the operator \verb|_+_| cannot be used like \verb|0 _+_ 1| or \verb|0 +_ 1| (both give parse errors).
+Therefore, the operator \verb|_+_| cannot be used like \verb|0 _+_ 1| or \verb|0 +_ 1| (both give parse errors), but it may be used as a standard function application like \verb|_+_(0, 1)|.
 
 \begin{figure}[H]
   \centering
