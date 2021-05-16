@@ -346,6 +346,40 @@ Therefore, the operator \verb|_+_| cannot be used like \verb|0 _+_ 1| or \verb|0
   \label{fig:zilch-grammar-expressions-atom-grammar}
 \end{figure}
 
+\section{Types}\label{sec:zilch-grammr-types}
+
+Types lie at the same level as expressions, but are put in a separate section for comprehensiveness sake.
+An expression \verb|e| is said to be of type \verb|t| if evaluating it yields (or at least is supposed to) any value in the set \verb|t|.
+
+Wildcard abstractions are only allowed in \verb|impl| blocks, despite being a general type, and follow the same desugaring rules as their expression-level counterparts (see Table~\ref{table:zilch-grammar-expressions-lambda-translatewildcard} for some examples; replace \verb|fn| with \verb|Fn| and you have the type-level counterparts).
+Any other type can be used anywhere.
+
+\begin{figure}[H]
+  \centering
+
+  \scalebox{.5}{
+    \includegraphics{zilch/types/forall}
+  }\\
+  \scalebox{.5}{
+    \includegraphics{zilch/types/constrained}
+  }\\
+  \scalebox{.5}{
+    \includegraphics{zilch/types/function}
+  }\\
+  \scalebox{.5}{
+    \includegraphics{zilch/types/application}
+  }\\
+  \scalebox{.5}{
+    \includegraphics{zilch/types/builtin}
+  }\\
+  \scalebox{.5}{
+    \includegraphics{zilch/types/wildcard-abstraction}
+  }
+
+  \caption{Grammar for types.}
+  \label{fig:zilch-grammar-types-grammar}
+\end{figure}
+
 \section{Declarations}\label{sec:zilch-grammar-declarations}
 
 A Zilch module is composed of zero or more declarations.
@@ -426,7 +460,7 @@ There are 5 possible declarations:
 \begin{figure}[H]
   \centering
 
-  \scalebox{.4}{
+  \scalebox{.5}{
     \includegraphics{zilch/toplevel/implementation-definition}
   }
 

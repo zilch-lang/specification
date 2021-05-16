@@ -1343,5 +1343,121 @@ def zilch_fixity():
 
 	return mk_diagram2('fixity-declaration', inner)
 
+def zilch_forall_type():
+	inner = Sequence(
+		Choice(
+			0,
+			Terminal('forall'),
+			Terminal('∀')
+		),
+		Terminal('('),
+		ZeroOrMore(
+			Sequence(
+				NonTerminal('identifier'),
+				Optional(
+					Sequence(
+						Terminal(':'),
+						NonTerminal('kind')
+					)
+				)
+			),
+			Terminal(',')
+		),
+		Terminal(')'),
+		NonTerminal('type')
+	)
+
+	return mk_diagram2('forall-type', inner)
+
+def zilch_constrained_type():
+	inner = Sequence(
+		Terminal('['),
+		ZeroOrMore(
+			NonTerminal('type'),
+			Terminal(',')
+		),
+		Terminal(']'),
+		NonTerminal('type')
+	)
+
+	return mk_diagram2('constrained-type', inner)
+
+def zilch_function_type():
+	inner = Sequence(
+		Choice(
+			0,
+			Sequence(
+				Terminal('('),
+				ZeroOrMore(
+					NonTerminal('type'),
+					Terminal(',')
+				),
+				Terminal(')')
+			),
+			Sequence(
+				NonTerminal('type')
+			)
+		),
+		Choice(
+			0,
+			Terminal('->'),
+			Terminal('→')
+		),
+		NonTerminal('type')
+	)
+
+	return mk_diagram2('function-type', inner)
+
+def zilch_application_type():
+	inner = Sequence(
+		NonTerminal('type'),
+		Choice(
+			0,
+			Sequence(
+				Terminal('('),
+				ZeroOrMore(
+					NonTerminal('type'),
+					Terminal(',')
+				),
+				Terminal(')')
+			),
+			NonTerminal('type')
+		)
+	)
+
+	return mk_diagram2('type-application', inner)
+
+def zilch_builtin_types():
+	inner = Choice(
+		1,
+		HorizontalChoice(
+			Terminal('s8'),
+			Terminal('s16'),
+			Terminal('s32'),
+			Terminal('s64')
+		),
+		HorizontalChoice(
+			Terminal('u8'),
+			Terminal('u16'),
+			Terminal('u32'),
+			Terminal('u64')
+		),
+		HorizontalChoice(
+			Terminal('char'),
+			Terminal('ref'),
+			Terminal('ptr')
+		)
+	)
+
+	return mk_diagram2('builtin-type', inner)
+
+def zilch_wildcard_type():
+	inner = HorizontalChoice(
+		Terminal('·'),
+		Terminal('_')
+	)
+
+	return mk_diagram2('wildcard-type', inner)
+
 
 zilch_impl().writeSvg(sys.stdout.write)
