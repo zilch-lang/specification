@@ -676,9 +676,12 @@ def zilch_keywords():
 			Terminal('module'),
 			Terminal('fn'),
 			Terminal('foreign'),
-			Terminal('as')
+			Terminal('as'),
+			Terminal('infix')
 		),
 		HorizontalChoice(
+			Terminal('infixl'),
+			Terminal('infixr'),
 			Terminal('import'),
 			Terminal('export'),
 			Terminal('perm'),
@@ -1313,6 +1316,20 @@ def zilch_impl():
 	)
 
 	return mk_diagram2('type-class-impl', inner)
+
+def zilch_fixity():
+	inner = Sequence(
+		Choice(
+			1,
+			Terminal('infixl'),
+			Terminal('infix'),
+			Terminal('infixr')
+		),
+		NonTerminal('positive-integer'),
+		NonTerminal('identifier')
+	)
+
+	return mk_diagram2('fixity-declaration', inner)
 
 
 zilch_keywords().writeSvg(sys.stdout.write)
