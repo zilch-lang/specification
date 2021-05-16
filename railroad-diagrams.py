@@ -850,7 +850,15 @@ def zilch_lambda():
 			Sequence(
 				Terminal('('),
 				ZeroOrMore(
-					NonTerminal('identifier'),
+					Sequence(
+						NonTerminal('identifier'),
+						Optional(
+							Sequence(
+								Terminal(':'),
+								NonTerminal('type')
+							)
+						)
+					),
 					Terminal(',')
 				),
 				Terminal(')')
@@ -1495,4 +1503,4 @@ def zilch_kind():
 	return mk_diagram2('kind', inner)
 
 
-zilch_function_declaration().writeSvg(sys.stdout.write)
+zilch_lambda().writeSvg(sys.stdout.write)
