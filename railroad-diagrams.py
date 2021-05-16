@@ -1213,20 +1213,24 @@ def zilch_function_declaration():
 			NonTerminal('identifier')
 		),
 		Sequence(
-			Terminal('('),
-			ZeroOrMore(
+			Optional(
 				Sequence(
-					NonTerminal('identifier'),
-					Optional(
+					Terminal('('),
+					ZeroOrMore(
 						Sequence(
-							Terminal(':'),
-							NonTerminal('type')
-						)
-					)
-				),
-				Terminal(',')
+							NonTerminal('identifier'),
+							Optional(
+								Sequence(
+									Terminal(':'),
+									NonTerminal('type')
+								)
+							)
+						),
+						Terminal(',')
+					),
+					Terminal(')')
+				)
 			),
-			Terminal(')'),
 			Optional(
 				Sequence(
 					Terminal(':'),
@@ -1491,4 +1495,4 @@ def zilch_kind():
 	return mk_diagram2('kind', inner)
 
 
-zilch_kind().writeSvg(sys.stdout.write)
+zilch_function_declaration().writeSvg(sys.stdout.write)
