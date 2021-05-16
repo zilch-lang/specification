@@ -359,3 +359,77 @@ There are 5 possible declarations:
 \end{itemize}
 
 \noindent Each of them will be syntactically described in this section.
+
+\subsection{Value definition}\label{subsec:zilch-grammar-declarations-value}
+
+\begin{figure}[H]
+  \centering
+
+  \scalebox{.4}{
+    \includegraphics{zilch/toplevel/function-declaration}
+  }\\
+  \scalebox{.4}{
+    \includegraphics{zilch/toplevel/function-definition}
+  }
+
+  \caption{Grammar for value declarations.}
+  \label{fig:zilch-grammar-declarations-value-grammar}
+\end{figure}
+
+\subsection{Operator fixity declaration}\label{subsec:zilch-grammar-declarations-fixity}
+
+\begin{figure}[H]
+  \centering
+
+  \scalebox{.5}{
+    \includegraphics{zilch/toplevel/fixity-declaration}
+  }
+
+  \caption{Grammar for operator fixity declarations.}
+  \label{fig:zilch-grammar-declarations-fixity-grammar}
+\end{figure}
+
+\subsection{New type definition}\label{subsec:zilch-grammar-declarations-type}
+
+\begin{figure}[H]
+  \centering
+
+  \scalebox{.5}{
+    \includegraphics{zilch/toplevel/enum-definition}
+  }\\
+  \scalebox{.5}{
+    \includegraphics{zilch/toplevel/record-definition}
+  }\\
+  \scalebox{.45}{
+    \includegraphics{zilch/toplevel/alias-definition}
+  }
+
+  \caption{Grammar for new type definitions.}
+  \label{fig:zilch-grammar-declarations-type-grammar}
+\end{figure}
+
+\subsection{Type class declaration}\label{subsec:zilch-grammar-declarations-typeclass}
+
+\begin{figure}[H]
+  \centering
+
+  \scalebox{.4}{
+    \includegraphics{zilch/toplevel/typeclass-declaration}
+  }
+
+  \caption{Grammar for type-class declarations.}
+  \label{fig:zilch-grammar-declarations-typeclass-grammar}
+\end{figure}
+
+\subsection{Type class implementation}\label{subsec:zilch-grammar-declarations-implementation}
+
+\begin{figure}[H]
+  \centering
+
+  \scalebox{.4}{
+    \includegraphics{zilch/toplevel/implementation-definition}
+  }
+
+  \caption{Grammar for type-class implementations.}
+  \label{fig:zilch-grammar-declarations-implementation-grammar}
+\end{figure}
