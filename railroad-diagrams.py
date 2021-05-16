@@ -698,7 +698,8 @@ def zilch_keywords():
 			Terminal('_'),
 			Terminal('·'),
 			Terminal('.'),
-			Terminal('--')
+			Terminal('--'),
+			Terminal('?')
 		)
 	)
 
@@ -1314,4 +1315,4 @@ def zilch_impl():
 	return mk_diagram2('type-class-impl', inner)
 
 
-zilch_function_declaration().writeSvg(sys.stdout.write)
+zilch_keywords().writeSvg(sys.stdout.write)
