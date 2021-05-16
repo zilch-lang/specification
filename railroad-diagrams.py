@@ -1502,5 +1502,21 @@ def zilch_kind():
 
 	return mk_diagram2('kind', inner)
 
+def zilch_mixfix_type():
+	inner = Sequence(
+		Optional(
+			NonTerminal('identifier')
+		),
+		OneOrMore(
+			NonTerminal('type'),
+			NonTerminal('identifier')
+		),
+		Optional(
+			NonTerminal('identifier')
+		)
+	)
+
+	return mk_diagram2('mixfix', inner)
+
 
 zilch_lambda().writeSvg(sys.stdout.write)
