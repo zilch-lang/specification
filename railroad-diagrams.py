@@ -620,7 +620,11 @@ def zilch_function_definition():
 	inner = Stack(
 		Sequence(
 			NonTerminal('function-declaration'),
-			Terminal(':='),
+			Choice(
+				0,
+				Terminal(':='),
+				Terminal('≔')
+			),
 			NonTerminal('expression')
 		),
 		Optional(
@@ -1519,4 +1523,4 @@ def zilch_mixfix_type():
 	return mk_diagram2('mixfix', inner)
 
 
-zilch_lambda().writeSvg(sys.stdout.write)
+zilch_function_definition().writeSvg(sys.stdout.write)
