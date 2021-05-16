@@ -1459,5 +1459,36 @@ def zilch_wildcard_type():
 
 	return mk_diagram2('wildcard-type', inner)
 
+def zilch_kind():
+	inner = Choice(
+		1,
+		Terminal('type'),
+		Group(
+			Sequence(
+				Choice(
+					0,
+					Sequence(
+						Terminal('('),
+						ZeroOrMore(
+							NonTerminal('kind'),
+							Terminal(',')
+						),
+						Terminal(')')
+					),
+					NonTerminal('kind')
+				),
+				Choice(
+					0,
+					Terminal('->'),
+					Terminal('→')
+				),
+				NonTerminal('kind')
+			),
+			'type-level function'
+		)
+	)
 
-zilch_impl().writeSvg(sys.stdout.write)
+	return mk_diagram2('kind', inner)
+
+
+zilch_kind().writeSvg(sys.stdout.write)
