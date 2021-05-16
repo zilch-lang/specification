@@ -617,10 +617,12 @@ def nstar_struct_constant():
 ##################################################################################""
 
 def zilch_function_definition():
-	inner = Sequence(
-		NonTerminal('function-declaration'),
-		Terminal(':='),
-		NonTerminal('expression'),
+	inner = Stack(
+		Sequence(
+			NonTerminal('function-declaration'),
+			Terminal(':='),
+			NonTerminal('expression')
+		),
 		Optional(
 			Sequence(
 				Terminal('where'),
@@ -1045,33 +1047,37 @@ def zilch_mixfix():
 	return mk_diagram2('mixfix', inner)
 
 def zilch_type():
-	inner = Sequence(
-		Terminal('type'),
-		NonTerminal('identifier'),
-		Optional(
-			Sequence(
-				Terminal('('),
-				ZeroOrMore(
-					Sequence(
-						NonTerminal('identifier'),
-						Optional(
-							Sequence(
-								Terminal(':'),
-								NonTerminal('kind')
+	inner = Stack(
+		Sequence(
+			Terminal('type'),
+			NonTerminal('identifier'),
+			Optional(
+				Sequence(
+					Terminal('('),
+					ZeroOrMore(
+						Sequence(
+							NonTerminal('identifier'),
+							Optional(
+								Sequence(
+									Terminal(':'),
+									NonTerminal('kind')
+								)
 							)
-						)
+						),
+						Terminal(',')
 					),
-					Terminal(',')
-				),
-				Terminal(')')
+					Terminal(')')
+				)
 			)
 		),
-		Choice(
-			0,
-			Terminal(':='),
-			Terminal('≔')
-		),
-		NonTerminal('type')
+		Sequence(
+			Choice(
+				0,
+				Terminal(':='),
+				Terminal('≔')
+			),
+			NonTerminal('type')
+		)
 	)
 
 	return mk_diagram2('type-alias', inner)
@@ -1191,7 +1197,9 @@ def zilch_function_declaration():
 					),
 					Terminal('}')
 				)
-			),
+			)
+		),
+		Sequence(
 			Optional(
 				Sequence(
 					Terminal('['),
@@ -1201,10 +1209,10 @@ def zilch_function_declaration():
 					),
 					Terminal(']')
 				)
-			)
+			),
+			NonTerminal('identifier')
 		),
 		Sequence(
-			NonTerminal('identifier'),
 			Terminal('('),
 			ZeroOrMore(
 				Sequence(
@@ -1244,7 +1252,9 @@ def zilch_typeclass():
 				),
 				Terminal(',')
 			),
-			Terminal(')'),
+			Terminal(')')
+		),
+		Sequence(
 			Optional(
 				Sequence(
 					Terminal('['),
@@ -1254,9 +1264,7 @@ def zilch_typeclass():
 					),
 					Terminal(']')
 				)
-			)
-		),
-		Sequence(
+			),
 			Choice(
 				0,
 				Terminal(':='),
@@ -1291,7 +1299,9 @@ def zilch_impl():
 					),
 					Terminal('}')
 				)
-			),
+			)
+		),
+		Sequence(
 			NonTerminal('identifier'),
 			Terminal('('),
 			ZeroOrMore(
@@ -1332,4 +1342,4 @@ def zilch_fixity():
 	return mk_diagram2('fixity-declaration', inner)
 
 
-zilch_keywords().writeSvg(sys.stdout.write)
+zilch_impl().writeSvg(sys.stdout.write)
