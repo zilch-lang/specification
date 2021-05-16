@@ -31,12 +31,16 @@ class ZilchLexer(RegexLexer):
 
             (r'(\(|\)|\:|\{|\}|\[|\])|,', Punctuation)
         ],
+        'identifier': [
+            (r'((?!\d)\S)\S*', Text)
+        ],
         'root': [
             include('commentsandwhitespace'),
             include('keywords'),
-            include('literals'),
             include('types'),
             include('operators'),
+            include('identifier'),
+            include('literals'),
 
             (r'.', Text)
         ]

@@ -455,6 +455,31 @@ There are 5 possible declarations:
 
 \subsection{Value definition}\label{subsec:zilch-grammar-declarations-value}
 
+A function binding binds a variable to a value.
+Both when the value is of a function type or of a simple value type, the binding is called a \textit{function binding}.
+\vspace*{\baselineskip}
+
+Because functions are first-class in Zilch, both function bindings defined below are completely equivalent (the lambda abstraction does not capture anything here):
+
+\noindent\begin{minted}{\zilchlexer}
+  def const(x: u64, y: u64): u64 := x
+  -- is exactly the same as
+  def const: (u64, u64) -> u64 := fn(x, y) x
+\end{minted}
+\vspace*{\baselineskip}
+
+Function bindings may additionally be accompanied by \verb|where| blocks, which allow binding local variables in the scope of the expression.
+This is mostly equivalent to putting those bindings at the beginning of a \verb|do| block:
+
+\noindent\begin{minted}{\zilchlexer}
+  def map+1(l: list u64): list u64 := map(f, l)
+    where def f(x) := x + 1
+  -- is the same as
+  def map+1(l: list u64): list u64 := do
+    f <- fn(x) x + 1
+    map(f, l)
+\end{minted}
+
 \begin{figure}[H]
   \centering
 
