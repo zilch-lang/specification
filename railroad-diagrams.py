@@ -1303,6 +1303,8 @@ def zilch_impl():
 		),
 		Sequence(
 			NonTerminal('identifier'),
+			Terminal(':'),
+			NonTerminal('identifier'),
 			Terminal('('),
 			ZeroOrMore(
 				NonTerminal('type'),
