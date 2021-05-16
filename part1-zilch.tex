@@ -502,6 +502,16 @@ This is mostly equivalent to putting those bindings at the beginning of a \verb|
 
 \subsection{Operator fixity declaration}\label{subsec:zilch-grammar-declarations-fixity}
 
+Parsing infix operators is ambiguous by nature if no decision is made.
+Usual programming languages only have a fixed set of infix operators with predefined fixities (left or right associative, with a given precedence) to deal with such ambiguities.
+Some programming languages allow defining infix operators, with user-supplied fixities explicitly given in the program.
+
+While Zilch also follows this approach, it only does so for a limited set of operators: infix operators.
+Prefix and postfix operators are not ambiguous to parse unless when mixed.
+For example, given the two prefix operators \texttt{-\_} and \texttt{$\neg$\_}, \texttt{- $\neg$ 3} only has one possible interpretation: \texttt{- ($\neg$ 3)}.
+However, given the prefix operator \texttt{-\_} and the postfix operator \texttt{\_!}, \texttt{- 0 !} has two interpretations: \texttt{- (0 !)} and \texttt{(- 0) !}.
+While the same approach could be taken also for prefix and postfix operators, this is not that useful in practice, and is therefore not officially supported.
+
 \begin{figure}[H]
   \centering
 
