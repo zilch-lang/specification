@@ -85,16 +85,22 @@ Mixfix operators also do not allow keywords as backbones (that is, \texttt{\_->\
 \begin{figure}[H]
   \centering
 
-  \scalebox{.4}{
-    \includegraphics{zilch/lexicon/keywords}
-  }
-  \\
-  \scalebox{.5}{
-    \includegraphics{zilch/lexicon/special}
-  }
-  \\
-  \scalebox{.5}{
-    \includegraphics{zilch/lexicon/identifier}
+  \framebox[\textwidth][c]{
+    \parbox{\textwidth}{
+      \centering
+
+      \scalebox{.4}{
+        \includegraphics{zilch/lexicon/keywords}
+      }
+      \\
+      \scalebox{.5}{
+        \includegraphics{zilch/lexicon/special}
+      }
+      \\
+      \scalebox{.5}{
+        \includegraphics{zilch/lexicon/identifier}
+      }
+    }
   }
 
   \caption{Lexical units for identifiers.}
@@ -110,8 +116,10 @@ However, because of how mixfix operators are parsed, the sequence \verb|_--_...|
 \begin{figure}[H]
   \centering
 
-  \scalebox{.5}{
-    \includegraphics{zilch/lexicon/whitespaces}
+  \framebox[\textwidth][c]{
+    \scalebox{.5}{
+      \includegraphics{zilch/lexicon/whitespaces}
+    }
   }
 
   \caption{Whitespace lexical units.}
@@ -127,8 +135,10 @@ A floating point number must always have digits on both sides of the dot (i.e.\ 
 \begin{figure}[H]
   \centering
 
-  \scalebox{.5}{
-    \includegraphics{zilch/lexicon/number}
+  \framebox[\textwidth][c]{
+    \scalebox{.5}{
+      \includegraphics{zilch/lexicon/number}
+    }
   }
 
   \caption{Numeric lexical units.}
@@ -150,12 +160,18 @@ Multiple string literals directly next to each other (as in \verb|"abc" "def"|) 
 \begin{figure}[H]
   \centering
 
-  \scalebox{.5}{
-    \includegraphics{zilch/lexicon/string}
-  }
-  \\
-  \scalebox{.5}{
-    \includegraphics{zilch/lexicon/character}
+  \framebox[\textwidth][c]{
+    \parbox{\textwidth}{
+      \centering
+
+      \scalebox{.5}{
+        \includegraphics{zilch/lexicon/string}
+      }
+      \\
+      \scalebox{.5}{
+        \includegraphics{zilch/lexicon/character}
+      }
+    }
   }
 
   \caption{String and character lexical units.}
@@ -219,8 +235,10 @@ Some examples are given in Table~\ref{table:zilch-grammar-expressions-lambda-tra
 \begin{figure}[H]
   \centering
 
-  \scalebox{.5}{
-    \includegraphics{zilch/expression/lambda}
+  \framebox[\textwidth][c]{
+    \scalebox{.5}{
+      \includegraphics{zilch/expression/lambda}
+    }
   }
 
   \caption{Grammar for lambda abstractions.}
@@ -252,8 +270,10 @@ If n-ary selectors are needed, chaining \texttt{if}s is the only solution.
 \begin{figure}[H]
   \centering
 
-  \scalebox{.5}{
-    \includegraphics{zilch/expression/conditional}
+  \framebox[\textwidth][c]{
+    \scalebox{.5}{
+      \includegraphics{zilch/expression/conditional}
+    }
   }
 
   \caption{Grammar for conditional expressions.}
@@ -268,8 +288,10 @@ Note that a do block \textbf{must} finish with a simple expression, used as the 
 \begin{figure}[H]
   \centering
 
-  \scalebox{.5}{
-    \includegraphics{zilch/expression/do}
+  \framebox[\textwidth][c]{
+    \scalebox{.5}{
+      \includegraphics{zilch/expression/do}
+    }
   }
 
   \caption{Grammar for do blocks.}
@@ -283,11 +305,17 @@ Pattern matching is achieved through the use of a \texttt{case} expression.
 \begin{figure}[H]
   \centering
 
-  \scalebox{.5}{
-    \includegraphics{zilch/expression/pattern}
-  }\\
-  \scalebox{.5}{
-    \includegraphics{zilch/expression/case}
+  \framebox[\textwidth][c]{
+    \parbox{\textwidth}{
+      \centering
+
+      \scalebox{.5}{
+        \includegraphics{zilch/expression/pattern}
+      }\\
+      \scalebox{.5}{
+        \includegraphics{zilch/expression/case}
+      }
+    }
   }
 
   \caption{Grammar for case expressions.}
@@ -301,8 +329,10 @@ Record literals allow constructing records in the same fashion as in e.g.\ C.
 \begin{figure}[H]
   \centering
 
-  \scalebox{.5}{
-    \includegraphics{zilch/expression/record}
+  \framebox[\textwidth][c]{
+    \scalebox{.5}{
+      \includegraphics{zilch/expression/record}
+    }
   }
 
   \caption{Grammar for record literals.}
@@ -325,8 +355,10 @@ Therefore, the operator \verb|_+_| cannot be used like \verb|0 _+_ 1| or \verb|0
 \begin{figure}[H]
   \centering
 
-  \scalebox{.5}{
-    \includegraphics{zilch/expression/mixfix}
+  \framebox[\textwidth][c]{
+    \scalebox{.5}{
+      \includegraphics{zilch/expression/mixfix}
+    }
   }
 
   \caption{Grammar for mixfix operators.}
@@ -338,8 +370,10 @@ Therefore, the operator \verb|_+_| cannot be used like \verb|0 _+_ 1| or \verb|0
 \begin{figure}[H]
   \centering
 
-  \scalebox{.5}{
-    \includegraphics{zilch/expression/atom}
+  \framebox[\textwidth][c]{
+    \scalebox{.5}{
+      \includegraphics{zilch/expression/atom}
+    }
   }
 
   \caption{Grammar for expression atoms.}
@@ -351,29 +385,35 @@ Therefore, the operator \verb|_+_| cannot be used like \verb|0 _+_ 1| or \verb|0
 Types lie at the same level as expressions, but are put in a separate section for comprehensiveness sake.
 An expression \verb|e| is said to be of type \verb|t| if evaluating it yields (or at least is supposed to) any value in the set \verb|t|.
 
-Wildcard abstractions are only allowed in \verb|impl| blocks, despite being a general type, and follow the same desugaring rules as their expression-level counterparts (see Table~\ref{table:zilch-grammar-expressions-lambda-translatewildcard} for some examples; replace \verb|fn| with \verb|Fn| and you have the type-level counterparts).
+Wildcard abstractions are only allowed in \verb|impl| blocks, despite being a general type, and follow the same desugaring rules as their expression-level counterparts (see Table~\ref{table:zilch-grammar-expressions-lambda-translatewildcard} for some examples; replace \verb|fn| with \verb|Fn| to get the type-level counterparts).
 Any other type can be used anywhere.
 
 \begin{figure}[H]
   \centering
 
-  \scalebox{.5}{
-    \includegraphics{zilch/types/forall}
-  }\\
-  \scalebox{.5}{
-    \includegraphics{zilch/types/constrained}
-  }\\
-  \scalebox{.5}{
-    \includegraphics{zilch/types/function}
-  }\\
-  \scalebox{.5}{
-    \includegraphics{zilch/types/application}
-  }\\
-  \scalebox{.5}{
-    \includegraphics{zilch/types/builtin}
-  }\\
-  \scalebox{.5}{
-    \includegraphics{zilch/types/wildcard-abstraction}
+  \framebox[\textwidth][c]{
+    \parbox{\textwidth}{
+      \centering
+
+      \scalebox{.5}{
+        \includegraphics{zilch/types/forall}
+      }\\
+      \scalebox{.5}{
+        \includegraphics{zilch/types/constrained}
+      }\\
+      \scalebox{.5}{
+        \includegraphics{zilch/types/function}
+      }\\
+      \scalebox{.5}{
+        \includegraphics{zilch/types/application}
+      }\\
+      \scalebox{.5}{
+        \includegraphics{zilch/types/builtin}
+      }\\
+      \scalebox{.5}{
+        \includegraphics{zilch/types/wildcard-abstraction}
+      }
+    }
   }
 
   \caption{Grammar for types.}
@@ -386,8 +426,10 @@ Kind polymorphism is not supported.
 \begin{figure}[H]
   \centering
 
-  \scalebox{.5}{
-    \includegraphics{zilch/types/kind}
+  \framebox[\textwidth][c]{
+    \scalebox{.5}{
+      \includegraphics{zilch/types/kind}
+    }
   }
 
   \caption{Grammar for kinds.}
@@ -413,11 +455,17 @@ There are 5 possible declarations:
 \begin{figure}[H]
   \centering
 
-  \scalebox{.5}{
-    \includegraphics{zilch/toplevel/function-declaration}
-  }\\
-  \scalebox{.5}{
-    \includegraphics{zilch/toplevel/function-definition}
+  \framebox[\textwidth][c]{
+    \parbox{\textwidth}{
+      \centering
+
+      \scalebox{.5}{
+        \includegraphics{zilch/toplevel/function-declaration}
+      }\\
+      \scalebox{.5}{
+        \includegraphics{zilch/toplevel/function-definition}
+      }
+    }
   }
 
   \caption{Grammar for value declarations.}
@@ -429,8 +477,10 @@ There are 5 possible declarations:
 \begin{figure}[H]
   \centering
 
-  \scalebox{.5}{
-    \includegraphics{zilch/toplevel/fixity-declaration}
+  \framebox[\textwidth][c]{
+    \scalebox{.5}{
+      \includegraphics{zilch/toplevel/fixity-declaration}
+    }
   }
 
   \caption{Grammar for operator fixity declarations.}
@@ -442,14 +492,20 @@ There are 5 possible declarations:
 \begin{figure}[H]
   \centering
 
-  \scalebox{.5}{
-    \includegraphics{zilch/toplevel/enum-definition}
-  }\\
-  \scalebox{.5}{
-    \includegraphics{zilch/toplevel/record-definition}
-  }\\
-  \scalebox{.5}{
-    \includegraphics{zilch/toplevel/alias-definition}
+  \framebox[\textwidth][c]{
+    \parbox{\textwidth}{
+      \centering
+
+      \scalebox{.5}{
+        \includegraphics{zilch/toplevel/enum-definition}
+      }\\
+      \scalebox{.5}{
+        \includegraphics{zilch/toplevel/record-definition}
+      }\\
+      \scalebox{.5}{
+        \includegraphics{zilch/toplevel/alias-definition}
+      }
+    }
   }
 
   \caption{Grammar for new type definitions.}
@@ -461,8 +517,10 @@ There are 5 possible declarations:
 \begin{figure}[H]
   \centering
 
-  \scalebox{.5}{
-    \includegraphics{zilch/toplevel/typeclass-declaration}
+  \framebox[\textwidth][c]{
+    \scalebox{.5}{
+      \includegraphics{zilch/toplevel/typeclass-declaration}
+    }
   }
 
   \caption{Grammar for type-class declarations.}
@@ -474,8 +532,10 @@ There are 5 possible declarations:
 \begin{figure}[H]
   \centering
 
-  \scalebox{.5}{
-    \includegraphics{zilch/toplevel/implementation-definition}
+  \framebox[\textwidth][c]{
+    \scalebox{.5}{
+      \includegraphics{zilch/toplevel/implementation-definition}
+    }
   }
 
   \caption{Grammar for type-class implementations.}
