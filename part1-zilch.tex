@@ -527,6 +527,23 @@ While the same approach could be taken also for prefix and postfix operators, th
 
 \subsection{New type definition}\label{subsec:zilch-grammar-declarations-type}
 
+Sometimes, only working with primitive types is limiting.
+For example, a function returning an unsigned integer may need to indicate some sort of error.
+
+\noindent C-style programming languages use special values which are considered invalid as return values (e.g.\ $-1$).
+This doesn't quite work when no return value from the return set is actually invalid, but the function is still expected to be able to indicate failure.
+
+\noindent More evolved programming languages use exceptions, which are not integrated in Zilch.
+
+\noindent This is where custom types come in: it is possible to define a new ``or''-type (called ``enum'' in Zilch) to represent either a return value or no return value (in the case of a failure), usually called ``\texttt{Option}'' or ``\texttt{Maybe}''.
+
+A function may also be expected to return multiple values.
+In C-style programming languages, making use of references/pointers is one way, but using structures (called ``record''s) is the way to go in Zilch.
+
+And some other times, using a specific type is not semantically clear enough.
+For example, what does a \texttt{u64} mean as input to a function?
+Zilch allows defining type aliases to address this issue, leading to code more clear.
+
 \begin{figure}[H]
   \centering
 
