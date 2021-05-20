@@ -569,6 +569,26 @@ Zilch allows defining type aliases to address this issue, leading to code more c
 
 \subsection{Type class declaration}\label{subsec:zilch-grammar-declarations-typeclass}
 
+Type classes allow ad-hoc polymorphism by gathering types under a common sub-interface.
+Such common interface can be used by referencing one of the functions defined by the type class.
+
+For a concrete example, see this example defining a type class for mappeable objects:
+
+\noindent\begin{minted}{\zilchlexer}
+  class Mappeable(f: type -> type) :=
+    -- Provides a way to map a value behind a container type through a pure function.
+    def map(f: a -> b, x: f a): f b
+\end{minted}
+\vspace*{\baselineskip}
+
+Note that defining this type class is mainly equivalent to creating a record skeleton that must be defined for other types of the set.
+So the type class defined above is really not that much different from this:
+
+\noindent\begin{minted}{\zilchlexer}
+  record Mappeable(f: type -> type) :=
+    map: forall(a, b) (a -> b, f a) -> f b
+\end{minted}
+
 \begin{figure}[H]
   \centering
 
