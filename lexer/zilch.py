@@ -10,7 +10,7 @@ class ZilchLexer(RegexLexer):
     tokens = {
         'commentsandwhitespace': [
             (r'\s+', Text),
-            (r'--.*?\n', Comment.Single)
+            (r'([_·]*?)(--[_·]*?.*?$)', bygroups(Text, Comment.Single))
         ],
         'keywords': [
             (r'\b(forall|∀|def|enum|record|class|impl|do|type|case|of|module|fn|foreign|import|export|perm|if|then|else|pattern|where|as)\b', Keyword.Reserved)
