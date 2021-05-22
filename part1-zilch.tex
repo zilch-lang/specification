@@ -604,6 +604,37 @@ So the type class defined above is really not that much different from this:
 
 \subsection{Type class implementation}\label{subsec:zilch-grammar-declarations-implementation}
 
+Implementing a type class $c$ for a specific type $t$ allows $t$ to exhibit the behavior described in $c$, allowing $t$ to be abstracted for any instance of $c$ (acting the same as interfaces in object-oriented programming languages).
+
+Assuming the following enumeration type for a list:
+
+\noindent\begin{minted}{\zilchlexer}
+  enum List(a: type) :=
+    Nil()
+    Cons(a, List a)
+\end{minted}
+\vspace*{\baselineskip}
+
+\noindent An example implementation for the \verb|Mappeable| type class defined earlier could be:
+
+\noindent\begin{minted}{\zilchlexer}
+  impl map-list: Mappeable(List) :=
+    def map(f, l) := case l of
+      Nil()      -> Nil()
+      Cons(x, l) -> Cons(f x, map(f, l))
+\end{minted}
+\vspace*{\baselineskip}
+
+Note that, as for type classes being equivalent to records, defining an implementation \textit{might} be equivalent to defining a new record\footnote{It is equivalent only when no wildcard is present in the head of the implementation.}:
+
+\noindent\begin{minted}{\zilchlexer}
+  def map-list: Mappeable(List) :=
+    { map := fn(f, l) case l of
+        Nil()      -> Nil()
+        Cons(x, l) -> Cons(f x, map-list.map(f, l))
+    }
+\end{minted}
+
 \begin{figure}[H]
   \centering
 
