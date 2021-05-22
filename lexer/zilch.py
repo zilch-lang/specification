@@ -1,16 +1,40 @@
-from pygments.lexer import RegexLexer, bygroups, include
+from pygments.lexer import ExtendedRegexLexer, bygroups, include
 from pygments.token import *
+import re
 
 
-class ZilchLexer(RegexLexer):
+class ZilchLexer(ExtendedRegexLexer):
     name = 'Zilch'
     aliases = ['zilch']
     filenames = ['*.z']
 
+    def identifier_callback(lexer, match, ctx):
+        id = match.group(1) + match.group(2)
+
+        if len(parts := id.split("--", 1)) > 1:
+            # we might have a comment in here, but it's not sure yet
+            if not re.match(r'[^_·]$', parts[0]) and not re.match(r'^[^_·]', parts[1]):
+                endofline = ''
+                pos = match.start() + len(parts[0])
+                while (c := ctx.text[pos]) != '\n':
+                    endofline += c
+                    pos += 1
+                parts[1] = endofline
+
+                yield match.start(), Text, parts[0]
+                yield match.start() + len(parts[0]), Comment.Single, parts[1]
+                ctx.pos = pos
+            else:
+                yield match.start(), Text, id
+                ctx.pos = match.end()
+        else:
+            yield match.start(), Text, id
+            ctx.pos = match.end()
+
     tokens = {
         'commentsandwhitespace': [
             (r'\s+', Text),
-            (r'([_·]*?)(--[_·]*?.*?$)', bygroups(Text, Comment.Single))
+            (r'--.*?$', Comment.Single)
         ],
         'keywords': [
             (r'\b(forall|∀|def|enum|record|class|impl|do|type|case|of|module|fn|foreign|import|export|perm|if|then|else|pattern|where|as)\b', Keyword.Reserved)
@@ -29,10 +53,10 @@ class ZilchLexer(RegexLexer):
         'operators': [
             (r'(\:\=|\<\-|\<\:|←|≔|\-\>|→|·)', Operator),
 
-            (r'(\(|\)|\:|\{|\}|\[|\])|,', Punctuation)
+            (r'(\(|\)|\:|\{|\}|\[|\])|,|_', Punctuation)
         ],
         'identifier': [
-            (r'((?!\d)\S)\S*', Text)
+            (r'((?!\d)\S)(\S*)', identifier_callback)
         ],
         'root': [
             include('commentsandwhitespace'),
