@@ -1530,5 +1530,69 @@ def zilch_mixfix_type():
 
 	return mk_diagram2('mixfix', inner)
 
+def zilch_module_header():
+	inner = Sequence(
+		Terminal('module'),
+		OneOrMore(
+			NonTerminal('identifier'),
+			Terminal('.')
+		),
+		Optional(
+			Sequence(
+				Terminal('('),
+				ZeroOrMore(
+					Sequence(
+						Optional(
+							Terminal('module')
+						),
+						OneOrMore(
+							NonTerminal('identifier'),
+							Terminal('.')
+						)
+					),
+					Terminal(',')
+				),
+				Terminal(')')
+			)
+		)
+	)
 
-zilch_function_definition().writeSvg(sys.stdout.write)
+	return mk_diagram2('module-header', inner)
+
+def zilch_module_import():
+	inner = Stack(
+		Sequence(
+			Optional(
+				Terminal('open')
+			),
+			Terminal('import'),
+			OneOrMore(
+				NonTerminal('identifier'),
+				Terminal('.')
+			),
+		),
+		Sequence(
+			Optional(
+				Sequence(
+					Terminal('('),
+					ZeroOrMore(
+						Sequence(
+							NonTerminal('identifier'),
+							Optional(
+								Sequence(
+									Terminal('as'),
+									NonTerminal('identifier')
+								)
+							)
+						),
+						Terminal(',')
+					),
+					Terminal(')')
+				)
+			)
+		)
+	)
+
+	return mk_diagram2('module-import', inner)
+
+zilch_module_import().writeSvg(sys.stdout.write)

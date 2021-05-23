@@ -647,3 +647,36 @@ Note that, as for type classes being equivalent to records, defining an implemen
   \caption{Grammar for type-class implementations.}
   \label{fig:zilch-grammar-declarations-implementation-grammar}
 \end{figure}
+
+\section{Modules}\label{sec:zilch-grammar-modules}
+
+Modules allow grouping functions and types that are related to each other under a common namespace.
+In Zilch, modules provide grouping, importing and visibility restrictions.
+
+A Zilch module is declared as per Figure~\ref{fig:zilch-grammar-modules-headergrammar} and can contain, in this order, many (possibly none) \texttt{import} statements (see Figure~\ref{fig:zilch-grammar-modules-importgrammar}) and any number of declarations as described in Section~\ref{sec:zilch-grammar-declarations}~``\nameref{sec:zilch-grammar-declarations}''.
+A module $A$ may export another module $B$, meaning that anything imported from $B$ into $A$'s scope is exported by $A$.
+If a plain function is aliased\footnote{Mixfix operators cannot be aliased because it would lead to many problems.} from the import of $B$ in $A$, the new name is exported by $A$ instead of the old one.
+Operator fixities are exported only if their corresponding operators are also exported.
+All imports are qualified, unless when \verb|open|ed.
+
+\begin{figure}[H]
+  \centering
+
+  \scalebox{.5}{
+    \includegraphics{zilch/modules/header}
+  }
+
+  \caption{Grammar for module headers.}
+  \label{fig:zilch-grammar-modules-headergrammar}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+
+  \scalebox{.5}{
+    \includegraphics{zilch/modules/import}
+  }
+
+  \caption{Grammar for import statements.}
+  \label{fig:zilch-grammar-modules-importgrammar}
+\end{figure}
