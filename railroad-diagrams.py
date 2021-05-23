@@ -982,6 +982,14 @@ def zilch_basicexpr():
 			'function application'
 		),
 		Group(
+			Sequence(
+				NonTerminal('expression'),
+				Terminal('.'),
+				NonTerminal('identifier')
+			),
+			'record/module access'
+		),
+		Group(
 			Terminal('?'),
 			'typed hole'
 		),
