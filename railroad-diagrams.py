@@ -683,11 +683,9 @@ def zilch_keywords():
 			Terminal('fn'),
 			Terminal('foreign'),
 			Terminal('as'),
-			Terminal('infix')
+			Terminal('open')
 		),
 		HorizontalChoice(
-			Terminal('infixl'),
-			Terminal('infixr'),
 			Terminal('import'),
 			Terminal('export'),
 			Terminal('perm'),
@@ -1595,4 +1593,5 @@ def zilch_module_import():
 
 	return mk_diagram2('module-import', inner)
 
-zilch_module_import().writeSvg(sys.stdout.write)
+
+zilch_keywords().writeSvg(sys.stdout.write)
