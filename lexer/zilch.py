@@ -37,7 +37,7 @@ class ZilchLexer(ExtendedRegexLexer):
             (r'--.*?$', Comment.Single)
         ],
         'keywords': [
-            (r'\b(forall|∀|def|enum|record|class|impl|do|type|case|of|module|fn|foreign|import|export|perm|if|then|else|pattern|where|as)\b', Keyword.Reserved)
+            (r'\b(forall|∀|def|enum|record|class|impl|do|type|case|of|module|fn|foreign|import|export|perm|if|then|else|pattern|where|as|open)\b', Keyword.Reserved)
         ],
         'literals': [
             (r'"[^"]*"', String.Double),
@@ -58,9 +58,13 @@ class ZilchLexer(ExtendedRegexLexer):
         'identifier': [
             (r'((?!\d)\S)(\S*)', identifier_callback)
         ],
+        'meta-specifier': [
+            (r'#\[.*?\]', Comment.Preproc)
+        ],
         'root': [
             include('commentsandwhitespace'),
             include('keywords'),
+            include('meta-specifier'),
             include('types'),
             include('operators'),
             include('identifier'),
