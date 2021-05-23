@@ -448,7 +448,6 @@ There are 5 possible declarations:
   \item Type class implementation
   \item New type definition
   \item Value definition
-  \item Fixity declaration
 \end{itemize}
 
 \noindent Each of them will be syntactically described in this section.
@@ -498,31 +497,6 @@ This is mostly equivalent to putting those bindings at the beginning of a \verb|
 
   \caption{Grammar for value declarations.}
   \label{fig:zilch-grammar-declarations-value-grammar}
-\end{figure}
-
-\subsection{Operator fixity declaration}\label{subsec:zilch-grammar-declarations-fixity}
-
-Parsing infix operators is ambiguous by nature if no decision is made.
-Usual programming languages only have a fixed set of infix operators with predefined fixities (left or right associative, with a given precedence) to deal with such ambiguities.
-Some programming languages allow defining infix operators, with user-supplied fixities explicitly given in the program.
-
-While Zilch also follows this approach, it only does so for a limited set of operators: infix operators.
-Prefix and postfix operators are not ambiguous to parse unless when mixed.
-For example, given the two prefix operators \texttt{-\_} and \texttt{$\neg$\_}, \texttt{- $\neg$ 3} only has one possible interpretation: \texttt{- ($\neg$ 3)}.
-However, given the prefix operator \texttt{-\_} and the postfix operator \texttt{\_!}, \texttt{- 0 !} has two interpretations: \texttt{- (0 !)} and \texttt{(- 0) !}.
-While the same approach could be taken also for prefix and postfix operators, this is not that useful in practice, and is therefore not officially supported.
-
-\begin{figure}[H]
-  \centering
-
-  \framebox[\textwidth][c]{
-    \scalebox{.5}{
-      \includegraphics{zilch/toplevel/fixity-declaration}
-    }
-  }
-
-  \caption{Grammar for operator fixity declarations.}
-  \label{fig:zilch-grammar-declarations-fixity-grammar}
 \end{figure}
 
 \subsection{New type definition}\label{subsec:zilch-grammar-declarations-type}
@@ -648,6 +622,38 @@ Note that, as for type classes being equivalent to records, defining an implemen
   \label{fig:zilch-grammar-declarations-implementation-grammar}
 \end{figure}
 
+\subsection{Meta-information}\label{subsec:zilch-grammar-declarations-meta}
+
+Meta-information can be added to any top-level declaration.
+They can be used for example to declare operator fixities, or add deriving clauses to auto-generate type class instances.
+Any declaration accepts zero or more meta-specifiers, but each specifier is restricted as per these rules:
+\begin{itemize}
+  \item Fixity specifiers can only be applied to mixfix operators.
+        These are used to disambiguate expressions, and come in 5 flavors:
+        \begin{itemize}
+          \item \verb|infix <prec>|, \verb|infixr <prec>| and \verb|infixl <prec>| allow specifying the associativity (left, right or none) and precedence of infix operators (operators of the form \verb|_..._|);
+          \item \verb|prefix <prec>| allow specifying the precedence of prefix operators (of the form \verb|..._|).
+                Because prefix operators are not ambiguous on their own (there is only one interpretation for \verb|- - 0|), the precedence is used when combined with other operators;
+          \item \verb|postfix <prec>| allow specifying the precedence of postfix operators (of the form \verb|_...|).
+                Same as for prefix operators, precedence of postfix operators is used only when other kind of operators are used;
+        \end{itemize}
+  \item Deriving clauses can only be added to \verb|enum| and \verb|record| types;
+\end{itemize}
+
+\begin{figure}[H]
+  \centering
+
+  \scalebox{.5}{
+    \includegraphics{zilch/toplevel/meta-information}
+  }\\
+  \scalebox{.5}{
+    \includegraphics{zilch/toplevel/meta-specifier}
+  }
+
+  \caption{Grammar for meta-specifiers.}
+  \label{fig:zilch-grammar-declarations-meta-grammar}
+\end{figure}
+
 \section{Modules}\label{sec:zilch-grammar-modules}
 
 Modules allow grouping functions and types that are related to each other under a common namespace.
@@ -680,3 +686,5 @@ All imports are qualified, unless when \verb|open|ed.
   \caption{Grammar for import statements.}
   \label{fig:zilch-grammar-modules-importgrammar}
 \end{figure}
+
+\chapter{Types at various levels}\label{chap:zilch-types}

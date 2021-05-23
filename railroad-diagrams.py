@@ -1593,5 +1593,35 @@ def zilch_module_import():
 
 	return mk_diagram2('module-import', inner)
 
+def zilch_meta_information():
+	inner = Sequence(
+		Terminal('#['),
+		ZeroOrMore(
+			NonTerminal('meta-specifier'),
+			Terminal(',')
+		),
+		Terminal(']')
+	)
+
+	return mk_diagram2('meta-information', inner)
+
+def zilch_meta_specifier():
+	inner = Choice(
+		0,
+		Sequence(
+			Choice(
+				2,
+				Terminal('infix'),
+				Terminal('infixl'),
+				Terminal('infixr'),
+				Terminal('prefix'),
+				Terminal('postfix')
+			),
+			NonTerminal('positive-integer')
+		)
+	)
+
+	return mk_diagram2('meta-specifier', inner)
+
 
 zilch_keywords().writeSvg(sys.stdout.write)
