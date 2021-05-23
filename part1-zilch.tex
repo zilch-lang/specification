@@ -204,20 +204,20 @@ Lambda abstractions allow creating ``in-place'' anonymous functions.
 For example, both following alternatives are equivalent (because the lambda abstraction does not capture anything there):\\
 \begin{minted}{\zilchlexer}
   -- Alternative 1
-  def f(l: list u64): list u64 := map(fn(x) x * 2, l)
+  def f(l : list u64) : list u64 := map(fn(x) x * 2, l)
   -- Alternative 2
-  def mapper(x: u64): u64 := x * 2
-  def f(l: list u64): list u64 := map(mapper, l)
+  def mapper(x : u64) : u64 := x * 2
+  def f(l : list u64) : list u64 := map(mapper, l)
 \end{minted}
 \vspace*{\baselineskip}
 
 \noindent However, these two are not quite equivalent:\\
 \begin{minted}{\zilchlexer}
   -- Alternative 1
-  def f(y: u64, l: list u64): list u64 := map(fn(x) x + y * 2, l)
+  def f(y : u64, l : list u64) : list u64 := map(fn(x) x + y * 2, l)
   -- Alternative 2
-  def mapper(y: u64)(x: u64): u64 := x + y * 2
-  def f(y: u64, l: list u64): list u64 := map(mapper y, l)
+  def mapper(y : u64)(x : u64): u64 := x + y * 2
+  def f(y : u64, l : list u64) : list u64 := map(mapper y, l)
 \end{minted}
 \vspace*{\baselineskip}
 
@@ -461,9 +461,9 @@ Both when the value is of a function type or of a simple value type, the binding
 Because functions are first-class in Zilch, both function bindings defined below are completely equivalent (the lambda abstraction does not capture anything here):
 
 \noindent\begin{minted}{\zilchlexer}
-  def const(x: u64, y: u64): u64 := x
+  def const(x : u64, y : u64) : u64 := x
   -- is exactly the same as
-  def const: (u64, u64) -> u64 := fn(x, y) x
+  def const : (u64, u64) -> u64 := fn(x, y) x
 \end{minted}
 \vspace*{\baselineskip}
 
@@ -471,10 +471,10 @@ Function bindings may additionally be accompanied by \verb|where| blocks, which 
 This is mostly equivalent to putting those bindings at the beginning of a \verb|do| block:
 
 \noindent\begin{minted}{\zilchlexer}
-  def map+1(l: list u64): list u64 := map(f, l)
+  def map+1(l : list u64) : list u64 := map(f, l)
     where def f(x) := x + 1
   -- is the same as
-  def map+1(l: list u64): list u64 := do
+  def map+1(l : list u64) : list u64 := do
     f <- fn(x) x + 1
     map(f, l)
 \end{minted}
@@ -549,9 +549,9 @@ Such common interface can be used by referencing one of the functions defined by
 For a concrete example, see this example defining a type class for mappeable objects:
 
 \noindent\begin{minted}{\zilchlexer}
-  class Mappeable(f: type -> type) :=
+  class Mappeable(f : type -> type) :=
     -- Provides a way to map a value behind a container type through a pure function.
-    def map(f: a -> b, x: f a): f b
+    def{a, b} map(f : a -> b, x : f a) : f b
 \end{minted}
 \vspace*{\baselineskip}
 
@@ -559,8 +559,8 @@ Note that defining this type class is mainly equivalent to creating a record ske
 So the type class defined above is really not that much different from this:
 
 \noindent\begin{minted}{\zilchlexer}
-  record Mappeable(f: type -> type) :=
-    map: forall(a, b) (a -> b, f a) -> f b
+  record Mappeable(f : type -> type) :=
+    map : forall(a, b) (a -> b, f a) -> f b
 \end{minted}
 
 \begin{figure}[H]
@@ -583,7 +583,7 @@ Implementing a type class $c$ for a specific type $t$ allows $t$ to exhibit the 
 Assuming the following enumeration type for a list:
 
 \noindent\begin{minted}{\zilchlexer}
-  enum List(a: type) :=
+  enum List(a : type) :=
     Nil()
     Cons(a, List a)
 \end{minted}
@@ -592,7 +592,7 @@ Assuming the following enumeration type for a list:
 \noindent An example implementation for the \verb|Mappeable| type class defined earlier could be:
 
 \noindent\begin{minted}{\zilchlexer}
-  impl map-list: Mappeable(List) :=
+  impl map-list : Mappeable(List) :=
     def map(f, l) := case l of
       Nil()      -> Nil()
       Cons(x, l) -> Cons(f x, map(f, l))
@@ -602,7 +602,7 @@ Assuming the following enumeration type for a list:
 Note that, as for type classes being equivalent to records, defining an implementation \textit{might} be equivalent to defining a new record\footnote{It is equivalent only when no wildcard is present in the head of the implementation.}:
 
 \noindent\begin{minted}{\zilchlexer}
-  def map-list: Mappeable(List) :=
+  def map-list : Mappeable(List) :=
     { map := fn(f, l) case l of
         Nil()      -> Nil()
         Cons(x, l) -> Cons(f x, map-list.map(f, l))
