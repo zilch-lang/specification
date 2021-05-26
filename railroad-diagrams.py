@@ -703,10 +703,13 @@ def zilch_keywords():
 			Terminal('←'),
 			Terminal('≔'),
 			Terminal('_'),
-			Terminal('·'),
+			Terminal('·')
+		),
+		HorizontalChoice(
 			Terminal('.'),
 			Terminal('--'),
-			Terminal('?')
+			Terminal('?'),
+			Terminal(':')
 		)
 	)
 
