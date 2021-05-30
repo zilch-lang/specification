@@ -1409,25 +1409,13 @@ def zilch_constrained_type():
 
 def zilch_function_type():
 	inner = Sequence(
-		Choice(
-			0,
-			Sequence(
-				Terminal('('),
-				ZeroOrMore(
-					NonTerminal('type'),
-					Terminal(',')
-				),
-				Terminal(')')
-			),
-			Sequence(
-				NonTerminal('type')
-			)
+		Terminal('fn'),
+		Terminal('('),
+		ZeroOrMore(
+			NonTerminal('type'),
+			Terminal(',')
 		),
-		Choice(
-			0,
-			Terminal('->'),
-			Terminal('→')
-		),
+		Terminal(')'),
 		NonTerminal('type')
 	)
 
@@ -1490,23 +1478,13 @@ def zilch_kind():
 		Terminal('type'),
 		Group(
 			Sequence(
-				Choice(
-					0,
-					Sequence(
-						Terminal('('),
-						ZeroOrMore(
-							NonTerminal('kind'),
-							Terminal(',')
-						),
-						Terminal(')')
-					),
-					NonTerminal('kind')
+				Terminal('fn'),
+				Terminal('('),
+				ZeroOrMore(
+					NonTerminal('kind'),
+					Terminal(',')
 				),
-				Choice(
-					0,
-					Terminal('->'),
-					Terminal('→')
-				),
+				Terminal(')'),
 				NonTerminal('kind')
 			),
 			'type-level function'
@@ -1627,4 +1605,4 @@ def zilch_meta_specifier():
 	return mk_diagram2('meta-specifier', inner)
 
 
-zilch_keywords().writeSvg(sys.stdout.write)
+zilch_function_type().writeSvg(sys.stdout.write)
