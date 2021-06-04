@@ -1023,35 +1023,24 @@ def zilch_pattern():
 		Group(
 			Sequence(
 				NonTerminal('identifier'),
-				Choice(
-					0,
-					NonTerminal('pattern'),
-					Sequence(
-						Terminal('('),
-						ZeroOrMore(
-							NonTerminal('pattern'),
-							Terminal(',')
-						),
-						Terminal(')')
-					)
+				Sequence(
+					Terminal('('),
+					ZeroOrMore(
+						NonTerminal('pattern'),
+						Terminal(',')
+					),
+					Terminal(')')
 				)
 			),
 			'enum constructor'
 		),
 		Group(
 			Sequence(
-				Optional(
-					NonTerminal('identifier'),
-				),
-				OneOrMore(
-					NonTerminal('pattern'),
-					NonTerminal('identifier')
-				),
-				Optional(
-					NonTerminal('identifier')
-				)
+				NonTerminal('pattern'),
+				NonTerminal('symbol'),
+				NonTerminal('pattern')
 			),
-			'mixfix pattern synonym'
+			'infix pattern synonym'
 		)
 	)
 
@@ -1700,4 +1689,4 @@ def zilch_letin():
 
 	return mk_diagram2('let-in', inner)
 
-zilch_keywords().writeSvg(sys.stdout.write)
+zilch_pattern().writeSvg(sys.stdout.write)
