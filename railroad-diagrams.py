@@ -1599,15 +1599,14 @@ def zilch_meta_specifier():
 		0,
 		Sequence(
 			Choice(
-				2,
+				1,
 				Terminal('infix'),
 				Terminal('infixl'),
-				Terminal('infixr'),
-				Terminal('prefix'),
-				Terminal('postfix')
+				Terminal('infixr')
 			),
 			NonTerminal('positive-integer')
-		)
+		),
+		Terminal('inline')
 	)
 
 	return mk_diagram2('meta-specifier', inner)

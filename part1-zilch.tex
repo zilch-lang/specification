@@ -351,7 +351,7 @@ Record literals allow constructing records in the same fashion as in e.g.\ C.
   \label{fig:zilch-grammar-expressions-atom-grammar}
 \end{figure}
 
-\section{Types}\label{sec:zilch-grammr-types}
+\section{Types}\label{sec:zilch-grammar-types}
 
 Types lie at the same level as expressions, but are put in a separate section for comprehensiveness sake.
 An expression \verb|e| is said to be of type \verb|t| if evaluating it yields (or at least is supposed to) any value in the set \verb|t|.
@@ -428,7 +428,7 @@ Because functions are first-class in Zilch, both function bindings defined below
 \noindent\begin{minted}{\zilchlexer}
   def const(x : u64, y : u64) : u64 := x
   -- is exactly the same as
-  def const : fn(u64, u64) u64 := fn(x, y) x
+  def const : (u64, u64) -> u64 := (x, y) -> x
 \end{minted}
 \vspace*{\baselineskip}
 
@@ -436,11 +436,11 @@ Function bindings may additionally be accompanied by \verb|where| blocks, which 
 This is mostly equivalent to putting those bindings at the beginning of a \verb|do| block:
 
 \noindent\begin{minted}{\zilchlexer}
-  def map+1(l : list u64) : list u64 := map(f, l)
+  def mapPlusOne(l : list u64) : list u64 := map(f, l)
     where def f(x) := x + 1
   -- is the same as
-  def map+1(l : list u64) : list u64 := do
-    f <- fn(x) x + 1
+  def mapPlusOne(l : list u64) : list u64 :=
+    let f(x) := x + 1 in
     map(f, l)
 \end{minted}
 
@@ -514,9 +514,9 @@ Such common interface can be used by referencing one of the functions defined by
 For a concrete example, see this example defining a type class for mappeable objects:
 
 \noindent\begin{minted}{\zilchlexer}
-  class Mappeable(f : fn(type) type) :=
+  class Mappeable(f : (type) -> type) :=
     -- Provides a way to map a value behind a container type through a pure function.
-    def{a, b} map(f : fn(a) b, x : f a) : f b
+    def{a, b} map(f : (a) -> b, x : f a) : f b
 \end{minted}
 \vspace*{\baselineskip}
 
@@ -524,8 +524,8 @@ Note that defining this type class is mainly equivalent to creating a record ske
 So the type class defined above is really not that much different from this:
 
 \noindent\begin{minted}{\zilchlexer}
-  record Mappeable(f : fn(type) type) :=
-    map : forall(a, b) fn(fn(a) b, f a) f b
+  record Mappeable(f : (type) -> type) :=
+    map : forall<a, b> ((a) -> b, f a) -> f b
 \end{minted}
 
 \begin{figure}[H]
@@ -568,7 +568,7 @@ Note that, as for type classes being equivalent to records, defining an implemen
 
 \noindent\begin{minted}{\zilchlexer}
   def map-list : Mappeable(List) :=
-    { map := fn(f, l) case l of
+    { map := (f, l) -> case l of
         Nil()      -> Nil()
         Cons(x, l) -> Cons(f x, map-list.map(f, l))
     }
@@ -597,12 +597,9 @@ Any declaration accepts zero or more meta-specifiers, but each specifier is rest
         These are used to disambiguate expressions, and come in 5 flavors:
         \begin{itemize}
           \item \verb|infix <prec>|, \verb|infixr <prec>| and \verb|infixl <prec>| allow specifying the associativity (left, right or none) and precedence of infix operators (operators of the form \verb|_..._|);
-          \item \verb|prefix <prec>| allow specifying the precedence of prefix operators (of the form \verb|..._|).
-                Because prefix operators are not ambiguous on their own (there is only one interpretation for \verb|- - 0|), the precedence is used when combined with other operators;
-          \item \verb|postfix <prec>| allow specifying the precedence of postfix operators (of the form \verb|_...|).
-                Same as for prefix operators, precedence of postfix operators is used only when other kind of operators are used;
         \end{itemize}
   \item Deriving clauses can only be added to \verb|enum| and \verb|record| types;
+  \item Inlining hints tell the compiler that a function may not have a huge cost, therefore can be inlined more easily;
 \end{itemize}
 
 \begin{figure}[H]
