@@ -204,7 +204,7 @@ Lambda abstractions allow creating ``in-place'' anonymous functions.
 For example, both following alternatives are equivalent (because the lambda abstraction does not capture anything there):\\
 \begin{minted}{\zilchlexer}
   -- Alternative 1
-  def f(l : list u64) : list u64 := map(x -> x * 2, l)
+  def f(l : list u64) : list u64 := map((x) -> x * 2, l)
   -- Alternative 2
   def mapper(x : u64) : u64 := x * 2
   def f(l : list u64) : list u64 := map(mapper, l)
@@ -214,7 +214,7 @@ For example, both following alternatives are equivalent (because the lambda abst
 \noindent However, these two are not quite equivalent:\\
 \begin{minted}{\zilchlexer}
   -- Alternative 1
-  def f(y : u64, l : list u64) : list u64 := map(x -> x + y * 2, l)
+  def f(y : u64, l : list u64) : list u64 := map((x) -> x + y * 2, l)
   -- Alternative 2
   def mapper(y : u64)(x : u64): u64 := x + y * 2
   def f(y : u64, l : list u64) : list u64 := map(mapper y, l)
@@ -280,22 +280,22 @@ If n-ary selectors are needed, chaining \texttt{if}s is the only solution.
   \label{fig:zilch-gramma-expressions-conditional-grammar}
 \end{figure}
 
-\subsection{Do block}\label{subsec:zilch-grammar-expressions-do}
+\subsection{Let-ins}\label{subsec:zilch-grammar-expressions-letin}
 
-Do blocks are expressions allowing variable bindings, much-like the usual \texttt{let \ldots in \ldots} from functional programming (both are really the same thing in fact, but a prettier approach was taken with Zilch; chaining \texttt{let-in}s is not necessarily very pleasant to the eye).
-Note that a do block \textbf{must} finish with a simple expression, used as the return value of the whole block.
+Let-in expressions allow binding local variables in the context of another expression.
+However, it does not act the same as simply replacing the variable just like a macro because of evaluation order and potential time side-effects.
 
 \begin{figure}[H]
   \centering
 
   \framebox[\textwidth][c]{
     \scalebox{.5}{
-      \includegraphics{zilch/expression/do}
+      \includegraphics{zilch/expression/let-in}
     }
   }
 
-  \caption{Grammar for do blocks.}
-  \label{fig:zilch-gramma-expressions-do-grammar}
+  \caption{Grammar for let-in blocks.}
+  \label{fig:zilch-grammar-expressions-letin-grammar}
 \end{figure}
 
 \subsection{Pattern matching}\label{subsec:zilch-grammar-expressions-case}

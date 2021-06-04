@@ -1629,4 +1629,45 @@ def zilch_symbol():
 
 	return mk_diagram2('symbol', inner)
 
-zilch_lambda().writeSvg(sys.stdout.write)
+def zilch_letin():
+	inner = Stack(
+		Sequence(
+			Terminal('let'),
+			NonTerminal('identifier'),
+			Optional(
+				Sequence(
+					Terminal('('),
+					ZeroOrMore(
+						Sequence(
+							NonTerminal('identifier'),
+							Optional(
+								Sequence(
+									Terminal(':'),
+									NonTerminal('type')
+								)
+							)
+						)
+					),
+					Terminal(')')
+				)
+			)
+		),
+		Sequence(
+			Optional(
+				Sequence(
+					Terminal(':'),
+					NonTerminal('type')
+				)
+			),
+			HorizontalChoice(
+				Terminal(':='),
+				Terminal('≔')
+			),
+			Terminal('in'),
+			NonTerminal('expression')
+		)
+	)
+
+	return mk_diagram2('let-in', inner)
+
+zilch_letin().writeSvg(sys.stdout.write)
