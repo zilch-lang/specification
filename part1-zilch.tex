@@ -193,10 +193,7 @@ Multiple string literals directly next to each other (as in \verb|"abc" "def"|) 
 \section{Expressions}\label{sec:zilch-grammar-expressions}
 
 Expressions are the basic building block of Zilch.
-\textit{Everything} is an expression, from simple arithmetic like \texttt{3 + 6} to complex \texttt{do} blocks.
-
-Because of the presence of mixfix operators, it is harder to express a correct grammar.
-For conciseness sake, the disambiguation of mixfix operators into their correct application is left to a non-described process that we will simply refer to as ``desugaring''\footnote{Desugaring basically transforms an expression into a corresponding simpler expression to analyse later. E.g. \texttt{if c then t else e} is transformed into the simpler application \texttt{if\_then\_else\_ c t e}.}.
+\textit{Everything} is an expression, from simple arithmetic like \texttt{3 + 6} to complex \texttt{let-in} expressions.
 
 \subsection{Lambda abstraction}\label{subsec:zilch-grammar-expressions-lambda}
 
@@ -339,32 +336,6 @@ Record literals allow constructing records in the same fashion as in e.g.\ C.
   \label{fig:zilch-gramma-expressions-record-grammar}
 \end{figure}
 
-\subsection{Mixfix operators}\label{subsec:zilch-grammar-expressions-mixfix}
-
-Mixfix operators allow expressing n-ary operators.
-For example, in Haskell you can only define infix operators (that is, any operator of the form \verb|_<op>_|) and has a limited support for unary operators (prefix and postfix, \verb|<op>_| and \verb|_<op>|).
-Yet there are other kinds of operators.
-Operators may also be closed (\verb|<op>_<op>|), and contain more than two holes: \verb|if_then_else_| is a great example of ternary prefix operator.
-
-Mixfix disambiguation will not be covered in this document, because of how difficult it is.
-However, Ulf Norell's paper~\cite{mixfix-operators} about parsing mixfix operators is a great resource for this.
-
-Note that, while \verb|_| is allowed in identifiers, having one in a mixfix backbone may not yield any parse result, because \verb|_| represents a hole when declaring the operator.
-Therefore, the operator \verb|_+_| cannot be used like \verb|0 _+_ 1| or \verb|0 +_ 1| (both give parse errors), but it may be used as a standard function application like \verb|_+_(0, 1)|.
-
-\begin{figure}[H]
-  \centering
-
-  \framebox[\textwidth][c]{
-    \scalebox{.5}{
-      \includegraphics{zilch/expression/mixfix}
-    }
-  }
-
-  \caption{Grammar for mixfix operators.}
-  \label{fig:zilch-grammar-expressions-mxifix-grammar}
-\end{figure}
-
 \subsection{Variables, typed holes and literals}\label{subsec:zilch-grammar-expressions-basicexpr}
 
 \begin{figure}[H]
@@ -406,9 +377,6 @@ Any other type can be used anywhere.
       }\\
       \scalebox{.5}{
         \includegraphics{zilch/types/builtin}
-      }\\
-      \scalebox{.5}{
-        \includegraphics{zilch/types/mixfix}
       }\\
       \scalebox{.5}{
         \includegraphics{zilch/types/wildcard-abstraction}

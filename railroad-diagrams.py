@@ -965,7 +965,7 @@ def zilch_record():
 
 def zilch_basicexpr():
 	inner = Choice(
-		2,
+		3,
 		NonTerminal('literal'),
 		Group(
 			NonTerminal('identifier'),
@@ -974,17 +974,11 @@ def zilch_basicexpr():
 		Group(
 			Sequence(
 				NonTerminal('expression'),
-				Choice(
-					1,
-					NonTerminal('expression'),
-					Sequence(
-						Terminal('('),
-						ZeroOrMore(
-							NonTerminal('expression')
-						),
-						Terminal(')')
-					)
-				)
+				Terminal('('),
+				ZeroOrMore(
+					NonTerminal('expression')
+				),
+				Terminal(')')
 			),
 			'function application'
 		),
@@ -1007,6 +1001,14 @@ def zilch_basicexpr():
 				Terminal(')')
 			),
 			'parenthesized expression'
+		),
+		Group(
+			Sequence(
+				NonTerminal('expression'),
+				NonTerminal('symbol'),
+				NonTerminal('expression')
+			),
+			'infix operator application'
 		)
 	)
 
@@ -1670,4 +1672,4 @@ def zilch_letin():
 
 	return mk_diagram2('let-in', inner)
 
-zilch_letin().writeSvg(sys.stdout.write)
+zilch_basicexpr().writeSvg(sys.stdout.write)
