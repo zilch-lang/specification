@@ -645,15 +645,9 @@ def zilch_function_definition():
 def zilch_identifier():
 	inner = Group(
 		Sequence(
-			Group(
-				NonTerminal('printable'),
-				'∉ special'
-			),
+			NonTerminal('alpha'),
 			ZeroOrMore(
-				Group(
-					NonTerminal('printable'),
-					'∉ special'
-				)
+				NonTerminal('alphanumeric')
 			)
 		),
 		'∉ keywords'
@@ -1604,5 +1598,23 @@ def zilch_meta_specifier():
 
 	return mk_diagram2('meta-specifier', inner)
 
+def zilch_symbol():
+	inner = Group(
+		Sequence(
+			Group(
+				NonTerminal('symbol'),
+				'∉ special'
+			),
+			ZeroOrMore(
+				Group(
+					NonTerminal('symbol'),
+					'∉ special'
+				)
+			)
+		),
+		'∉ keywords'
+	)
 
-zilch_function_type().writeSvg(sys.stdout.write)
+	return mk_diagram2('symbol', inner)
+
+zilch_symbol().writeSvg(sys.stdout.write)

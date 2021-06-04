@@ -77,10 +77,8 @@ Note that the Unicode alternative syntax does not need to be supported, but make
 
 \subsection{Identifiers, operators and reserved words}\label{subsec:zilch-grammar-lexical-identifiers}
 
-Identifiers and operators are the same thing thanks to mixfix operators.
-They are composed of only printable characters which are not considered special, and must not form keywords.
-
-Mixfix operators also do not allow keywords as backbones (that is, \texttt{\_->\_} is not a valid mixfix operator because \texttt{->} is a keyword; however \texttt{\_->*\_} is valid because the backbone contains \texttt{->*}, not \texttt{->}).
+Identifiers and operators are composed of only printable characters which are not considered special, and must not form keywords.
+Lexically distinguishing between both types of symbols is done by only allowing alphanumeraical characters in identifiers, and symbolic characters in operators.
 
 \begin{figure}[H]
   \centering
@@ -99,11 +97,14 @@ Mixfix operators also do not allow keywords as backbones (that is, \texttt{\_->\
       \\
       \scalebox{.5}{
         \includegraphics{zilch/lexicon/identifier}
+      }\\
+      \scalebox{.5}{
+        \includegraphics{zilch/lexicon/symbol}
       }
     }
   }
 
-  \caption{Lexical units for identifiers.}
+  \caption{Lexical units for identifiers and operators.}
   \label{fig:zilch-grammar-lexical-identifiers-grammar}
 \end{figure}
 
@@ -400,9 +401,6 @@ Any other type can be used anywhere.
       }\\
       \scalebox{.5}{
         \includegraphics{zilch/types/constrained}
-      }\\
-      \scalebox{.5}{
-        \includegraphics{zilch/types/function}
       }\\
       \scalebox{.5}{
         \includegraphics{zilch/types/application}
