@@ -1377,27 +1377,43 @@ def zilch_fixity():
 	return mk_diagram2('fixity-declaration', inner)
 
 def zilch_forall_type():
-	inner = Sequence(
-		Choice(
-			0,
-			Terminal('forall'),
-			Terminal('∀')
+	inner = Stack(
+		Sequence(
+			Choice(
+				0,
+				Terminal('forall'),
+				Terminal('∀')
+			),
+			Terminal('<'),
+			ZeroOrMore(
+				Sequence(
+					NonTerminal('identifier'),
+					Optional(
+						Sequence(
+							Terminal(':'),
+							NonTerminal('kind')
+						)
+					)
+				),
+				Terminal(',')
+			)
 		),
-		Terminal('('),
-		ZeroOrMore(
-			Sequence(
-				NonTerminal('identifier'),
+		Sequence(
+			Group(
 				Optional(
 					Sequence(
-						Terminal(':'),
-						NonTerminal('kind')
+						Terminal('|'),
+						OneOrMore(
+							NonTerminal('type'),
+							Terminal(',')
+						)
 					)
-				)
+				),
+				'type constraints'
 			),
-			Terminal(',')
-		),
-		Terminal(')'),
-		NonTerminal('type')
+			Terminal('>'),
+			NonTerminal('type')
+		)
 	)
 
 	return mk_diagram2('forall-type', inner)
@@ -1417,13 +1433,16 @@ def zilch_constrained_type():
 
 def zilch_function_type():
 	inner = Sequence(
-		Terminal('fn'),
 		Terminal('('),
 		ZeroOrMore(
 			NonTerminal('type'),
 			Terminal(',')
 		),
 		Terminal(')'),
+		HorizontalChoice(
+			Terminal('->'),
+			Terminal('→')
+		),
 		NonTerminal('type')
 	)
 
@@ -1486,13 +1505,16 @@ def zilch_kind():
 		Terminal('type'),
 		Group(
 			Sequence(
-				Terminal('fn'),
 				Terminal('('),
 				ZeroOrMore(
 					NonTerminal('kind'),
 					Terminal(',')
 				),
 				Terminal(')'),
+				HorizontalChoice(
+					Terminal('->'),
+					Terminal('→')
+				),
 				NonTerminal('kind')
 			),
 			'type-level function'
@@ -1671,4 +1693,4 @@ def zilch_letin():
 
 	return mk_diagram2('let-in', inner)
 
-zilch_basicexpr().writeSvg(sys.stdout.write)
+zilch_kind().writeSvg(sys.stdout.write)
