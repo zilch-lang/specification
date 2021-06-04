@@ -677,8 +677,7 @@ def zilch_keywords():
 			Terminal('where')
 		),
 		HorizontalChoice(
-			Terminal('do'),
-			Terminal('type'),
+			Terminal('alias'),
 			Terminal('case'),
 			Terminal('of'),
 			Terminal('module'),
@@ -694,7 +693,9 @@ def zilch_keywords():
 			Terminal('if'),
 			Terminal('then'),
 			Terminal('else'),
-			Terminal('pattern')
+			Terminal('pattern'),
+			Terminal('let'),
+			Terminal('in')
 		),
 		HorizontalChoice(
 			Terminal(':='),
@@ -1702,4 +1703,4 @@ def zilch_letin():
 
 	return mk_diagram2('let-in', inner)
 
-zilch_typeclass().writeSvg(sys.stdout.write)
+zilch_keywords().writeSvg(sys.stdout.write)
