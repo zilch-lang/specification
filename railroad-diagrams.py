@@ -853,7 +853,6 @@ def zilch_lambda():
 			Terminal('_')
 		),
 		Sequence(
-			Terminal('fn'),
 			Sequence(
 				Terminal('('),
 				ZeroOrMore(
@@ -869,6 +868,11 @@ def zilch_lambda():
 					Terminal(',')
 				),
 				Terminal(')')
+			),
+			Choice(
+				0,
+				Terminal('->'),
+				Terminal('→')
 			),
 			NonTerminal('expression')
 		)
@@ -1625,4 +1629,4 @@ def zilch_symbol():
 
 	return mk_diagram2('symbol', inner)
 
-zilch_identifier().writeSvg(sys.stdout.write)
+zilch_lambda().writeSvg(sys.stdout.write)

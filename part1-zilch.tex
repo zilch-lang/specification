@@ -204,7 +204,7 @@ Lambda abstractions allow creating ``in-place'' anonymous functions.
 For example, both following alternatives are equivalent (because the lambda abstraction does not capture anything there):\\
 \begin{minted}{\zilchlexer}
   -- Alternative 1
-  def f(l : list u64) : list u64 := map(fn(x) x * 2, l)
+  def f(l : list u64) : list u64 := map(x -> x * 2, l)
   -- Alternative 2
   def mapper(x : u64) : u64 := x * 2
   def f(l : list u64) : list u64 := map(mapper, l)
@@ -214,7 +214,7 @@ For example, both following alternatives are equivalent (because the lambda abst
 \noindent However, these two are not quite equivalent:\\
 \begin{minted}{\zilchlexer}
   -- Alternative 1
-  def f(y : u64, l : list u64) : list u64 := map(fn(x) x + y * 2, l)
+  def f(y : u64, l : list u64) : list u64 := map(x -> x + y * 2, l)
   -- Alternative 2
   def mapper(y : u64)(x : u64): u64 := x + y * 2
   def f(y : u64, l : list u64) : list u64 := map(mapper y, l)
@@ -224,12 +224,12 @@ For example, both following alternatives are equivalent (because the lambda abst
 \noindent Note that lambda abstractions cannot be recursive on their own, they need to be bound using a \texttt{def} declaration.
 
 There is also an alternative grammar for lambda abstractions, using wildcards abstractions.
-Sometimes, you have to write \verb|reduce(fn(acc, e) acc + e, 0, list)|, but it would be far more pleasant if it could be written as in Haskell, i.e. \verb|reduce (+) 0 list|.
-\verb|(+)| cannot unfortunately be written as is in Zilch.
-This is why there are wildcard abstractions: it allows writing \verb|reduce(_ + _, 0, list)| (note the extra spaces around the operator, even though \verb|_+_| would have also worked just fine here) which makes it cleaner looking.
-\verb|_ + _| is really syntactic sugar for \texttt{fn($x_0$) fn($x_1$) $x_0$ + $x_1$}.
+Sometimes, you have to write \verb|reduce((acc, e) -> acc + e, 0, list)|.
+While functional, this is a bit ugly and can be greatly shortened.
+This is why there are wildcard abstractions: it allows writing \verb|reduce(_ + _, 0, list)| which makes it cleaner looking.
+\verb|_ + _| is really syntactic sugar for \texttt{($x_0$, $x_1$) -> $x_0$ + $x_1$}.
 
-A simple rule to convert wildcard abstractions to explicit lambda abstractions is the following: for each wildcard $\cdot_i$ in an expression \verb|e| (assuming from the left to the right), assign an unique identifier $u_i$ and replace the wildcard with it (also increment $i$). If $i \neq 0$ at the end, then replace \verb|e| with the lambda abstraction \texttt{fn($u_0$, \ldots, $u_i$) e[$\cdot_0$\textbackslash$u_0$, \ldots, $\cdot_i$\textbackslash$u_i$]}.
+A simple rule to convert wildcard abstractions to explicit lambda abstractions is the following: for each wildcard $\cdot_i$ in an expression \verb|e| (assuming from the left to the right), assign an unique identifier $u_i$ and replace the wildcard with it (also increment $i$). If $i \neq 0$ at the end, then replace \verb|e| with the lambda abstraction \texttt{($u_0$, \ldots, $u_i$) -> e[$\cdot_0$\textbackslash$u_0$, \ldots, $\cdot_i$\textbackslash$u_i$]}.
 Some examples are given in Table~\ref{table:zilch-grammar-expressions-lambda-translatewildcard}.
 
 \begin{figure}[H]
@@ -250,10 +250,10 @@ Some examples are given in Table~\ref{table:zilch-grammar-expressions-lambda-tra
     \toprule
     From & \multirow{5}{*}{\textbf{$\rightsquigarrow$}} & To \\
     \midrule
-    \verb|_ + 1| && \verb|fn(x0) x0 + 1| \\
-    \verb|f(_)| && \verb|fn(x0) f(x0)| \\
-    \verb|f(_ * 2)| && \verb|f(fn(x0) x0 * 2)| \\
-    \verb|f(_ * 2, _)| && \verb|fn(x0) f(fn(x1) x1 * 2, x0)| \\
+    \verb|_ + 1| && \verb|(x0) -> x0 + 1| \\
+    \verb|f(_)| && \verb|(x0) -> f(x0)| \\
+    \verb|f(_ * 2)| && \verb|f((x0) -> x0 * 2)| \\
+    \verb|f(_ * 2, _)| && \verb|(x0) -> f((x1) -> x1 * 2, x0)| \\
     \bottomrule
   \end{tabularx}
 
