@@ -699,16 +699,11 @@ def zilch_keywords():
 		),
 		HorizontalChoice(
 			Terminal(':='),
-			Terminal('<-'),
-			Terminal('<:'),
 			Terminal('->'),
 			Terminal('→'),
-			Terminal('←'),
 			Terminal('≔'),
 			Terminal('_'),
-			Terminal('·')
-		),
-		HorizontalChoice(
+			Terminal('·'),
 			Terminal('.'),
 			Terminal('--'),
 			Terminal('?'),
@@ -726,7 +721,9 @@ def zilch_special():
 		Terminal(']'),
 		Terminal('{'),
 		Terminal('}'),
-		Terminal(',')
+		Terminal(','),
+		Terminal('_'),
+		Terminal('·')
 	)
 
 	return mk_diagram2('special', inner)
