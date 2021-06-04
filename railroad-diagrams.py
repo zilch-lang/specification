@@ -1078,7 +1078,7 @@ def zilch_mixfix():
 def zilch_type():
 	inner = Stack(
 		Sequence(
-			Terminal('type'),
+			Terminal('alias'),
 			NonTerminal('identifier'),
 			Optional(
 				Sequence(
@@ -1211,11 +1211,15 @@ def zilch_function_declaration():
 			Terminal('def'),
 			Optional(
 				Sequence(
-					Terminal('{'),
+					Terminal('<'),
 					ZeroOrMore(
-						Sequence(
+						Choice(
+							0,
 							NonTerminal('identifier'),
-							Optional(
+							Sequence(
+								OneOrMore(
+									NonTerminal('identifier')
+								),
 								Sequence(
 									Terminal(':'),
 									NonTerminal('kind')
@@ -1224,24 +1228,21 @@ def zilch_function_declaration():
 						),
 						Terminal(',')
 					),
-					Terminal('}')
+					Optional(
+						Sequence(
+							Terminal('|'),
+							OneOrMore(
+								NonTerminal('type'),
+								Terminal(',')
+							)
+						)
+					),
+					Terminal('>')
 				)
 			)
 		),
 		Sequence(
-			Optional(
-				Sequence(
-					Terminal('['),
-					ZeroOrMore(
-						NonTerminal('type'),
-						Terminal(',')
-					),
-					Terminal(']')
-				)
-			),
-			NonTerminal('identifier')
-		),
-		Sequence(
+			NonTerminal('identifier'),
 			Optional(
 				Sequence(
 					Terminal('('),
@@ -1290,12 +1291,11 @@ def zilch_typeclass():
 		Sequence(
 			Optional(
 				Sequence(
-					Terminal('['),
-					ZeroOrMore(
+					Terminal('|'),
+					OneOrMore(
 						NonTerminal('type'),
 						Terminal(',')
-					),
-					Terminal(']')
+					)
 				)
 			),
 			Choice(
@@ -1320,7 +1320,7 @@ def zilch_impl():
 			Terminal('impl'),
 			Optional(
 				Sequence(
-					Terminal('{'),
+					Terminal('<'),
 					ZeroOrMore(
 						NonTerminal('identifier'),
 						Optional(
@@ -1330,7 +1330,16 @@ def zilch_impl():
 							)
 						)
 					),
-					Terminal('}')
+					Optional(
+						Sequence(
+							Terminal('|'),
+							OneOrMore(
+								NonTerminal('type'),
+								Terminal(',')
+							)
+						)
+					),
+					Terminal('>')
 				)
 			)
 		),
@@ -1693,4 +1702,4 @@ def zilch_letin():
 
 	return mk_diagram2('let-in', inner)
 
-zilch_kind().writeSvg(sys.stdout.write)
+zilch_typeclass().writeSvg(sys.stdout.write)

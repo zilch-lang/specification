@@ -451,7 +451,7 @@ This is mostly equivalent to putting those bindings at the beginning of a \verb|
     \parbox{\textwidth}{
       \centering
 
-      \scalebox{.5}{
+      \scalebox{.45}{
         \includegraphics{zilch/toplevel/function-declaration}
       }\\
       \scalebox{.5}{
@@ -516,7 +516,7 @@ For a concrete example, see this example defining a type class for mappeable obj
 \noindent\begin{minted}{\zilchlexer}
   class Mappeable(f : (type) -> type) :=
     -- Provides a way to map a value behind a container type through a pure function.
-    def{a, b} map(f : (a) -> b, x : f a) : f b
+    def<a, b> map(f : (a) -> b, x : f a) : f b
 \end{minted}
 \vspace*{\baselineskip}
 
