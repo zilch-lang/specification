@@ -621,11 +621,16 @@ Any declaration accepts zero or more meta-specifiers, but each specifier is rest
 Modules allow grouping functions and types that are related to each other under a common namespace.
 In Zilch, modules provide grouping, importing and visibility restrictions.
 
-A Zilch module is declared as per Figure~\ref{fig:zilch-grammar-modules-headergrammar} and can contain, in this order, many (possibly none) \texttt{import} statements (see Figure~\ref{fig:zilch-grammar-modules-importgrammar}) and any number of declarations as described in Section~\ref{sec:zilch-grammar-declarations}~``\nameref{sec:zilch-grammar-declarations}''.
+A Zilch module is declared according to the name and position of the file in the include path.
+For example, if a file is named \verb|Internal.zc| in the directory \verb|Data/Something/A|, then it exports a module \verb|Data.Something.A.Internal|.
+
+It can contain, in this order, an export list, many (possibly none) \texttt{import} statements (see Figure~\ref{fig:zilch-grammar-modules-importgrammar}) and any number of declarations as described in Section~\ref{sec:zilch-grammar-declarations}~``\nameref{sec:zilch-grammar-declarations}''.
+
 A module $A$ may export another module $B$, meaning that anything imported from $B$ into $A$'s scope is exported by $A$.
-If a plain function is aliased\footnote{Mixfix operators cannot be aliased because it would lead to many problems.} from the import of $B$ in $A$, the new name is exported by $A$ instead of the old one.
+If a plain function is aliased\footnote{Infix operators cannot be aliased because it would lead to many problems.} from the import of $B$ in $A$, the new name is exported by $A$ instead of the old one.
 Operator fixities are exported only if their corresponding operators are also exported.
 All imports are qualified, unless when \verb|open|ed.
+An empty or unspecified export list is equivalent to exporting nothing from the module.
 
 \begin{figure}[H]
   \centering

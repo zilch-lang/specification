@@ -1537,29 +1537,21 @@ def zilch_mixfix_type():
 
 def zilch_module_header():
 	inner = Sequence(
-		Terminal('module'),
-		OneOrMore(
-			NonTerminal('identifier'),
-			Terminal('.')
-		),
-		Optional(
+		Terminal('export'),
+		Terminal('('),
+		ZeroOrMore(
 			Sequence(
-				Terminal('('),
-				ZeroOrMore(
-					Sequence(
-						Optional(
-							Terminal('module')
-						),
-						OneOrMore(
-							NonTerminal('identifier'),
-							Terminal('.')
-						)
-					),
-					Terminal(',')
+				Optional(
+					Terminal('module')
 				),
-				Terminal(')')
-			)
-		)
+				OneOrMore(
+					NonTerminal('identifier'),
+					Terminal('.')
+				)
+			),
+			Terminal(',')
+		),
+		Terminal(')')
 	)
 
 	return mk_diagram2('module-header', inner)
@@ -1689,4 +1681,4 @@ def zilch_letin():
 
 	return mk_diagram2('let-in', inner)
 
-zilch_pattern().writeSvg(sys.stdout.write)
+zilch_module_header().writeSvg(sys.stdout.write)
