@@ -426,9 +426,9 @@ Both when the value is of a function type or of a simple value type, the binding
 Because functions are first-class in Zilch, both function bindings defined below are completely equivalent (the lambda abstraction does not capture anything here):
 
 \noindent\begin{minted}{\zilchlexer}
-  def const(x : u64, y : u64) : u64 := x
+  let const(x : u64, y : u64) : u64 := x
   -- is exactly the same as
-  def const : (u64, u64) -> u64 := (x, y) -> x
+  let const : (u64, u64) -> u64 := (x, y) -> x
 \end{minted}
 \vspace*{\baselineskip}
 
@@ -436,10 +436,10 @@ Function bindings may additionally be accompanied by \verb|where| blocks, which 
 This is mostly equivalent to putting those bindings at the beginning of a \verb|do| block:
 
 \noindent\begin{minted}{\zilchlexer}
-  def mapPlusOne(l : list u64) : list u64 := map(f, l)
-    where def f(x) := x + 1
+  let mapPlusOne(l : list u64) : list u64 := map(f, l)
+    where let f(x) := x + 1
   -- is the same as
-  def mapPlusOne(l : list u64) : list u64 :=
+  let mapPlusOne(l : list u64) : list u64 :=
     let f(x) := x + 1 in
     map(f, l)
 \end{minted}
@@ -456,6 +456,9 @@ This is mostly equivalent to putting those bindings at the beginning of a \verb|
       }\\
       \scalebox{.5}{
         \includegraphics{zilch/toplevel/function-definition}
+      }\\
+      \scalebox{.45}{
+        \includegraphics{zilch/toplevel/toplevel-function-definition}
       }
     }
   }

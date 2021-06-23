@@ -626,21 +626,28 @@ def zilch_function_definition():
 				Terminal('≔')
 			),
 			NonTerminal('expression')
-		),
-		Optional(
-			Sequence(
-				Terminal('where'),
-				NonTerminal('{'),
-				OneOrMore(
-					NonTerminal('function-definition'),
-					NonTerminal(';')
-				),
-				NonTerminal('}')
-			)
 		)
 	)
 
 	return mk_diagram2('function-definition', inner)
+
+def zilch_toplevel_function_definition():
+    inner = Sequence(
+	NonTerminal('function-definition'),
+	Optional(
+	    Sequence(
+		Terminal('where'),
+		NonTerminal('{'),
+		OneOrMore(
+		    NonTerminal('function-definition'),
+		    NonTerminal(';')
+		),
+		NonTerminal('}')
+	    )
+	)
+    )
+
+    return mk_diagram2('toplevel-function-definition', inner)
 
 def zilch_identifier():
 	inner = Choice(
@@ -1198,7 +1205,7 @@ def zilch_record():
 def zilch_function_declaration():
 	inner = Stack(
 		Sequence(
-			Terminal('def'),
+ 			Terminal('let'),
 			Optional(
 				Sequence(
 					Terminal('<'),
@@ -1668,4 +1675,4 @@ def zilch_letin():
 
 	return mk_diagram2('let-in', inner)
 
-zilch_kind().writeSvg(sys.stdout.write)
+zilch_function_declaration().writeSvg(sys.stdout.write)
