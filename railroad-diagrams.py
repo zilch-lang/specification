@@ -1636,7 +1636,15 @@ def zilch_meta_information():
 
 def zilch_meta_specifier():
 	inner = Choice(
-		0,
+		1,
+	    	Sequence(
+		    Terminal('foreign'),
+		    Choice(
+			0,
+			Terminal('export'),
+			Terminal('import')
+		    )
+		),
 		Sequence(
 			Choice(
 				1,

@@ -433,7 +433,7 @@ Because functions are first-class in Zilch, both function bindings defined below
 \vspace*{\baselineskip}
 
 Function bindings may additionally be accompanied by \verb|where| blocks, which allow binding local variables in the scope of the expression.
-This is mostly equivalent to putting those bindings at the beginning of a \verb|do| block:
+This is mostly equivalent to putting those bindings at the beginning of a \verb|let-in| block:
 
 \noindent\begin{minted}{\zilchlexer}
   let mapPlusOne(l : list u64) : list u64 := map(f, l)
@@ -603,6 +603,7 @@ Any declaration accepts zero or more meta-specifiers, but each specifier is rest
         \end{itemize}
   \item Deriving clauses can only be added to \verb|enum| and \verb|record| types;
   \item Inlining hints tell the compiler that a function may not have a huge cost, therefore can be inlined more easily;
+  \item FFI imports/exports, to either retrieve or give a function defined in another compilation unit (most probably coming from another programming language like C);
 \end{itemize}
 
 \begin{figure}[H]
