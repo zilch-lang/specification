@@ -517,9 +517,9 @@ Such common interface can be used by referencing one of the functions defined by
 For a concrete example, see this example defining a type class for mappeable objects:
 
 \noindent\begin{minted}{\zilchlexer}
-  class Mappeable(f : (type) -> type) :=
+  class Mappeable(f : type -> type) :=
     -- Provides a way to map a value behind a container type through a pure function.
-    def<a, b> map(f : (a) -> b, x : f a) : f b
+    map : forall<a, b> (a -> b, f a) -> f b
 \end{minted}
 \vspace*{\baselineskip}
 
@@ -527,8 +527,8 @@ Note that defining this type class is mainly equivalent to creating a record ske
 So the type class defined above is really not that much different from this:
 
 \noindent\begin{minted}{\zilchlexer}
-  record Mappeable(f : (type) -> type) :=
-    map : forall<a, b> ((a) -> b, f a) -> f b
+  record Mappeable(f : type -> type) :=
+    map : forall<a, b> (a -> b, f a) -> f b
 \end{minted}
 
 \begin{figure}[H]

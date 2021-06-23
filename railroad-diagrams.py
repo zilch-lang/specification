@@ -1302,7 +1302,11 @@ def zilch_typeclass():
 			),
 			NonTerminal('{'),
 			ZeroOrMore(
-				NonTerminal('function-declaration'),
+				Sequence(
+				    NonTerminal('identifier'),
+				    Terminal(':'),
+				    NonTerminal('type')
+				),
 				NonTerminal(';')
 			),
 			NonTerminal('}')
@@ -1675,4 +1679,4 @@ def zilch_letin():
 
 	return mk_diagram2('let-in', inner)
 
-zilch_record().writeSvg(sys.stdout.write)
+zilch_typeclass().writeSvg(sys.stdout.write)
