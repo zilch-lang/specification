@@ -1363,7 +1363,7 @@ def zilch_impl():
 			),
 			NonTerminal('{'),
 			ZeroOrMore(
-				NonTerminal('function-definition'),
+				NonTerminal('toplevel-function-definition'),
 				NonTerminal(';')
 			),
 			NonTerminal('}')
@@ -1679,4 +1679,4 @@ def zilch_letin():
 
 	return mk_diagram2('let-in', inner)
 
-zilch_typeclass().writeSvg(sys.stdout.write)
+zilch_impl().writeSvg(sys.stdout.write)

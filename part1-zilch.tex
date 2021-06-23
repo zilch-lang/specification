@@ -561,7 +561,7 @@ Assuming the following enumeration type for a list:
 
 \noindent\begin{minted}{\zilchlexer}
   impl map-list : Mappeable(List) :=
-    def map(f, l) := case l of
+    let map(f, l) := case l of
       Nil()      -> Nil()
       Cons(x, l) -> Cons(f x, map(f, l))
 \end{minted}
@@ -570,7 +570,7 @@ Assuming the following enumeration type for a list:
 Note that, as for type classes being equivalent to records, defining an implementation \textit{might} be equivalent to defining a new record\footnote{It is equivalent only when no wildcard is present in the head of the implementation.}:
 
 \noindent\begin{minted}{\zilchlexer}
-  def map-list : Mappeable(List) :=
+  let map-list : Mappeable(List) :=
     { map := (f, l) -> case l of
         Nil()      -> Nil()
         Cons(x, l) -> Cons(f x, map-list.map(f, l))
