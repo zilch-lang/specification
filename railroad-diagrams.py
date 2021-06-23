@@ -1139,7 +1139,7 @@ def zilch_enum():
 				Terminal('≔')
 			),
 			NonTerminal('{'),
-			OneOrMore(
+			ZeroOrMore(
 				Sequence(
 					NonTerminal('identifier'),
 					NonTerminal('('),
@@ -1188,7 +1188,7 @@ def zilch_record():
 				Terminal('≔')
 			),
 			NonTerminal('{'),
-			OneOrMore(
+			ZeroOrMore(
 				Sequence(
 					NonTerminal('identifier'),
 					Terminal(':'),
@@ -1675,4 +1675,4 @@ def zilch_letin():
 
 	return mk_diagram2('let-in', inner)
 
-zilch_function_declaration().writeSvg(sys.stdout.write)
+zilch_record().writeSvg(sys.stdout.write)
