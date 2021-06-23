@@ -201,20 +201,20 @@ Lambda abstractions allow creating ``in-place'' anonymous functions.
 For example, both following alternatives are equivalent (because the lambda abstraction does not capture anything there):\\
 \begin{minted}{\zilchlexer}
   -- Alternative 1
-  def f(l : list u64) : list u64 := map((x) -> x * 2, l)
+  let f(l : list u64) : list u64 := map((x) -> x * 2, l)
   -- Alternative 2
-  def mapper(x : u64) : u64 := x * 2
-  def f(l : list u64) : list u64 := map(mapper, l)
+  let mapper(x : u64) : u64 := x * 2
+  let f(l : list u64) : list u64 := map(mapper, l)
 \end{minted}
 \vspace*{\baselineskip}
 
 \noindent However, these two are not quite equivalent:\\
 \begin{minted}{\zilchlexer}
   -- Alternative 1
-  def f(y : u64, l : list u64) : list u64 := map((x) -> x + y * 2, l)
+  let f(y : u64, l : list u64) : list u64 := map((x) -> x + y * 2, l)
   -- Alternative 2
-  def mapper(y : u64)(x : u64): u64 := x + y * 2
-  def f(y : u64, l : list u64) : list u64 := map(mapper y, l)
+  let mapper(y : u64)(x : u64): u64 := x + y * 2
+  let f(y : u64, l : list u64) : list u64 := map(mapper y, l)
 \end{minted}
 \vspace*{\baselineskip}
 

@@ -850,6 +850,9 @@ def zilch_lambda():
 			Terminal('_')
 		),
 		Sequence(
+		    Choice(
+			0,
+			NonTerminal('identifier'),
 			Sequence(
 				Terminal('('),
 				ZeroOrMore(
@@ -865,7 +868,8 @@ def zilch_lambda():
 					Terminal(',')
 				),
 				Terminal(')')
-			),
+			)
+		    ),
 			Choice(
 				0,
 				Terminal('->'),
@@ -1680,4 +1684,4 @@ def zilch_letin():
 
 	return mk_diagram2('let-in', inner)
 
-zilch_keywords().writeSvg(sys.stdout.write)
+zilch_lambda().writeSvg(sys.stdout.write)
