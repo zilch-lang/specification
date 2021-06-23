@@ -620,12 +620,16 @@ def zilch_function_definition():
 	inner = Stack(
 		Sequence(
 			NonTerminal('function-declaration'),
-			Choice(
-				0,
-				Terminal(':='),
-				Terminal('≔')
-			),
-			NonTerminal('expression')
+		    	Optional(
+			    Sequence(
+				Choice(
+				    0,
+				    Terminal(':='),
+				    Terminal('≔')
+				),
+				NonTerminal('expression')
+			    )
+			)
 		)
 	)
 
@@ -1679,4 +1683,4 @@ def zilch_letin():
 
 	return mk_diagram2('let-in', inner)
 
-zilch_impl().writeSvg(sys.stdout.write)
+zilch_function_definition().writeSvg(sys.stdout.write)
