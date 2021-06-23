@@ -1646,42 +1646,14 @@ def zilch_symbol():
 def zilch_letin():
 	inner = Stack(
 		Sequence(
-			Terminal('let'),
-			NonTerminal('identifier'),
-			Optional(
-				Sequence(
-					Terminal('('),
-					ZeroOrMore(
-						Sequence(
-							NonTerminal('identifier'),
-							Optional(
-								Sequence(
-									Terminal(':'),
-									NonTerminal('type')
-								)
-							)
-						)
-					),
-					Terminal(')')
-				)
-			)
-		),
-		Sequence(
-			Optional(
-				Sequence(
-					Terminal(':'),
-					NonTerminal('type')
-				)
-			),
-			HorizontalChoice(
-				Terminal(':='),
-				Terminal('≔')
-			),
-			Terminal('in'),
-			NonTerminal('expression')
+		    OneOrMore(
+			NonTerminal('function-definition')
+		    ),
+		    Terminal('in'),
+		    NonTerminal('expression')
 		)
 	)
 
 	return mk_diagram2('let-in', inner)
 
-zilch_lambda().writeSvg(sys.stdout.write)
+zilch_letin().writeSvg(sys.stdout.write)
