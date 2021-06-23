@@ -1432,12 +1432,18 @@ def zilch_constrained_type():
 
 def zilch_function_type():
 	inner = Sequence(
-		Terminal('('),
-		ZeroOrMore(
+	    Choice(
+		0,
+		NonTerminal('type'),
+		Sequence(
+		    Terminal('('),
+		    ZeroOrMore(
 			NonTerminal('type'),
 			Terminal(',')
-		),
-		Terminal(')'),
+		    ),
+		    Terminal(')'),
+		)
+	    ),
 		HorizontalChoice(
 			Terminal('->'),
 			Terminal('→')
@@ -1504,12 +1510,18 @@ def zilch_kind():
 		Terminal('type'),
 		Group(
 			Sequence(
-				Terminal('('),
-				ZeroOrMore(
+			    Choice(
+				0,
+				NonTerminal('kind'),
+				Sequence(
+				    Terminal('('),
+				    ZeroOrMore(
 					NonTerminal('kind'),
 					Terminal(',')
-				),
-				Terminal(')'),
+				    ),
+				    Terminal(')'),
+				)
+			    ),
 				HorizontalChoice(
 					Terminal('->'),
 					Terminal('→')
@@ -1656,4 +1668,4 @@ def zilch_letin():
 
 	return mk_diagram2('let-in', inner)
 
-zilch_letin().writeSvg(sys.stdout.write)
+zilch_kind().writeSvg(sys.stdout.write)

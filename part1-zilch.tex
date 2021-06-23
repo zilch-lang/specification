@@ -356,7 +356,7 @@ Record literals allow constructing records in the same fashion as in e.g.\ C.
 Types lie at the same level as expressions, but are put in a separate section for comprehensiveness sake.
 An expression \verb|e| is said to be of type \verb|t| if evaluating it yields (or at least is supposed to) any value in the set \verb|t|.
 
-Wildcard abstractions are only allowed in \verb|impl| blocks, despite being a general type, and follow the same desugaring rules as their expression-level counterparts (see Table~\ref{table:zilch-grammar-expressions-lambda-translatewildcard} for some examples; replace \verb|fn| with \verb|Fn| to get the type-level counterparts).
+Wildcard abstractions are only allowed in \verb|impl| blocks, despite being a general type, and follow the same desugaring rules as their expression-level counterparts (see Table~\ref{table:zilch-grammar-expressions-lambda-translatewildcard} for some examples).
 Any other type can be used anywhere.
 
 \begin{figure}[H]
