@@ -669,27 +669,26 @@ def zilch_keywords():
 		HorizontalChoice(
 			Terminal('forall'),
 			Terminal('∀'),
-			Terminal('def'),
 			Terminal('enum'),
 			Terminal('record'),
 			Terminal('class'),
 			Terminal('impl'),
-			Terminal('where')
+			Terminal('where'),
+		    	Terminal('rec')
 		),
 		HorizontalChoice(
 			Terminal('alias'),
 			Terminal('case'),
 			Terminal('of'),
 			Terminal('module'),
-			Terminal('fn'),
 			Terminal('foreign'),
 			Terminal('as'),
-			Terminal('open')
+			Terminal('open'),
+			Terminal('import')
 		),
 		HorizontalChoice(
-			Terminal('import'),
 			Terminal('export'),
-			Terminal('perm'),
+			Terminal('effect'),
 			Terminal('if'),
 			Terminal('then'),
 			Terminal('else'),
@@ -1681,4 +1680,4 @@ def zilch_letin():
 
 	return mk_diagram2('let-in', inner)
 
-zilch_module_header().writeSvg(sys.stdout.write)
+zilch_keywords().writeSvg(sys.stdout.write)
