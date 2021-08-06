@@ -1463,7 +1463,14 @@ def zilch_function_type():
 			Terminal('->'),
 			Terminal('→')
 		),
-		NonTerminal('type')
+		Choice(
+			1,
+			Sequence(
+				NonTerminal('effect'),
+				NonTerminal('type')
+			),
+			NonTerminal('type')
+		)
 	)
 
 	return mk_diagram2('function-type', inner)
@@ -1518,6 +1525,19 @@ def zilch_wildcard_type():
 	)
 
 	return mk_diagram2('wildcard-type', inner)
+
+def zilch_effect_type():
+	inner = Sequence(
+		NonTerminal('identifier'),
+		ZeroOrMore(
+			Sequence(
+				Terminal('|'),
+				NonTerminal('effect-type')
+			)
+		)
+	)
+
+	return mk_diagram2('effect-type', inner)
 
 def zilch_kind():
 	inner = Choice(
@@ -1702,4 +1722,4 @@ def zilch_letin():
 
 	return mk_diagram2('let-in', inner)
 
-zilch_function_definition().writeSvg(sys.stdout.write)
+zilch_effect_type().writeSvg(sys.stdout.write)
