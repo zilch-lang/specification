@@ -1571,8 +1571,12 @@ def zilch_module_header():
 		Terminal('('),
 		ZeroOrMore(
 			Sequence(
-				Optional(
-					Terminal('module')
+				Choice(
+					1,
+					Terminal('module'),
+					Skip(),
+					Terminal('type'),
+					Terminal('effect')
 				),
 				OneOrMore(
 					NonTerminal('identifier'),
@@ -1604,6 +1608,13 @@ def zilch_module_import():
 					Terminal('('),
 					ZeroOrMore(
 						Sequence(
+							Choice(
+								1,
+								Terminal('type'),
+								Skip(),
+								Terminal('effect'),
+								Terminal('module')
+							),
 							NonTerminal('identifier'),
 							Optional(
 								Sequence(
