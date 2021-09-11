@@ -1,5 +1,7 @@
 let
   pkgs = import <nixpkgs> {};
+
+  syntax-diagrams = import ./syntax-diagrams.nix;
 in
 
 with pkgs;
@@ -13,5 +15,8 @@ mkDerivation rec {
     gnumake
     texlive.combined.scheme-full
     python38Packages.pygments
+    texlab
+
+    syntax-diagrams.buildInputs
   ];
 }

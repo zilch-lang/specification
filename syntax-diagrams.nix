@@ -19,7 +19,6 @@ mkShell rec {
   version = "1.0.0";
 
   buildInputs = [
-    python38
-    railroad
+    (python38.withPackages (_: [ railroad ]))
   ];
 }
