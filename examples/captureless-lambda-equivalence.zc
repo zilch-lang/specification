@@ -1,0 +1,6 @@
+-- Alternative 1
+let f(l : list u64) : list u64 := map((x) -> x * 2, l)
+-- Alternative 2
+let mapper(x : u64) : u64 := x * 2
+let f(l : list u64) : list u64 := map(mapper, l)
+

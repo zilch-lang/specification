@@ -1,0 +1,4 @@
+class Mappeable(f : type -> type) :=
+  -- Provides a way to map a value behind a container type through a pure function.
+  map : forall<a, b> (a -> b, f a) -> f b
+

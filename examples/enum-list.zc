@@ -1,0 +1,4 @@
+enum List(a : type) :=
+  Nil()
+  Cons(a, List a)
+

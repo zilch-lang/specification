@@ -1,0 +1,3 @@
+record Mappeable(f : type -> type) :=
+  map : forall<a, b> (a -> b, f a) -> f b
+

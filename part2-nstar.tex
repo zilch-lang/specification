@@ -322,10 +322,7 @@ The type variable \texttt{s} is specialized at the call site.
 
 \begin{listing}[htb]
   \centering
-  \begin{minted}[]{\nstarlexer}
-      label: forall(s: Ts, e: Tc). { %r0: forall(). {| s -> e } | s -> %r0 }
-           = ret
-  \end{minted}
+  \inputminted{\nstarlexer}{examples/stack-masking.nst}
 
   \caption{Stack masking using a type variable binder.}
   \label{lst:nstar-common-ts-records-stackmask}
@@ -956,12 +953,7 @@ This gives a safe way of using return values, and guaranteeing that there are in
 
 \begin{listing}[htb]
   \centering
-  \begin{minted}[]{\nstarlexer}
-    example: forall(s: Ts, e: Tc).{ %r5: forall().{ %r0: u64, %r3: u64 | s -> e } | s -> %r5 }
-           = mv 0, %r0
-           ; mv 5, %r3
-           ; ret
-  \end{minted}
+  \inputminted{\nstarlexer}{examples/return-multiple-values.nst}
 
   \caption{An example of returning multiple values from a simple function.}
   \label{lst:nstar-common-bs-returnvalues}
@@ -1385,16 +1377,7 @@ This is something that we cannot check (it could be possible with linear types) 
 
 \begin{listing}[H]
   \centering
-  \begin{minted}[]{\nstarlexer}
-      ub_function: forall(s: Ts, e: Tc).{ %r5: forall().{| s -> e } | s -> %r5 }
-        = salloc s64
-        ; sref 0, %r0  # reference the newly allocated stack cell
-        ; sfree
-        ; st 0, (%r0)  # this is where our undefined behavior happens:
-                       #   we are trying to write `0`
-                       #     to a potentially discarded/voided cell.
-        ; ret
-  \end{minted}
+  \inputminted{\nstarlexer}{examples/sref-undefined-behavior.nst}
 
   \caption{An undefined behavior triggered through the use of \texttt{sref}.}
   \label{lst:nstar-instructionset-stack-sref-ubexample}

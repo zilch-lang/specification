@@ -1,0 +1,5 @@
+example: forall(s: Ts, e: Tc).{ %r5: forall().{ %r0: u64, %r3: u64 | s -> e } | s -> %r5 }
+       = mv 0, %r0
+       ; mv 5, %r3
+       ; ret
+

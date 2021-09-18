@@ -1,0 +1,4 @@
+let const(x : u64, y : u64) : u64 := x
+-- is exactly the same as
+let const : (u64, u64) -> u64 := (x, y) -> x
+

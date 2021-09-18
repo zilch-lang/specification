@@ -1,0 +1,9 @@
+ub_function: forall(s: Ts, e: Tc).{ %r5: forall().{| s -> e } | s -> %r5 }
+  = salloc s64
+  ; sref 0, %r0  # reference the newly allocated stack cell
+  ; sfree
+  ; st 0, (%r0)  # this is where our undefined behavior happens:
+                 #   we are trying to write `0`
+                 #     to a potentially discarded/voided cell.
+  ; ret
+

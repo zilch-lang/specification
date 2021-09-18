@@ -1,0 +1,3 @@
+label: forall(s: Ts, e: Tc). { %r0: forall(). {| s -> e } | s -> %r0 }
+     = ret
+

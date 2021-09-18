@@ -40,6 +40,10 @@ The mainly used notation is described here, but not necessarily everything will 
           \item The name of the grammar rule defined is given in the top-left corner of the diagram.
                 A rule matches if and only if it is possible to go from the left to the right, only following the rails;
         \end{itemize}
+  \item Type inference
+        \begin{itemize}
+          \item
+        \end{itemize}
 \end{itemize}
 
 \chapter{Grammar of Zilch programs}\label{chap:zilch-grammar}
@@ -199,23 +203,11 @@ Expressions are the basic building block of Zilch.
 
 Lambda abstractions allow creating ``in-place'' anonymous functions.
 For example, both following alternatives are equivalent (because the lambda abstraction does not capture anything there):\\
-\begin{minted}{\zilchlexer}
-  -- Alternative 1
-  let f(l : list u64) : list u64 := map((x) -> x * 2, l)
-  -- Alternative 2
-  let mapper(x : u64) : u64 := x * 2
-  let f(l : list u64) : list u64 := map(mapper, l)
-\end{minted}
+\inputminted{\zilchlexer}{examples/captureless-lambda-equivalence.zc}
 \vspace*{\baselineskip}
 
 \noindent However, these two are not quite equivalent:\\
-\begin{minted}{\zilchlexer}
-  -- Alternative 1
-  let f(y : u64, l : list u64) : list u64 := map((x) -> x + y * 2, l)
-  -- Alternative 2
-  let mapper(y : u64)(x : u64): u64 := x + y * 2
-  let f(y : u64, l : list u64) : list u64 := map(mapper y, l)
-\end{minted}
+\inputminted{\zilchlexer}{examples/closure-non-equivalence.zc}
 \vspace*{\baselineskip}
 
 \noindent Note that lambda abstractions cannot be recursive on their own, they need to be bound using a \texttt{def} declaration.
@@ -428,24 +420,13 @@ Both when the value is of a function type or of a simple value type, the binding
 
 Because functions are first-class in Zilch, both function bindings defined below are completely equivalent (the lambda abstraction does not capture anything here):
 
-\noindent\begin{minted}{\zilchlexer}
-  let const(x : u64, y : u64) : u64 := x
-  -- is exactly the same as
-  let const : (u64, u64) -> u64 := (x, y) -> x
-\end{minted}
+\noindent\inputminted{\zilchlexer}{examples/function-value-equivalence.zc}
 \vspace*{\baselineskip}
 
 Function bindings may additionally be accompanied by \verb|where| blocks, which allow binding local variables in the scope of the expression.
 This is mostly equivalent to putting those bindings at the beginning of a \verb|let-in| block:
 
-\noindent\begin{minted}{\zilchlexer}
-  let mapPlusOne(l : list u64) : list u64 := map(f, l)
-    where let f(x) := x + 1
-  -- is the same as
-  let mapPlusOne(l : list u64) : list u64 :=
-    let f(x) := x + 1 in
-    map(f, l)
-\end{minted}
+\noindent\inputminted{\zilchlexer}{examples/function-where-let-equivalence.zc}
 
 \begin{figure}[H]
   \centering
@@ -519,20 +500,13 @@ Such common interface can be used by referencing one of the functions defined by
 
 For a concrete example, see this example defining a type class for mappeable objects:
 
-\noindent\begin{minted}{\zilchlexer}
-  class Mappeable(f : type -> type) :=
-    -- Provides a way to map a value behind a container type through a pure function.
-    map : forall<a, b> (a -> b, f a) -> f b
-\end{minted}
+\noindent\inputminted{\zilchlexer}{examples/mappeable-class.zc}
 \vspace*{\baselineskip}
 
 Note that defining this type class is mainly equivalent to creating a record skeleton that must be defined for other types of the set.
 So the type class defined above is really not that much different from this:
 
-\noindent\begin{minted}{\zilchlexer}
-  record Mappeable(f : type -> type) :=
-    map : forall<a, b> (a -> b, f a) -> f b
-\end{minted}
+\noindent\inputminted{\zilchlexer}{examples/class-record-equivalent.zc}
 
 \begin{figure}[H]
   \centering
@@ -553,32 +527,17 @@ Implementing a type class $c$ for a specific type $t$ allows $t$ to exhibit the 
 
 Assuming the following enumeration type for a list:
 
-\noindent\begin{minted}{\zilchlexer}
-  enum List(a : type) :=
-    Nil()
-    Cons(a, List a)
-\end{minted}
+\noindent\inputminted{\zilchlexer}{examples/enum-list.zc}
 \vspace*{\baselineskip}
 
 \noindent An example implementation for the \verb|Mappeable| type class defined earlier could be:
 
-\noindent\begin{minted}{\zilchlexer}
-  impl map-list : Mappeable(List) :=
-    let map(f, l) := case l of
-      Nil()      -> Nil()
-      Cons(x, l) -> Cons(f x, map(f, l))
-\end{minted}
+\noindent\inputminted{\zilchlexer}{examples/impl-mappeable-list.zc}
 \vspace*{\baselineskip}
 
 Note that, as for type classes being equivalent to records, defining an implementation \textit{might} be equivalent to defining a new record\footnote{It is equivalent only when no wildcard is present in the head of the implementation.}:
 
-\noindent\begin{minted}{\zilchlexer}
-  let map-list : Mappeable(List) :=
-    { map := (f, l) -> case l of
-        Nil()      -> Nil()
-        Cons(x, l) -> Cons(f x, map-list.map(f, l))
-    }
-\end{minted}
+\noindent\inputminted{\zilchlexer}{examples/impl-record-equivalent.zc}
 
 \begin{figure}[H]
   \centering
