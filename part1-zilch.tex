@@ -642,7 +642,7 @@ The same rules therefore apply to expression holes.
 	\centering
 	\begin{prooftree}
 		\hypo{\Gamma,x_1 : \nu_1, \ldots,x_n : \nu_n\vdash e : \tau\vert\epsilon}
-		\infer1{\Gamma\vdash \text{lam}(x_1,\ldots,x_n)\to e : (\nu_1, \ldots, \nu_n)\to \epsilon\ \tau\vert\epsilon^\prime}
+		\infer1[\textsc{[Lam]}]{\Gamma\vdash \text{lam}(x_1,\ldots,x_n)\to e : (\nu_1, \ldots, \nu_n)\to \epsilon\ \tau\vert\epsilon^\prime}
 	\end{prooftree}
 
 	\caption{Typing rule for lambda expressions.}
@@ -657,3 +657,31 @@ If it produces no effect (i.e. it is a pure/total expression), $\epsilon$ is $\l
 Note that on its own, creating a new lambda does not produce any effect.
 But because we want to be able to use lambda expressions in contexts requiring effects, creating a new lambda yields any effect.
 This can also be simulated by requiring that the empty effect $\langle\rangle$ be a subtype of any effect.
+
+\subsection{Variables, typed holes and literals}\label{subsec:zilch-staticsem-exprs-vars}
+
+\begin{figure}[H]
+	\centering
+
+	\begin{prooftree}
+		\infer0[\textsc{[Var]}]{\Gamma, x : \tau\vdash x : \tau\vert\epsilon}
+	\end{prooftree}
+	\hspace{3em}
+	\begin{prooftree}
+		\infer0[\textsc{[Hole]}]{\Gamma\vdash \cdot : \tau\vert\epsilon}
+	\end{prooftree}
+	\\\vspace{\baselineskip}
+	\begin{prooftree}
+		\hypo{\tau\in\{\text{u8}, \text{u16}, \text{u32}, \text{u64}\}}
+		\hypo{c\ \text{is an integer literal}}
+		\infer2[\textsc{[Nat]}]{\Gamma\vdash c : \tau\vert\epsilon}
+	\end{prooftree}
+	\\\vspace{\baselineskip}
+	\begin{prooftree}
+  	\hypo{c\ \text{is a character literal}}
+  	\infer1[\textsc{[Char]}]{\Gamma\vdash c : \text{char}\vert\epsilon}
+	\end{prooftree}
+
+	\caption{Typing rule for variables, typed holes and literals.}
+	\label{fig:zilch-staticsem-exprs-vars-typerule}
+\end{figure}
