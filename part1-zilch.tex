@@ -649,5 +649,7 @@ The same rules therefore apply to expression holes.
 	\label{fig:zilch-staticsem-exprs-lambda-typerule}
 \end{figure}
 
-
-
+The expression $e$ in the above type rules is assumed to have the parameters $x_1$ to $x_n$ in scope, else it will not be able to use them.
+As for the effects, because the body of a lambda is not evaluated at the point it is defined, any effect that it would produce is instead transferred
+in the type of the lambda for them to be propagated to the call site (see the typing rules of function application).
+If it produces no effect (i.e. it is a pure/total expression), $\epsilon$ is $\langle\rangle$.
