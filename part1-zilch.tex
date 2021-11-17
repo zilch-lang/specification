@@ -13,7 +13,7 @@ But ATS is hard to learn, because it has so much stuff\ldots
 
 Yet Zilch is also a low-level functional programming language.
 But the goal is to design a not-so-hard to learn programming language, while still having strong guarantees about the code written\footnote{When this was written, Zilch was far from production-ready, so most
-of the guarantees have not yet been described here.}.
+	of the guarantees have not yet been described here.}.
 Prior knowledge about ML-style programming is still recommended before trying to tackle Zilch, but anybody without this kind of knowledge should also be able to learn Zilch fairly easily.
 
 This part will try to describe and formalize (at least a bit, but some parts may be left informal) the Zilch programming language, going from the usual syntax onto the operational semantics.
@@ -27,32 +27,33 @@ Because of that, sometimes we need some specific notation to described things li
 The mainly used notation is described here, but not necessarily everything will be described (sometimes, a little bit of common sense helps to understand).
 
 \begin{itemize}
-  \item Grammar
-        \begin{figure}[H]
-          \centering
-          \scalebox{.5}{
-            \includegraphics{grammar-template-2}
-          }
-        \end{figure}
-        \begin{itemize}
-          \item Sharp rectangles describe that another rule is to be used there (the name of the rule is given in the rectangle);
-          \item Rounded rectangles describe terminal tokens, i.e.\ pieces of string that must be litterally matched;
-          \item The name of the grammar rule defined is given in the top-left corner of the diagram.
-                A rule matches if and only if it is possible to go from the left to the right, only following the rails;
-        \end{itemize}
-  \item Type inference
-        \begin{itemize}
-          \item
-        \end{itemize}
+	\item Grammar
+	      \begin{figure}[H]
+		      \centering
+		      \scalebox{.5}{
+			      \includegraphics{grammar-template-2}
+		      }
+	      \end{figure}
+	      \begin{itemize}
+		      \item Sharp rectangles describe that another rule is to be used there (the name of the rule is given in the rectangle);
+		      \item Rounded rectangles describe terminal tokens, i.e.\ pieces of string that must be litterally matched;
+		      \item The name of the grammar rule defined is given in the top-left corner of the diagram.
+		            A rule matches if and only if it is possible to go from the left to the right, only following the rails;
+	      \end{itemize}
+	\item Type inference rules
+	      \begin{itemize}
+		      \item $\Gamma$ is the context containing all type-level information such as types of types;
+		      \item The typing judgment $\Gamma \vdash e : \tau \vert \epsilon$ means that $e$ has type $\tau$ in the context $\Gamma$ and that evaluating it may yield effects in $\epsilon$;
+	      \end{itemize}
 \end{itemize}
 
 \chapter{Grammar of Zilch programs}\label{chap:zilch-grammar}
 
 A Zilch program is comprised of three different levels, each included in the next one:
 \begin{itemize}
-  \item The expression level, where an expression denotes a value which has a statically determined type;
-  \item The declaration level, containing all function definitions, type definitions, type classes declarations, etc;
-  \item The module level, where imports and module declarations live in;
+	\item The expression level, where an expression denotes a value which has a statically determined type;
+	\item The declaration level, containing all function definitions, type definitions, type classes declarations, etc;
+	\item The module level, where imports and module declarations live in;
 \end{itemize}
 
 \noindent Because it is not easy to materialize indentation properties in the grammar, it will instead be marked using the non-terminals\footnote{Those symbols are reserved and actually used as terminals, so we put them as non-terminals to remove any ambiguation.} \texttt{\{}, \texttt{\}} and \texttt{;}.
@@ -85,31 +86,31 @@ Identifiers and operators are composed of only printable characters which are no
 Lexically distinguishing between both types of symbols is done by only allowing alphanumeraical characters in identifiers, and symbolic characters in operators.
 
 \begin{figure}[H]
-  \centering
+	\centering
 
-  \framebox[\textwidth][c]{
-    \parbox{\textwidth}{
-      \centering
+	\framebox[\textwidth][c]{
+		\parbox{\textwidth}{
+			\centering
 
-      \scalebox{.4}{
-        \includegraphics{zilch/lexicon/keywords}
-      }
-      \\
-      \scalebox{.5}{
-        \includegraphics{zilch/lexicon/special}
-      }
-      \\
-      \scalebox{.5}{
-        \includegraphics{zilch/lexicon/identifier}
-      }\\
-      \scalebox{.5}{
-        \includegraphics{zilch/lexicon/symbol}
-      }
-    }
-  }
+			\scalebox{.4}{
+				\includegraphics{zilch/lexicon/keywords}
+			}
+			\\
+			\scalebox{.5}{
+				\includegraphics{zilch/lexicon/special}
+			}
+			\\
+			\scalebox{.5}{
+				\includegraphics{zilch/lexicon/identifier}
+			}\\
+			\scalebox{.5}{
+				\includegraphics{zilch/lexicon/symbol}
+			}
+		}
+	}
 
-  \caption{Lexical units for identifiers and operators.}
-  \label{fig:zilch-grammar-lexical-identifiers-grammar}
+	\caption{Lexical units for identifiers and operators.}
+	\label{fig:zilch-grammar-lexical-identifiers-grammar}
 \end{figure}
 
 \subsection{Whitespaces}\label{subsec:zilch-grammar-lexical-whitespaces}
@@ -118,16 +119,16 @@ Whitespace tokens are basically word separators.
 Because of that, comments are also counted as whitespaces, despite not really being an invisible sequence.
 
 \begin{figure}[H]
-  \centering
+	\centering
 
-  \framebox[\textwidth][c]{
-    \scalebox{.5}{
-      \includegraphics{zilch/lexicon/whitespaces}
-    }
-  }
+	\framebox[\textwidth][c]{
+		\scalebox{.5}{
+			\includegraphics{zilch/lexicon/whitespaces}
+		}
+	}
 
-  \caption{Whitespace lexical units.}
-  \label{fig:zilch-grammar-lexical-whitespaces-grammar}
+	\caption{Whitespace lexical units.}
+	\label{fig:zilch-grammar-lexical-whitespaces-grammar}
 \end{figure}
 
 \subsection{Numerical tokens}\label{subsec:zilch-grammar-lexical-numbers}
@@ -137,16 +138,16 @@ While floating points are always written using decimal digits, integers may be w
 A floating point number must always have digits on both sides of the dot (i.e.\ it is impossible to write \verb|0.| as in other programming languages) because it could else be mistaken with the dot syntax.
 
 \begin{figure}[H]
-  \centering
+	\centering
 
-  \framebox[\textwidth][c]{
-    \scalebox{.5}{
-      \includegraphics{zilch/lexicon/number}
-    }
-  }
+	\framebox[\textwidth][c]{
+		\scalebox{.5}{
+			\includegraphics{zilch/lexicon/number}
+		}
+	}
 
-  \caption{Numeric lexical units.}
-  \label{fig:zilch-grammar-lexical-numbers-grammar}
+	\caption{Numeric lexical units.}
+	\label{fig:zilch-grammar-lexical-numbers-grammar}
 \end{figure}
 
 \subsection{String and character literals}\label{subsec:zilch-grammar-lexical-strings}
@@ -162,36 +163,36 @@ Note that, while double and single quotes may be escaped, these may not necessar
 Multiple string literals directly next to each other (as in \verb|"abc" "def"|) are concatenated into one (so \verb|"abcdef"|).
 
 \begin{figure}[H]
-  \centering
+	\centering
 
-  \framebox[\textwidth][c]{
-    \parbox{\textwidth}{
-      \centering
+	\framebox[\textwidth][c]{
+		\parbox{\textwidth}{
+			\centering
 
-      \scalebox{.5}{
-        \includegraphics{zilch/lexicon/string}
-      }
-      \\
-      \scalebox{.5}{
-        \includegraphics{zilch/lexicon/character}
-      }
-    }
-  }
+			\scalebox{.5}{
+				\includegraphics{zilch/lexicon/string}
+			}
+			\\
+			\scalebox{.5}{
+				\includegraphics{zilch/lexicon/character}
+			}
+		}
+	}
 
-  \caption{String and character lexical units.}
-  \label{fig:zilch-grammar-lexical-strings-grammar}
+	\caption{String and character lexical units.}
+	\label{fig:zilch-grammar-lexical-strings-grammar}
 \end{figure}
 
 \begin{table}[htb]
-  \begin{tabularx}{\textwidth}{*{5}{Y}}
-    \toprule
-    \verb|\a| & \verb|\b| & \verb|\f| & \verb|\n| & \verb|\r| \\
-    \verb|\t| & \verb|\v| & \verb|\\| & \verb|\"| & \verb|\'| \\
-    \bottomrule
-  \end{tabularx}
+	\begin{tabularx}{\textwidth}{*{5}{Y}}
+		\toprule
+		\verb|\a| & \verb|\b| & \verb|\f| & \verb|\n| & \verb|\r| \\
+		\verb|\t| & \verb|\v| & \verb|\\| & \verb|\"| & \verb|\'| \\
+		\bottomrule
+	\end{tabularx}
 
-  \caption{All available escape sequences.}
-  \label{table:zilch-grammar-lexical-strings-escapesequences}
+	\caption{All available escape sequences.}
+	\label{table:zilch-grammar-lexical-strings-escapesequences}
 \end{table}
 
 \section{Expressions}\label{sec:zilch-grammar-expressions}
@@ -222,32 +223,32 @@ A simple rule to convert wildcard abstractions to explicit lambda abstractions i
 Some examples are given in Table~\ref{table:zilch-grammar-expressions-lambda-translatewildcard}.
 
 \begin{figure}[H]
-  \centering
+	\centering
 
-  \framebox[\textwidth][c]{
-    \scalebox{.5}{
-      \includegraphics{zilch/expression/lambda}
-    }
-  }
+	\framebox[\textwidth][c]{
+		\scalebox{.5}{
+			\includegraphics{zilch/expression/lambda}
+		}
+	}
 
-  \caption{Grammar for lambda abstractions.}
-  \label{fig:zilch-gramma-expressions-lambda-grammar}
+	\caption{Grammar for lambda abstractions.}
+	\label{fig:zilch-gramma-expressions-lambda-grammar}
 \end{figure}
 
 \begin{table}[htb]
-  \begin{tabularx}{\textwidth}{YcY}
-    \toprule
-    From & \multirow{5}{*}{\textbf{$\rightsquigarrow$}} & To \\
-    \midrule
-    \verb|_ + 1| && \verb|(x0) -> x0 + 1| \\
-    \verb|f(_)| && \verb|(x0) -> f(x0)| \\
-    \verb|f(_ * 2)| && \verb|f((x0) -> x0 * 2)| \\
-    \verb|f(_ * 2, _)| && \verb|(x0) -> f((x1) -> x1 * 2, x0)| \\
-    \bottomrule
-  \end{tabularx}
+	\begin{tabularx}{\textwidth}{YcY}
+		\toprule
+		From                    & \multirow{5}{*}{\textbf{$\rightsquigarrow$}} & To                      \\
+		\midrule
+		\verb|_ + 1| &                                              & \verb|(x0) -> x0 + 1| \\
+		\verb|f(_)| &                                              & \verb|(x0) -> f(x0)| \\
+		\verb|f(_ * 2)| &                                              & \verb|f((x0) -> x0 * 2)| \\
+		\verb|f(_ * 2, _)| &                                              & \verb|(x0) -> f((x1) -> x1 * 2, x0)| \\
+		\bottomrule
+	\end{tabularx}
 
-  \caption{Some examples of wildcard abstraction translation.}
-  \label{table:zilch-grammar-expressions-lambda-translatewildcard}
+	\caption{Some examples of wildcard abstraction translation.}
+	\label{table:zilch-grammar-expressions-lambda-translatewildcard}
 \end{table}
 
 \subsection{Conditional}\label{subsec:zilch-grammar-expressions-conditional}
@@ -257,16 +258,16 @@ However, it only works as a binary selector.
 If n-ary selectors are needed, chaining \texttt{if}s is the only solution.
 
 \begin{figure}[H]
-  \centering
+	\centering
 
-  \framebox[\textwidth][c]{
-    \scalebox{.5}{
-      \includegraphics{zilch/expression/conditional}
-    }
-  }
+	\framebox[\textwidth][c]{
+		\scalebox{.5}{
+			\includegraphics{zilch/expression/conditional}
+		}
+	}
 
-  \caption{Grammar for conditional expressions.}
-  \label{fig:zilch-gramma-expressions-conditional-grammar}
+	\caption{Grammar for conditional expressions.}
+	\label{fig:zilch-gramma-expressions-conditional-grammar}
 \end{figure}
 
 \subsection{Let-in}\label{subsec:zilch-grammar-expressions-letin}
@@ -275,16 +276,16 @@ Let-in expressions allow binding local variables in the context of another expre
 However, it does not act the same as simply replacing the variable just like a macro because of evaluation order and potential side-effects.
 
 \begin{figure}[H]
-  \centering
+	\centering
 
-  \framebox[\textwidth][c]{
-    \scalebox{.5}{
-      \includegraphics{zilch/expression/let-in}
-    }
-  }
+	\framebox[\textwidth][c]{
+		\scalebox{.5}{
+			\includegraphics{zilch/expression/let-in}
+		}
+	}
 
-  \caption{Grammar for let-in blocks.}
-  \label{fig:zilch-grammar-expressions-letin-grammar}
+	\caption{Grammar for let-in blocks.}
+	\label{fig:zilch-grammar-expressions-letin-grammar}
 \end{figure}
 
 \subsection{Pattern matching}\label{subsec:zilch-grammar-expressions-case}
@@ -292,23 +293,23 @@ However, it does not act the same as simply replacing the variable just like a m
 Pattern matching is achieved through the use of a \texttt{case} expression.
 
 \begin{figure}[H]
-  \centering
+	\centering
 
-  \framebox[\textwidth][c]{
-    \parbox{\textwidth}{
-      \centering
+	\framebox[\textwidth][c]{
+		\parbox{\textwidth}{
+			\centering
 
-      \scalebox{.5}{
-        \includegraphics{zilch/expression/pattern}
-      }\\
-      \scalebox{.5}{
-        \includegraphics{zilch/expression/case}
-      }
-    }
-  }
+			\scalebox{.5}{
+				\includegraphics{zilch/expression/pattern}
+			}\\
+			\scalebox{.5}{
+				\includegraphics{zilch/expression/case}
+			}
+		}
+	}
 
-  \caption{Grammar for case expressions.}
-  \label{fig:zilch-gramma-expressions-case-grammar}
+	\caption{Grammar for case expressions.}
+	\label{fig:zilch-gramma-expressions-case-grammar}
 \end{figure}
 
 \subsection{Record literals}\label{subsec:zilch-grammar-expressions-record}
@@ -316,31 +317,31 @@ Pattern matching is achieved through the use of a \texttt{case} expression.
 Record literals allow constructing records in the same fashion as in e.g.\ C.
 
 \begin{figure}[H]
-  \centering
+	\centering
 
-  \framebox[\textwidth][c]{
-    \scalebox{.5}{
-      \includegraphics{zilch/expression/record}
-    }
-  }
+	\framebox[\textwidth][c]{
+		\scalebox{.5}{
+			\includegraphics{zilch/expression/record}
+		}
+	}
 
-  \caption{Grammar for record literals.}
-  \label{fig:zilch-gramma-expressions-record-grammar}
+	\caption{Grammar for record literals.}
+	\label{fig:zilch-gramma-expressions-record-grammar}
 \end{figure}
 
 \subsection{Variables, typed holes and literals}\label{subsec:zilch-grammar-expressions-basicexpr}
 
 \begin{figure}[H]
-  \centering
+	\centering
 
-  \framebox[\textwidth][c]{
-    \scalebox{.5}{
-      \includegraphics{zilch/expression/atom}
-    }
-  }
+	\framebox[\textwidth][c]{
+		\scalebox{.5}{
+			\includegraphics{zilch/expression/atom}
+		}
+	}
 
-  \caption{Grammar for expression atoms.}
-  \label{fig:zilch-grammar-expressions-atom-grammar}
+	\caption{Grammar for expression atoms.}
+	\label{fig:zilch-grammar-expressions-atom-grammar}
 \end{figure}
 
 \section{Types}\label{sec:zilch-grammar-types}
@@ -352,51 +353,51 @@ Wildcard abstractions are only allowed in \verb|impl| blocks, despite being a ge
 Any other type can be used anywhere.
 
 \begin{figure}[H]
-  \centering
+	\centering
 
-  \framebox[\textwidth][c]{
-    \parbox{\textwidth}{
-      \centering
+	\framebox[\textwidth][c]{
+		\parbox{\textwidth}{
+			\centering
 
-      \scalebox{.5}{
-        \includegraphics{zilch/types/forall}
-      }\\
-      \scalebox{.5}{
-        \includegraphics{zilch/types/application}
-      }\\
-      \scalebox{.5}{
-        \includegraphics{zilch/types/function}
-      }\\
-      \scalebox{.5}{
-        \includegraphics{zilch/types/builtin}
-      }\\
-      \scalebox{.5}{
-        \includegraphics{zilch/types/wildcard-abstraction}
-      }\\
-      \scalebox{.5}{
-        \includegraphics{zilch/types/effect-row}
-      }
-    }
-  }
+			\scalebox{.5}{
+				\includegraphics{zilch/types/forall}
+			}\\
+			\scalebox{.5}{
+				\includegraphics{zilch/types/application}
+			}\\
+			\scalebox{.5}{
+				\includegraphics{zilch/types/function}
+			}\\
+			\scalebox{.5}{
+				\includegraphics{zilch/types/builtin}
+			}\\
+			\scalebox{.5}{
+				\includegraphics{zilch/types/wildcard-abstraction}
+			}\\
+			\scalebox{.5}{
+				\includegraphics{zilch/types/effect-row}
+			}
+		}
+	}
 
-  \caption{Grammar for types.}
-  \label{fig:zilch-grammar-types-grammar}
+	\caption{Grammar for types.}
+	\label{fig:zilch-grammar-types-grammar}
 \end{figure}
 
 Every type is also assigned a type (called ``kind'').
 Kind polymorphism is not supported.
 
 \begin{figure}[H]
-  \centering
+	\centering
 
-  \framebox[\textwidth][c]{
-    \scalebox{.5}{
-      \includegraphics{zilch/types/kind}
-    }
-  }
+	\framebox[\textwidth][c]{
+		\scalebox{.5}{
+			\includegraphics{zilch/types/kind}
+		}
+	}
 
-  \caption{Grammar for kinds.}
-  \label{fig:zilch-grammar-types-kindgrammar}
+	\caption{Grammar for kinds.}
+	\label{fig:zilch-grammar-types-kindgrammar}
 \end{figure}
 
 \section{Declarations}\label{sec:zilch-grammar-declarations}
@@ -404,10 +405,10 @@ Kind polymorphism is not supported.
 A Zilch module is composed of zero or more declarations.
 There are 5 possible declarations:
 \begin{itemize}
-  \item Type class declaration
-  \item Type class implementation
-  \item New type definition
-  \item Value definition
+	\item Type class declaration
+	\item Type class implementation
+	\item New type definition
+	\item Value definition
 \end{itemize}
 
 \noindent Each of them will be syntactically described in this section.
@@ -429,26 +430,26 @@ This is mostly equivalent to putting those bindings at the beginning of a \verb|
 \noindent\inputminted{\zilchlexer}{examples/function-where-let-equivalence.zc}
 
 \begin{figure}[H]
-  \centering
+	\centering
 
-  \framebox[\textwidth][c]{
-    \parbox{\textwidth}{
-      \centering
+	\framebox[\textwidth][c]{
+		\parbox{\textwidth}{
+			\centering
 
-      \scalebox{.45}{
-        \includegraphics{zilch/toplevel/function-declaration}
-      }\\
-      \scalebox{.5}{
-        \includegraphics{zilch/toplevel/function-definition}
-      }\\
-      \scalebox{.45}{
-        \includegraphics{zilch/toplevel/toplevel-function-definition}
-      }
-    }
-  }
+			\scalebox{.45}{
+				\includegraphics{zilch/toplevel/function-declaration}
+			}\\
+			\scalebox{.5}{
+				\includegraphics{zilch/toplevel/function-definition}
+			}\\
+			\scalebox{.45}{
+				\includegraphics{zilch/toplevel/toplevel-function-definition}
+			}
+		}
+	}
 
-  \caption{Grammar for value declarations.}
-  \label{fig:zilch-grammar-declarations-value-grammar}
+	\caption{Grammar for value declarations.}
+	\label{fig:zilch-grammar-declarations-value-grammar}
 \end{figure}
 
 \subsection{New type definition}\label{subsec:zilch-grammar-declarations-type}
@@ -471,26 +472,26 @@ For example, what does a \texttt{u64} mean as input to a function?
 Zilch allows defining type aliases to address this issue, leading to code more clear.
 
 \begin{figure}[H]
-  \centering
+	\centering
 
-  \framebox[\textwidth][c]{
-    \parbox{\textwidth}{
-      \centering
+	\framebox[\textwidth][c]{
+		\parbox{\textwidth}{
+			\centering
 
-      \scalebox{.5}{
-        \includegraphics{zilch/toplevel/enum-definition}
-      }\\
-      \scalebox{.5}{
-        \includegraphics{zilch/toplevel/record-definition}
-      }\\
-      \scalebox{.5}{
-        \includegraphics{zilch/toplevel/alias-definition}
-      }
-    }
-  }
+			\scalebox{.5}{
+				\includegraphics{zilch/toplevel/enum-definition}
+			}\\
+			\scalebox{.5}{
+				\includegraphics{zilch/toplevel/record-definition}
+			}\\
+			\scalebox{.5}{
+				\includegraphics{zilch/toplevel/alias-definition}
+			}
+		}
+	}
 
-  \caption{Grammar for new type definitions.}
-  \label{fig:zilch-grammar-declarations-type-grammar}
+	\caption{Grammar for new type definitions.}
+	\label{fig:zilch-grammar-declarations-type-grammar}
 \end{figure}
 
 \subsection{Type class declaration}\label{subsec:zilch-grammar-declarations-typeclass}
@@ -509,16 +510,16 @@ So the type class defined above is really not that much different from this:
 \noindent\inputminted{\zilchlexer}{examples/class-record-equivalent.zc}
 
 \begin{figure}[H]
-  \centering
+	\centering
 
-  \framebox[\textwidth][c]{
-    \scalebox{.5}{
-      \includegraphics{zilch/toplevel/typeclass-declaration}
-    }
-  }
+	\framebox[\textwidth][c]{
+		\scalebox{.5}{
+			\includegraphics{zilch/toplevel/typeclass-declaration}
+		}
+	}
 
-  \caption{Grammar for type-class declarations.}
-  \label{fig:zilch-grammar-declarations-typeclass-grammar}
+	\caption{Grammar for type-class declarations.}
+	\label{fig:zilch-grammar-declarations-typeclass-grammar}
 \end{figure}
 
 \subsection{Type class implementation}\label{subsec:zilch-grammar-declarations-implementation}
@@ -540,16 +541,16 @@ Note that, as for type classes being equivalent to records, defining an implemen
 \noindent\inputminted{\zilchlexer}{examples/impl-record-equivalent.zc}
 
 \begin{figure}[H]
-  \centering
+	\centering
 
-  \framebox[\textwidth][c]{
-    \scalebox{.5}{
-      \includegraphics{zilch/toplevel/implementation-definition}
-    }
-  }
+	\framebox[\textwidth][c]{
+		\scalebox{.5}{
+			\includegraphics{zilch/toplevel/implementation-definition}
+		}
+	}
 
-  \caption{Grammar for type-class implementations.}
-  \label{fig:zilch-grammar-declarations-implementation-grammar}
+	\caption{Grammar for type-class implementations.}
+	\label{fig:zilch-grammar-declarations-implementation-grammar}
 \end{figure}
 
 \subsection{Meta-information}\label{subsec:zilch-grammar-declarations-meta}
@@ -558,28 +559,28 @@ Meta-information can be added to any top-level declaration.
 They can be used for example to declare operator fixities, or add deriving clauses to auto-generate type class instances.
 Any declaration accepts zero or more meta-specifiers, but each specifier is restricted as per these rules:
 \begin{itemize}
-  \item Fixity specifiers can only be applied to mixfix operators.
-        These are used to disambiguate expressions, and come in 5 flavors:
-        \begin{itemize}
-          \item \verb|infix <prec>|, \verb|infixr <prec>| and \verb|infixl <prec>| allow specifying the associativity (left, right or none) and precedence of infix operators (operators of the form \verb|_..._|);
-        \end{itemize}
-  \item Deriving clauses can only be added to \verb|enum| and \verb|record| types;
-  \item Inlining hints tell the compiler that a function may not have a huge cost, therefore can be inlined more easily;
-  \item FFI imports/exports, to either retrieve or give a function defined in another compilation unit (most probably coming from another programming language like C);
+	\item Fixity specifiers can only be applied to mixfix operators.
+	      These are used to disambiguate expressions, and come in 5 flavors:
+	      \begin{itemize}
+		      \item \verb|infix <prec>|, \verb|infixr <prec>| and \verb|infixl <prec>| allow specifying the associativity (left, right or none) and precedence of infix operators (operators of the form \verb|_..._|);
+	      \end{itemize}
+	\item Deriving clauses can only be added to \verb|enum| and \verb|record| types;
+	\item Inlining hints tell the compiler that a function may not have a huge cost, therefore can be inlined more easily;
+	\item FFI imports/exports, to either retrieve or give a function defined in another compilation unit (most probably coming from another programming language like C);
 \end{itemize}
 
 \begin{figure}[H]
-  \centering
+	\centering
 
-  \scalebox{.5}{
-    \includegraphics{zilch/toplevel/meta-information}
-  }\\
-  \scalebox{.5}{
-    \includegraphics{zilch/toplevel/meta-specifier}
-  }
+	\scalebox{.5}{
+		\includegraphics{zilch/toplevel/meta-information}
+	}\\
+	\scalebox{.5}{
+		\includegraphics{zilch/toplevel/meta-specifier}
+	}
 
-  \caption{Grammar for meta-specifiers.}
-  \label{fig:zilch-grammar-declarations-meta-grammar}
+	\caption{Grammar for meta-specifiers.}
+	\label{fig:zilch-grammar-declarations-meta-grammar}
 \end{figure}
 
 \section{Modules}\label{sec:zilch-grammar-modules}
@@ -599,25 +600,54 @@ All imports are qualified, unless when \verb|open|ed.
 An empty or unspecified export list is equivalent to exporting nothing from the module.
 
 \begin{figure}[H]
-  \centering
+	\centering
 
-  \scalebox{.5}{
-    \includegraphics{zilch/modules/header}
-  }
+	\scalebox{.5}{
+		\includegraphics{zilch/modules/header}
+	}
 
-  \caption{Grammar for module headers.}
-  \label{fig:zilch-grammar-modules-headergrammar}
+	\caption{Grammar for module headers.}
+	\label{fig:zilch-grammar-modules-headergrammar}
 \end{figure}
 
 \begin{figure}[H]
-  \centering
+	\centering
 
-  \scalebox{.5}{
-    \includegraphics{zilch/modules/import}
-  }
+	\scalebox{.5}{
+		\includegraphics{zilch/modules/import}
+	}
 
-  \caption{Grammar for import statements.}
-  \label{fig:zilch-grammar-modules-importgrammar}
+	\caption{Grammar for import statements.}
+	\label{fig:zilch-grammar-modules-importgrammar}
 \end{figure}
 
 \chapter{Static semantics}\label{chap:zilch-staticsem}
+
+Zilch is statically and strongly typed, meaning that types of expressions are checked at compile-time, and no implicit conversion are performed.
+It also is type-infered, so there is no need to write the exact type of a function (unless in specific ambiguous states, e.g. with constraints).
+
+The type system of Zilch, used to type expressions and types is described in this chapter using typing rules, each accompanied by an informal description.
+Some sections may not contain typing rules just for the sake of simplicity: an informal description will be more descriptive in those cases.
+
+\section{Types of types}\label{sec:zilch-staticsem-types}
+
+\section{Types of expressions}\label{sec:zilch-staticsem-exprs}
+
+\subsection{Lambda abstractions}\label{subsec:zilch-staticsem-exprs-lambda}
+
+Typing rules are not described for expression holes (also called “anonymous lambdas” earlier) because they are syntactically equivalent to explicit lambdas.
+The same rules therefore apply to expression holes.
+
+\begin{figure}[H]
+	\centering
+	\begin{prooftree}
+		\hypo{\Gamma,x_1 : \nu_1, \ldots,x_n : \nu_n\vdash e : \tau\vert\epsilon}
+		\infer1{\Gamma\vdash \text{lam}(x_1,\ldots,x_n)\to e : (\nu_1, \ldots, \nu_n)\to \epsilon\ \tau}
+	\end{prooftree}
+
+	\caption{Typing rule for lambda expressions.}
+	\label{fig:zilch-staticsem-exprs-lambda-typerule}
+\end{figure}
+
+
+
