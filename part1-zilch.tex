@@ -642,7 +642,7 @@ The same rules therefore apply to expression holes.
 	\centering
 	\begin{prooftree}
 		\hypo{\Gamma,x_1 : \nu_1, \ldots,x_n : \nu_n\vdash e : \tau\vert\epsilon}
-		\infer1{\Gamma\vdash \text{lam}(x_1,\ldots,x_n)\to e : (\nu_1, \ldots, \nu_n)\to \epsilon\ \tau}
+		\infer1{\Gamma\vdash \text{lam}(x_1,\ldots,x_n)\to e : (\nu_1, \ldots, \nu_n)\to \epsilon\ \tau\vert\epsilon^\prime}
 	\end{prooftree}
 
 	\caption{Typing rule for lambda expressions.}
@@ -653,3 +653,7 @@ The expression $e$ in the above type rules is assumed to have the parameters $x_
 As for the effects, because the body of a lambda is not evaluated at the point it is defined, any effect that it would produce is instead transferred
 in the type of the lambda for them to be propagated to the call site (see the typing rules of function application).
 If it produces no effect (i.e. it is a pure/total expression), $\epsilon$ is $\langle\rangle$.
+
+Note that on its own, creating a new lambda does not produce any effect.
+But because we want to be able to use lambda expressions in contexts requiring effects, creating a new lambda yields any effect.
+This can also be simulated by requiring that the empty effect $\langle\rangle$ be a subtype of any effect.
