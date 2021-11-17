@@ -14,7 +14,7 @@ class ZilchLexer(ExtendedRegexLexer):
             (r'--.*?$', Comment.Single)
         ],
         'keywords': [
-            (r'\b(forall|∀|def|enum|record|class|impl|alias|case|of|module|fn|foreign|import|export|perm|if|then|else|pattern|where|as|open|let|in)\b', Keyword.Reserved)
+            (r'\b(forall|∀|def|enum|record|class|impl|alias|case|of|module|fn|foreign|import|export|perm|if|then|else|pattern|where|as|open|let|in|lam)\b', Keyword.Reserved)
         ],
         'literals': [
             (r'"[^"]*"', String.Double),
