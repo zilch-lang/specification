@@ -468,5 +468,60 @@ def zilch_import_group():
 
   return mk_diagram2('module-import-group', inner)
 
+def zilch_expression_atom():
+  inner = Choice(
+    3,
+    NonTerminal('literal'),
+    Group(
+      Sequence(
+        ZeroOrMore(
+            NonTerminal('identifier'),
+            Terminal('::')
+        ),
+        NonTerminal('identifier')
+      ),
+      'qualified identifier'
+    ),
+    Group(
+      Sequence(
+        NonTerminal('expression'),
+        Terminal('('),
+        ZeroOrMore(
+          NonTerminal('expression'),
+          Terminal(',')
+        ),
+        Terminal(')')
+      ),
+      'function application'
+    ),
+    Group(
+      Sequence(
+        Terminal('?'),
+        Optional(
+          NonTerminal('identifier')
+        )
+      ),
+      'typed hole'
+    ),
+    Group(
+      Sequence(
+        Terminal('('),
+        NonTerminal('expression'),
+        Terminal(')')
+      ),
+      'parenthesized expression'
+    ),
+    Group(
+      Sequence(
+        NonTerminal('expression'),
+        NonTerminal('symbol'),
+        NonTerminal('expression')
+      ),
+      'infix operator application'
+    )
+  )
 
-zilch_import().writeSvg(sys.stdout.write)
+  return mk_diagram2('expression-atom', inner)
+
+
+zilch_expression_atom().writeSvg(sys.stdout.write)
