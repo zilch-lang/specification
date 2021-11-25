@@ -382,39 +382,43 @@ def nstar_struct_constant():
 
 ##################################################################################""
 
+
 def zilch_lambda():
   inner = Choice(
     0,
     Sequence(
       Terminal('lam'),
       Choice(
-        1,
-        NonTerminal('identifier'),
+        1, NonTerminal('identifier'),
         Sequence(
           Terminal('('),
           ZeroOrMore(
-            Sequence(
-              NonTerminal('identifier'),
-              Optional(
-                Sequence(
-                  Terminal(':'),
-                  NonTerminal('type')
-                )
-              )
-            ),
-            Terminal(',')
-          ),
-          Terminal(')')
-        )
-      ),
-      Terminal('->'),
-      NonTerminal('{'),
-      NonTerminal('expression'),
-      NonTerminal('}')
-    ),
-    Terminal('_')
-  )
+            Sequence(NonTerminal('identifier'),
+                     Optional(Sequence(Terminal(':'), NonTerminal('type')))),
+            Terminal(',')), Terminal(')'))), Terminal('->'), NonTerminal('{'),
+      NonTerminal('expression'), NonTerminal('}')), Terminal('_'))
 
   return mk_diagram2('lambda', inner)
 
-zilch_lambda().writeSvg(sys.stdout.write)
+
+def zilch_integer():
+  inner = Choice(
+    2,
+    Group(
+      Sequence(Terminal('0'), HorizontalChoice(Terminal('x'), Terminal('X')),
+               OneOrMore(NonTerminal('hex-digit'))), 'hexadecimal'),
+    Group(
+      Sequence(Terminal('0'), HorizontalChoice(Terminal('b'), Terminal('B')),
+               OneOrMore(NonTerminal('bin-digit'))), 'binary'),
+    Group(
+      Sequence(Terminal('0'), HorizontalChoice(Terminal('o'), Terminal('O')),
+               OneOrMore(NonTerminal('oct-digit'))), 'octal'),
+    Group(
+      Sequence(NonTerminal('dec-digit'), Terminal('.'),
+               NonTerminal('dec-digit')), 'floating point'),
+    Group(OneOrMore('dec-digit'), 'decimal'))
+
+  return mk_diagram2('integer', inner)
+
+
+zilch_integer().writeSvg(sys.stdout.write)
