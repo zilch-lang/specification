@@ -452,7 +452,7 @@ def zilch_function_type():
 def zilch_effect_row():
   inner = Sequence(
     Terminal('<'),
-    OneOrMore(
+    ZeroOrMore(
       NonTerminal('type'),
       Terminal(',')
     ),
