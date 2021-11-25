@@ -42,8 +42,10 @@ The mainly used notation is described here, but not necessarily everything will 
 	      \end{itemize}
 	\item Type inference rules
 	      \begin{itemize}
-		      \item $\Gamma$ is the context containing all type-level information such as types of types;
-		      \item The typing judgment $\Gamma \vdash e : \tau \vert \epsilon$ means that $e$ has type $\tau$ in the context $\Gamma$ and that evaluating it may yield effects in $\epsilon$;
+		      \item $\Gamma$ is the context containing all type-level information such as types of expressions;
+		      \item $\Delta$ is the context containing all kind-level information such as types of types;
+		      \item The typing judgment $\Delta \Vdash \tau : \kappa$ is used to indicate that the type $\tau$ as the kind $\kappa$ given information in the $\Delta$ context;
+		      \item The typing judgment $\Gamma;\Delta \vdash e : \tau \vert \epsilon$ means that $e$ has type $\tau$ in the context $\Gamma, \Delta$ and that evaluating it may yield effects in $\epsilon$;
 	      \end{itemize}
 \end{itemize}
 
@@ -631,6 +633,49 @@ Some sections may not contain typing rules just for the sake of simplicity: an i
 
 \section{Types of types}\label{sec:zilch-staticsem-types}
 
+In Zilch, not only expressions have types, but types also do (in such case, types of types are called “kinds” and we will refer to that in the next part).
+While this may sound a little bit complex, it in fact allows easily solving a few problems happening in some of other programming languages allowing generic programming:
+\begin{itemize}
+	\item A type may be passed partially applied to a function or a type.
+	\item Type constraints live as inhabitants of other sets of types.
+	      As such, constraints cannot be passed in place of other types, which would imply weird type system behaviours.
+	\item A partially applied type (in opposition to a fully applied type, called a ``concrete kind'') cannot be given to a function requiring a concrete type.
+\end{itemize}
+
+Types of types are mainly organized in 4 categories:
+\begin{itemize}
+	\item Concrete types, which are denoted as \verb|type| in Zilch, are types which are fully applied to arguments.
+	\item Partially applied types (also called ``type constructors'') can only be applied to more arguments, but may yield any kind of type.
+	      Just like functions at the expression level, type constructors are written using the arrow syntax \verb|_->_|.
+	\item Type constraints are specific kinds of types allowing to specify bounds on types they depend on.
+	      The set of type constraints is called \verb|constraint|.
+	\item Effect types are special kinds of types which are only allowed to specify possible effects when computing a function.
+	      Such types are grouped under the \verb|effect| kind.
+\end{itemize}
+
+Below are described the main inference rules about type kinds.
+
+\begin{figure}[H]
+	\centering
+	\begin{prooftree}
+		\hypo{\tau\ \text{is atomic}}
+		\infer1[\textsc{[Concrete]}]{\Delta\Vdash\tau : \text{type}}
+	\end{prooftree}
+	\hspace{3em}
+	\begin{prooftree}
+		\hypo{\Delta\Vdash\tau : \kappa\to\kappa^\prime}
+		\hypo{\Delta\Vdash x : \kappa}
+		\infer2[\textsc{[Apply]}]{\Delta\Vdash \tau\ x : \kappa^\prime}
+	\end{prooftree}
+	\\\vspace{\baselineskip}
+	\begin{prooftree}
+		\infer0[\textsc{[Var]}]{\Gamma,\tau : \kappa;\Delta\Vdash\tau : \kappa}
+	\end{prooftree}
+
+	\caption{Typing rules for types of types.}
+	\label{fig:zilch-staticsem-types-typerule}
+\end{figure}
+
 \section{Types of expressions}\label{sec:zilch-staticsem-exprs}
 
 \subsection{Lambda abstractions}\label{subsec:zilch-staticsem-exprs-lambda}
@@ -641,8 +686,8 @@ The same rules therefore apply to expression holes.
 \begin{figure}[H]
 	\centering
 	\begin{prooftree}
-		\hypo{\Gamma,x_1 : \nu_1, \ldots,x_n : \nu_n\vdash e : \tau\vert\epsilon}
-		\infer1[\textsc{[Lam]}]{\Gamma\vdash \text{lam}(x_1,\ldots,x_n)\to e : (\nu_1, \ldots, \nu_n)\to \epsilon\ \tau\vert\epsilon^\prime}
+		\hypo{\Gamma,x_1 : \nu_1, \ldots,x_n : \nu_n;\Delta\vdash e : \tau\vert\epsilon}
+		\infer1[\textsc{[Lam]}]{\Gamma;\Delta\vdash \text{lam}(x_1,\ldots,x_n)\to e : (\nu_1, \ldots, \nu_n)\to \epsilon\ \tau\vert\epsilon^\prime}
 	\end{prooftree}
 
 	\caption{Typing rule for lambda expressions.}
@@ -664,24 +709,24 @@ This can also be simulated by requiring that the empty effect $\langle\rangle$ b
 	\centering
 
 	\begin{prooftree}
-		\infer0[\textsc{[Var]}]{\Gamma, x : \tau\vdash x : \tau\vert\epsilon}
+		\infer0[\textsc{[Var]}]{\Gamma, x : \tau;\Delta\vdash x : \tau\vert\epsilon}
 	\end{prooftree}
 	\hspace{3em}
 	\begin{prooftree}
-		\infer0[\textsc{[Hole]}]{\Gamma\vdash \cdot : \tau\vert\epsilon}
+		\infer0[\textsc{[Hole]}]{\Gamma;\Delta\vdash \cdot : \tau\vert\epsilon}
 	\end{prooftree}
 	\\\vspace{\baselineskip}
 	\begin{prooftree}
 		\hypo{\tau\in\{\text{u8}, \text{u16}, \text{u32}, \text{u64}\}}
 		\hypo{c\ \text{is an integer literal}}
-		\infer2[\textsc{[Nat]}]{\Gamma\vdash c : \tau\vert\epsilon}
+		\infer2[\textsc{[Nat]}]{\Gamma;\Delta\vdash c : \tau\vert\epsilon}
 	\end{prooftree}
 	\\\vspace{\baselineskip}
 	\begin{prooftree}
-  	\hypo{c\ \text{is a character literal}}
-  	\infer1[\textsc{[Char]}]{\Gamma\vdash c : \text{char}\vert\epsilon}
+		\hypo{c\ \text{is a character literal}}
+		\infer1[\textsc{[Char]}]{\Gamma;\Delta\vdash c : \text{char}\vert\epsilon}
 	\end{prooftree}
 
-	\caption{Typing rule for variables, typed holes and literals.}
+	\caption{Typing rules for variables, typed holes and literals.}
 	\label{fig:zilch-staticsem-exprs-vars-typerule}
 \end{figure}
