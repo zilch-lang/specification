@@ -420,55 +420,53 @@ def zilch_integer():
 
   return mk_diagram2('integer', inner)
 
+
 def zilch_function_type():
   inner = Sequence(
     Choice(
-      1,
-      NonTerminal('atomic-type'),
-      Sequence(
-        Terminal('('),
-        ZeroOrMore(
-          NonTerminal('type'),
-          Terminal(',')
-        ),
-        Terminal(')')
-      )
-    ),
-    HorizontalChoice(
-      Terminal('->'),
-      Terminal('→')
-    ),
-    Choice(
-      1,
-      Skip(),
-      NonTerminal('identifier'),
-      NonTerminal('effect-row')
-    ),
-    NonTerminal('type')
-  )
+      1, NonTerminal('atomic-type'),
+      Sequence(Terminal('('), ZeroOrMore(NonTerminal('type'), Terminal(',')),
+               Terminal(')'))), HorizontalChoice(Terminal('->'),
+                                                 Terminal('→')),
+    Choice(1, Skip(), NonTerminal('identifier'), NonTerminal('effect-row')),
+    NonTerminal('type'))
 
   return mk_diagram2('function-type', inner)
 
+
 def zilch_effect_row():
   inner = Sequence(
-    Terminal('<'),
-    ZeroOrMore(
-      NonTerminal('type'),
-      Terminal(',')
-    ),
+    Terminal('<'), ZeroOrMore(NonTerminal('type'), Terminal(',')),
     Optional(
-      Sequence(
-        Terminal('|'),
-        OneOrMore(
-          NonTerminal('identifier'),
-          Terminal(',')
-        )
-      )
-    ),
-    Terminal('>')
-  )
+      Sequence(Terminal('|'),
+               OneOrMore(NonTerminal('identifier'), Terminal(',')))),
+    Terminal('>'))
 
   return mk_diagram2('effect-row', inner)
 
 
-zilch_effect_row().writeSvg(sys.stdout.write)
+def zilch_import():
+  inner = Stack(
+    Sequence(Optional(Terminal('open')), Terminal('import'),
+             OneOrMore(NonTerminal('identifier'), Terminal('::'))),
+    Sequence(
+      Optional(Sequence(Terminal('as'), NonTerminal('identifier'))),
+      Optional(
+        Sequence(Terminal('('), NonTerminal('module-import-group'),
+                 Terminal(')')))))
+
+  return mk_diagram2('module-import', inner)
+
+
+def zilch_import_group():
+  inner = ZeroOrMore(
+    Sequence(
+      Choice(2, Terminal('class'), Terminal('module'), Terminal('effect'),
+             Skip()), NonTerminal('identifier'),
+      Optional(Sequence(Terminal('as'), NonTerminal('identifier')))),
+    Terminal(','))
+
+  return mk_diagram2('module-import-group', inner)
+
+
+zilch_import().writeSvg(sys.stdout.write)
