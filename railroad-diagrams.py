@@ -420,5 +420,55 @@ def zilch_integer():
 
   return mk_diagram2('integer', inner)
 
+def zilch_function_type():
+  inner = Sequence(
+    Choice(
+      1,
+      NonTerminal('atomic-type'),
+      Sequence(
+        Terminal('('),
+        ZeroOrMore(
+          NonTerminal('type'),
+          Terminal(',')
+        ),
+        Terminal(')')
+      )
+    ),
+    HorizontalChoice(
+      Terminal('->'),
+      Terminal('→')
+    ),
+    Choice(
+      1,
+      Skip(),
+      NonTerminal('identifier'),
+      NonTerminal('effect-row')
+    ),
+    NonTerminal('type')
+  )
 
-zilch_integer().writeSvg(sys.stdout.write)
+  return mk_diagram2('function-type', inner)
+
+def zilch_effect_row():
+  inner = Sequence(
+    Terminal('<'),
+    OneOrMore(
+      NonTerminal('type'),
+      Terminal(',')
+    ),
+    Optional(
+      Sequence(
+        Terminal('|'),
+        OneOrMore(
+          NonTerminal('identifier'),
+          Terminal(',')
+        )
+      )
+    ),
+    Terminal('>')
+  )
+
+  return mk_diagram2('effect-row', inner)
+
+
+zilch_effect_row().writeSvg(sys.stdout.write)
