@@ -461,7 +461,7 @@ def zilch_import():
 def zilch_import_group():
   inner = ZeroOrMore(
     Sequence(
-      Choice(2, Terminal('class'), Terminal('module'), Terminal('effect'),
+      Choice(2, Terminal('class'), Terminal('impl'), Terminal('effect'),
              Skip()), NonTerminal('identifier'),
       Optional(Sequence(Terminal('as'), NonTerminal('identifier')))),
     Terminal(','))
@@ -524,4 +524,4 @@ def zilch_expression_atom():
   return mk_diagram2('expression-atom', inner)
 
 
-zilch_expression_atom().writeSvg(sys.stdout.write)
+zilch_import_group().writeSvg(sys.stdout.write)
