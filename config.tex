@@ -6,9 +6,14 @@
 \pagestyle{fancy}
 \fancyhf{}
 \renewcommand{\chaptermark}[1]{\markboth{#1}{#1}}
-\fancyhead[L]{\textsc{\shorttitle\ -- \partmark\ -- \leftmark}}
-\fancyhead[R]{\textsc{Page \thepage}}
+\fancyhead[L]{\textsc{\partmark}}
+\fancyhead[R]{\textsc{\leftmark}}
+\makeatletter
+\fancyfoot[L]{\textsc{\@title}}
+\makeatother
+\fancyfoot[R]{\textsc{Page \thepage} of \pageref*{LastPage}}
 \renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
 
 \patchcmd{\chapter}{\thispagestyle{plain}}{\thispagestyle{fancy}}{}{}
 \patchcmd{\oldpart}{\thispagestyle{plain}}{\thispagestyle{empty}}{}{}
