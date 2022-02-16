@@ -1,4 +1,4 @@
 enum List(a : type) :=
-  Nil()
-  Cons(a, List a)
+  val nil : {a} -> List a
+  val cons : {a} -> (a, List a) -> List a
 

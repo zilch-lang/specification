@@ -54,11 +54,11 @@ The mainly used notation is described here, but not necessarily everything will 
 A Zilch program is comprised of three different levels, each included in the next one:
 \begin{itemize}
 	\item The expression level, where an expression denotes a value which has a statically determined type;
-	\item The declaration level, containing all function definitions, type definitions, type classes declarations, etc;
+	\item The declaration level, containing all function definitions, type definitions, etc;
 	\item The module level, where imports and module declarations live in;
 \end{itemize}
 
-\noindent Because it is not easy to materialize indentation properties in the grammar, it will instead be marked using the non-terminals\footnote{Those symbols are reserved and actually used as terminals, so we put them as non-terminals to remove any ambiguation.} \texttt{\{}, \texttt{\}} and \texttt{;}.
+\noindent Because it is not easy to materialize indentation properties in the grammar, it will instead be marked using the non-terminals\footnote{Those symbols are reserved and actually used as terminals, so we put them as non-terminals to remove any ambiguity opportunities.} \texttt{\{}, \texttt{\}} and \texttt{;}.
 Note that these are not actually present in the source code, and are only a mean of hinting an indentation change.
 \texttt{x \{ y; z \}} really means \texttt{x} followed by \texttt{y} which may be more indented or on the same line, and \texttt{z} which must be aligned with the beginning of \texttt{y}.
 It therefore describes both layouts:
@@ -76,6 +76,7 @@ It therefore describes both layouts:
 
 If you are willing to make your own Zilch compiler, please note that you may also (or only) support the alternative layout as described in grammar rules, by making use of \verb|{|, \verb|;| and \verb|}| as terminals.
 It is not recommended, as \verb|;| is \textit{not} a reserved word, but may be considered for simplicity's sake.
+It is also not recommended as using \verb|{| and \verb|}| may clash with inline records and implicit parameters.
 
 \section{Lexicon}\label{sec:zilch-grammar-lexical}
 
@@ -94,7 +95,7 @@ Lexically distinguishing between both types of symbols is done by only allowing 
 		\parbox{\textwidth}{
 			\centering
 
-			\scalebox{.4}{
+			\scalebox{.5}{
 				\includegraphics{zilch/lexicon/keywords}
 			}
 			\\
@@ -102,10 +103,10 @@ Lexically distinguishing between both types of symbols is done by only allowing 
 				\includegraphics{zilch/lexicon/special}
 			}
 			\\
-			\scalebox{.5}{
+			\scalebox{.45}{
 				\includegraphics{zilch/lexicon/identifier}
-			}\\
-			\scalebox{.5}{
+			}
+			\scalebox{.45}{
 				\includegraphics{zilch/lexicon/symbol}
 			}
 		}
@@ -219,7 +220,7 @@ There is also an alternative grammar for lambda abstractions, using wildcards ab
 Sometimes, you have to write \verb|reduce((acc, e) -> acc + e, 0, list)|.
 While functional, this is a bit ugly and can be greatly shortened.
 This is why there are wildcard abstractions: it allows writing \verb|reduce(_ + _, 0, list)| which makes it cleaner looking.
-\verb|_ + _| is really syntactic sugar for \texttt{($x_0$, $x_1$) -> $x_0$ + $x_1$}.
+\verb|_ + _| is really syntactic sugar for \texttt{($x_0$, $x_1$) -> $x_0$ + $x_1$}\footnote{Please be aware that \texttt{\_+\_} and \texttt{\_ + \_} are not actually the same entities: the former is binary operator \texttt{+} while the latter is a two parameter lambda.}.
 
 A simple rule to convert wildcard abstractions to explicit lambda abstractions is the following: for each wildcard $\cdot_i$ in an expression \verb|e| (assuming from the left to the right), assign an unique identifier $u_i$ and replace the wildcard with it (also increment $i$). If $i \neq 0$ at the end, then replace \verb|e| with the lambda abstraction \texttt{($u_0$, \ldots, $u_i$) -> e[$\cdot_0$\textbackslash$u_0$, \ldots, $\cdot_i$\textbackslash$u_i$]}.
 Some examples are given in Table~\ref{table:zilch-grammar-expressions-lambda-translatewildcard}.
@@ -292,7 +293,7 @@ However, it does not act the same as simply replacing the variable just like a m
 
 \subsection{Pattern matching}\label{subsec:zilch-grammar-expressions-case}
 
-Pattern matching is achieved through the use of a \texttt{case} expression.
+Pattern matching is achieved through the use of a \texttt{match} expression.
 
 \begin{figure}[H]
 	\centering
@@ -305,7 +306,7 @@ Pattern matching is achieved through the use of a \texttt{case} expression.
 				\includegraphics{zilch/expression/pattern}
 			}\\
 			\scalebox{.5}{
-				\includegraphics{zilch/expression/case}
+				%\includegraphics{zilch/expression/match}
 			}
 		}
 	}
@@ -317,6 +318,7 @@ Pattern matching is achieved through the use of a \texttt{case} expression.
 \subsection{Record literals}\label{subsec:zilch-grammar-expressions-record}
 
 Record literals allow constructing records in the same fashion as in e.g.\ C.
+The grammar uses the two terminals \verb|{{| and \verb|}}| to distinguish them from applying implicit parameters.
 
 \begin{figure}[H]
 	\centering
@@ -351,9 +353,6 @@ Record literals allow constructing records in the same fashion as in e.g.\ C.
 Types lie at the same level as expressions, but are put in a separate section for comprehensiveness sake.
 An expression \verb|e| is said to be of type \verb|t| if evaluating it yields (or at least is supposed to) any value in the set \verb|t|.
 
-Wildcard abstractions are only allowed in \verb|impl| blocks, despite being a general type, and follow the same desugaring rules as their expression-level counterparts (see Table~\ref{table:zilch-grammar-expressions-lambda-translatewildcard} for some examples).
-Any other type can be used anywhere.
-
 \begin{figure}[H]
 	\centering
 
@@ -372,9 +371,6 @@ Any other type can be used anywhere.
 			}\\
 			\scalebox{.5}{
 				\includegraphics{zilch/types/builtin}
-			}\\
-			\scalebox{.5}{
-				\includegraphics{zilch/types/wildcard-abstraction}
 			}\\
 			\scalebox{.5}{
 				\includegraphics{zilch/types/effect-row}
@@ -430,6 +426,12 @@ Function bindings may additionally be accompanied by \verb|where| blocks, which 
 This is mostly equivalent to putting those bindings at the beginning of a \verb|let-in| block:
 
 \noindent\inputminted{\zilchlexer}{examples/function-where-let-equivalence.zc}
+
+Note that recursive function bindings (bindingis calling themselves in their definitions) are only allowed for \textit{functions}, and must be prefixed by \verb|rec| instead of \verb|let|.
+
+Mutable function bindings are only allowed for non-recursive value bindings (i.e. \verb|let mut x : t| is allowed (if \verb|t| is a value type) but neither \verb|rec mut x : t| nor \verb|let mut f : a -> b|).
+
+top-level function bindings can additionnally be prefixed with special meta-attributes (described later in Section~\ref{subsec:zilch-grammar-declarations-meta}).
 
 \begin{figure}[H]
 	\centering
@@ -496,65 +498,6 @@ Zilch allows defining type aliases to address this issue, leading to code more c
 	\label{fig:zilch-grammar-declarations-type-grammar}
 \end{figure}
 
-\subsection{Type class declaration}\label{subsec:zilch-grammar-declarations-typeclass}
-
-Type classes allow ad-hoc polymorphism by gathering types under a common sub-interface.
-Such common interface can be used by referencing one of the functions defined by the type class.
-
-For a concrete example, see this example defining a type class for mappeable objects:
-
-\noindent\inputminted{\zilchlexer}{examples/mappeable-class.zc}
-\vspace*{\baselineskip}
-
-Note that defining this type class is mainly equivalent to creating a record skeleton that must be defined for other types of the set.
-So the type class defined above is really not that much different from this:
-
-\noindent\inputminted{\zilchlexer}{examples/class-record-equivalent.zc}
-
-\begin{figure}[H]
-	\centering
-
-	\framebox[\textwidth][c]{
-		\scalebox{.5}{
-			\includegraphics{zilch/toplevel/typeclass-declaration}
-		}
-	}
-
-	\caption{Grammar for type-class declarations.}
-	\label{fig:zilch-grammar-declarations-typeclass-grammar}
-\end{figure}
-
-\subsection{Type class implementation}\label{subsec:zilch-grammar-declarations-implementation}
-
-Implementing a type class $c$ for a specific type $t$ allows $t$ to exhibit the behavior described in $c$, allowing $t$ to be abstracted for any instance of $c$ (acting the same as interfaces in object-oriented programming languages).
-
-Assuming the following enumeration type for a list:
-
-\noindent\inputminted{\zilchlexer}{examples/enum-list.zc}
-\vspace*{\baselineskip}
-
-\noindent An example implementation for the \verb|Mappeable| type class defined earlier could be:
-
-\noindent\inputminted{\zilchlexer}{examples/impl-mappeable-list.zc}
-\vspace*{\baselineskip}
-
-Note that, as for type classes being equivalent to records, defining an implementation \textit{might} be equivalent to defining a new record\footnote{It is equivalent only when no wildcard is present in the head of the implementation.}:
-
-\noindent\inputminted{\zilchlexer}{examples/impl-record-equivalent.zc}
-
-\begin{figure}[H]
-	\centering
-
-	\framebox[\textwidth][c]{
-		\scalebox{.5}{
-			\includegraphics{zilch/toplevel/implementation-definition}
-		}
-	}
-
-	\caption{Grammar for type-class implementations.}
-	\label{fig:zilch-grammar-declarations-implementation-grammar}
-\end{figure}
-
 \subsection{Meta-information}\label{subsec:zilch-grammar-declarations-meta}
 
 Meta-information can be added to any top-level declaration.
@@ -569,6 +512,9 @@ Any declaration accepts zero or more meta-specifiers, but each specifier is rest
 	\item Deriving clauses can only be added to \verb|enum| and \verb|record| types;
 	\item Inlining hints tell the compiler that a function may not have a huge cost, therefore can be inlined more easily;
 	\item FFI imports/exports, to either retrieve or give a function defined in another compilation unit (most probably coming from another programming language like C);
+	\item Default effect handlers can be added to any function binding of type \verb|{e} -> {a} -> (() -> < eff | e > a) -> e a| (meaning it consumes the effect \verb|eff| given) (implicits may be given in any order).
+				These are used to remove any additional effects on the \verb|main| function without having to specify each of them.
+				Note that those handlers are implicitly exported (even when not \verb|public|) and will be used transparently, but still need to be \verb|public| to be used by hand.
 \end{itemize}
 
 \begin{figure}[H]
@@ -580,6 +526,7 @@ Any declaration accepts zero or more meta-specifiers, but each specifier is rest
 	\scalebox{.5}{
 		\includegraphics{zilch/toplevel/meta-specifier}
 	}
+	% TODO: add #[handler]
 
 	\caption{Grammar for meta-specifiers.}
 	\label{fig:zilch-grammar-declarations-meta-grammar}
@@ -593,24 +540,12 @@ In Zilch, modules provide grouping, importing and visibility restrictions.
 A Zilch module is declared according to the name and position of the file in the include path.
 For example, if a file is named \verb|Internal.zc| in the directory \verb|Data/Something/A|, then it exports a module \verb|Data::Something::A::Internal|.
 
-It can contain, in this order, an export list, many (possibly none) \texttt{import} statements (see Figure~\ref{fig:zilch-grammar-modules-importgrammar}) and any number of declarations as described in Section~\ref{sec:zilch-grammar-declarations}~``\nameref{sec:zilch-grammar-declarations}''.
+It can contain, in this order, many (possibly none) \texttt{import} statements (see Figure~\ref{fig:zilch-grammar-modules-importgrammar}) and any number of declarations as described in Section~\ref{sec:zilch-grammar-declarations}~``\nameref{sec:zilch-grammar-declarations}''.
 
 A module $A$ may export another module $B$, meaning that anything imported from $B$ into $A$'s scope is exported by $A$.
-If a plain function is aliased\footnote{Infix operators cannot be aliased because it would lead to many problems.} from the import of $B$ in $A$, the new name is exported by $A$ instead of the old one.
+If a plain function is aliased\footnote{Infix operators cannot be aliased because it would lead to many syntactical problems.} from the import of $B$ in $A$, the new name is exported by $A$ instead of the old one.
 Operator fixities are exported only if their corresponding operators are also exported.
 All imports are qualified, unless when \verb|open|ed.
-An empty or unspecified export list is equivalent to exporting nothing from the module.
-
-\begin{figure}[H]
-	\centering
-
-	\scalebox{.5}{
-		\includegraphics{zilch/modules/header}
-	}
-
-	\caption{Grammar for module headers.}
-	\label{fig:zilch-grammar-modules-headergrammar}
-\end{figure}
 
 \begin{figure}[H]
 	\centering
@@ -761,10 +696,10 @@ Imported identifiers can also be aliased locally, only if they do not refer to o
 Identifiers are separated by level, meaning importing the name (and definition) of, for example, an effect needs to be explicitly stated.
 There are 4 levels:
 \begin{itemize}
-  \item The \verb|class| level, used to import type classes and their members in the current scope.
-  \item The \verb|effect| level, importing effect names as well as their members.
-  \item The \verb|impl| level, which locally imports a given typeclass implementation (Note that the typeclass needs to be in scoped).
-  \item The default level, used to import functions, global variables and types.
+	\item The \verb|class| level, used to import type classes and their members in the current scope.
+	\item The \verb|effect| level, importing effect names as well as their members.
+	\item The \verb|impl| level, which locally imports a given typeclass implementation (Note that the typeclass needs to be in scoped).
+	\item The default level, used to import functions, global variables and types.
 \end{itemize}
 
 
