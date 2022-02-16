@@ -186,7 +186,7 @@ Multiple string literals directly next to each other (as in \verb|"abc" "def"|) 
 	\label{fig:zilch-grammar-lexical-strings-grammar}
 \end{figure}
 
-\begin{table}[htb]
+\begin{table}[H]
 	\begin{tabularx}{\textwidth}{*{5}{Y}}
 		\toprule
 		\verb|\a| & \verb|\b| & \verb|\f| & \verb|\n| & \verb|\r| \\
@@ -214,13 +214,13 @@ For example, both following alternatives are equivalent (because the lambda abst
 \inputminted{\zilchlexer}{examples/closure-non-equivalence.zc}
 \vspace*{\baselineskip}
 
-\noindent Note that lambda abstractions cannot be recursive on their own, they need to be bound using a \texttt{def} declaration.
+\noindent Note that lambda abstractions cannot be recursive on their own, they need to be bound using a \texttt{let} declaration.
 
 There is also an alternative grammar for lambda abstractions, using wildcards abstractions.
 Sometimes, you have to write \verb|reduce((acc, e) -> acc + e, 0, list)|.
 While functional, this is a bit ugly and can be greatly shortened.
 This is why there are wildcard abstractions: it allows writing \verb|reduce(_ + _, 0, list)| which makes it cleaner looking.
-\verb|_ + _| is really syntactic sugar for \texttt{($x_0$, $x_1$) -> $x_0$ + $x_1$}\footnote{Please be aware that \texttt{\_+\_} and \texttt{\_ + \_} are not actually the same entities: the former is binary operator \texttt{+} while the latter is a two parameter lambda.}.
+\verb|_ + _| is really syntactic sugar for \texttt{($x_0$, $x_1$) -> $x_0$ + $x_1$}\footnote{Please be aware that \texttt{\_+\_} and \texttt{\_ + \_} are not actually the same entities: the former is the unapplied binary operator \texttt{+} while the latter is a two parameter lambda.}.
 
 A simple rule to convert wildcard abstractions to explicit lambda abstractions is the following: for each wildcard $\cdot_i$ in an expression \verb|e| (assuming from the left to the right), assign an unique identifier $u_i$ and replace the wildcard with it (also increment $i$). If $i \neq 0$ at the end, then replace \verb|e| with the lambda abstraction \texttt{($u_0$, \ldots, $u_i$) -> e[$\cdot_0$\textbackslash$u_0$, \ldots, $\cdot_i$\textbackslash$u_i$]}.
 Some examples are given in Table~\ref{table:zilch-grammar-expressions-lambda-translatewildcard}.
@@ -238,7 +238,7 @@ Some examples are given in Table~\ref{table:zilch-grammar-expressions-lambda-tra
 	\label{fig:zilch-gramma-expressions-lambda-grammar}
 \end{figure}
 
-\begin{table}[htb]
+\begin{table}[H]
 	\begin{tabularx}{\textwidth}{YcY}
 		\toprule
 		From                    & \multirow{5}{*}{\textbf{$\rightsquigarrow$}} & To                      \\
@@ -291,7 +291,7 @@ However, it does not act the same as simply replacing the variable just like a m
 	\label{fig:zilch-grammar-expressions-letin-grammar}
 \end{figure}
 
-\subsection{Pattern matching}\label{subsec:zilch-grammar-expressions-case}
+\subsection{Pattern matching}\label{subsec:zilch-grammar-expressions-match}
 
 Pattern matching is achieved through the use of a \texttt{match} expression.
 
@@ -306,13 +306,13 @@ Pattern matching is achieved through the use of a \texttt{match} expression.
 				\includegraphics{zilch/expression/pattern}
 			}\\
 			\scalebox{.5}{
-				%\includegraphics{zilch/expression/match}
+				\includegraphics{zilch/expression/match}
 			}
 		}
 	}
 
-	\caption{Grammar for case expressions.}
-	\label{fig:zilch-gramma-expressions-case-grammar}
+	\caption{Grammar for match expressions.}
+	\label{fig:zilch-grammar-expressions-match-grammar}
 \end{figure}
 
 \subsection{Record literals}\label{subsec:zilch-grammar-expressions-record}
