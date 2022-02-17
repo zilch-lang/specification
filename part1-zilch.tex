@@ -74,9 +74,11 @@ It therefore describes both layouts:
 \end{minted}
 \vspace*{\baselineskip}
 
-If you are willing to make your own Zilch compiler, please note that you may also (or only) support the alternative layout as described in grammar rules, by making use of \verb|{|, \verb|;| and \verb|}| as terminals.
-It is not recommended, as \verb|;| is \textit{not} a reserved word, but may be considered for simplicity's sake.
-It is also not recommended as using \verb|{| and \verb|}| may clash with inline records and implicit parameters.
+\begin{warningbox}
+	If you are willing to make your own Zilch compiler, please note that you may also (or only) support the alternative layout as described in grammar rules, by making use of \verb|{|, \verb|;| and \verb|}| as terminals.
+	It is not recommended, as \verb|;| is \textit{not} a reserved word, but may be considered for simplicity's sake.
+	It is also not recommended as using \verb|{| and \verb|}| may clash with inline records and implicit parameters.
+\end{warningbox}
 
 \section{Lexicon}\label{sec:zilch-grammar-lexical}
 
@@ -401,11 +403,10 @@ Kind polymorphism is not supported.
 \section{Declarations}\label{sec:zilch-grammar-declarations}
 
 A Zilch module is composed of zero or more declarations.
-There are 5 possible declarations:
+There are 3 possible declarations:
 \begin{itemize}
-	\item Type class declaration
-	\item Type class implementation
 	\item New type definition
+	\item Effect definition
 	\item Value definition
 \end{itemize}
 
@@ -429,9 +430,9 @@ This is mostly equivalent to putting those bindings at the beginning of a \verb|
 
 Note that recursive function bindings (bindingis calling themselves in their definitions) are only allowed for \textit{functions}, and must be prefixed by \verb|rec| instead of \verb|let|.
 
-Mutable function bindings are only allowed for non-recursive value bindings (i.e. \verb|let mut x : t| is allowed (if \verb|t| is a value type) but neither \verb|rec mut x : t| nor \verb|let mut f : a -> b|).
+Mutable function bindings are only allowed for non-recursive value bindings (i.e. \verb|let mut x : t| is allowed (if \verb|t| is a value type) but neither \verb|rec mut x : t| nor \verb|let mut f : a -> b| are actually valid).
 
-top-level function bindings can additionnally be prefixed with special meta-attributes (described later in Section~\ref{subsec:zilch-grammar-declarations-meta}).
+Top-level function bindings can additionnally be prefixed with special meta-attributes (described later in Section~\ref{subsec:zilch-grammar-declarations-meta}).
 
 \begin{figure}[H]
 	\centering
@@ -455,6 +456,10 @@ top-level function bindings can additionnally be prefixed with special meta-attr
 	\caption{Grammar for value declarations.}
 	\label{fig:zilch-grammar-declarations-value-grammar}
 \end{figure}
+
+\subsection{Effect definition}\label{subsec:zilch-grammar-declaration-effect}
+
+% TODO
 
 \subsection{New type definition}\label{subsec:zilch-grammar-declarations-type}
 
@@ -512,9 +517,9 @@ Any declaration accepts zero or more meta-specifiers, but each specifier is rest
 	\item Deriving clauses can only be added to \verb|enum| and \verb|record| types;
 	\item Inlining hints tell the compiler that a function may not have a huge cost, therefore can be inlined more easily;
 	\item FFI imports/exports, to either retrieve or give a function defined in another compilation unit (most probably coming from another programming language like C);
-	\item Default effect handlers can be added to any function binding of type \verb|{e} -> {a} -> (() -> < eff | e > a) -> e a| (meaning it consumes the effect \verb|eff| given) (implicits may be given in any order).
-				These are used to remove any additional effects on the \verb|main| function without having to specify each of them.
-				Note that those handlers are implicitly exported (even when not \verb|public|) and will be used transparently, but still need to be \verb|public| to be used by hand.
+	\item Default effect handlers can be added to any function binding of type \texttt{\{e\} -> \{a\} -> (() -> < eff | e > a) -> e a} (meaning it consumes the effect \verb|eff| given) (implicits may be given in any order).
+	      These are used to remove any additional effects on the \verb|main| function without having to specify each of them.
+	      Note that those handlers are implicitly exported (even when not \verb|public|) and will be used transparently, but still need to be \verb|public| to be used by hand.
 \end{itemize}
 
 \begin{figure}[H]

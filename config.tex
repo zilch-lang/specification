@@ -91,6 +91,7 @@
 
 
 \usetikzlibrary{arrows, shapes}
+\tcbuselibrary{skins, breakable}
 
 
 \def\nstar{N$^{\star}$}
@@ -102,10 +103,42 @@
     linkcolor=black,
     filecolor=black,
     anchorcolor=black,
-    citecolor=black,
-    urlcolor=cyan,
+    citecolor=RedViolet,
+    urlcolor=RoyalPurple,
     pdftitle={The magical Zilch book},
     bookmarks=true,
 }
+
+% Params:
+% - #1: color
+% - #2: left icon
+\newtcolorbox[]{alertmessage}[3][]{%
+    enhanced, breakable,
+    colback=#2!20,
+    colframe=#2!80,
+    coltitle=#2!80,
+    boxrule=1pt,
+    arc=5pt,
+    detach title,
+    %attach title to upper={\tcblower},
+    %sidebyside,
+    fonttitle={\LARGE},
+    title={#3},
+    %center upper,
+    %lefthand width=0.75cm,
+    %sidebyside gap=6mm,
+    %lower separated=false,
+    left=1.25cm,
+    overlay={
+        \node[minimum width=0.75cm, anchor=south, xshift=0.7cm, yshift=-0.45cm] at (frame.west) {\tcbtitle};
+    },
+    #1
+}
+
+\newenvironment{warningbox}[1][]{\begin{alertmessage}[#1]{Orange}{\faicon{exclamation-circle}}}{\end{alertmessage}}
+\newenvironment{infobox}[1][]{\begin{alertmessage}[#1]{Blue}{\faicon{info-circle}}}{\end{alertmessage}}
+\newenvironment{commentbox}[1][]{\begin{alertmessage}[#1]{OliveGreen}{\faicon{comment}}}{\end{alertmessage}}
+\newenvironment{checkbox}[1][]{\begin{alertmessage}[#1]{Green}{\faicon{check-circle}}}{\end{alertmessage}}
+\newenvironment{errorbox}[1][]{\begin{alertmessage}[#1]{Red}{\faicon{times-circle}}}{\end{alertmessage}}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
