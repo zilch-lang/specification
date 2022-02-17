@@ -551,20 +551,27 @@ def zilch_expression_atom():
 
 
 def zilch_let_top_level():
-  inner = Sequence(Optional(Terminal('public')),
-                   Choice(0, Terminal('let'), Terminal('rec')),
+  inner = Sequence(Optional(NonTerminal('meta-attributes')),
+                   Optional(Terminal('public')),
+                   NonTerminal('function-definition'))
+
+  return mk_diagram2('toplevel-function', inner)
+
+
+def zilch_function_definition():
+  inner = Sequence(Choice(0, Terminal('let'), Terminal('rec')),
                    Optional(Terminal('mut')), NonTerminal('id'),
                    ZeroOrMore(NonTerminal('parameter')),
                    Optional(Sequence(Terminal(':'), NonTerminal('type'))),
-                   Terminal(':='), NonTerminal('expr'))
+                   Choice(1, Terminal(':='), Terminal('≔')), NonTerminal('expr'))
 
-  return mk_diagram2('value', inner)
+  return mk_diagram2('function-definition', inner)
 
 
 def zilch_param():
   param = Choice(
     0,
-    Sequence(Optional(Terminal('open')), NonTerminal('id'),
+    Sequence(Optional(Choice(0, Terminal('open'), Terminal('mut'))), NonTerminal('id'),
              Optional(Sequence(Terminal(':'), NonTerminal('type')))),
     Sequence(OneOrMore(NonTerminal('id')), Terminal(':'), NonTerminal('type')))
 
@@ -579,45 +586,50 @@ def zilch_param():
 
 
 def zilch_let_in():
-  inner = Sequence(
-    NonTerminal('function-definition'),
-    NonTerminal(';'),
-    NonTerminal('expression')
-  )
+  inner = Sequence(NonTerminal('function-definition'), NonTerminal(';'),
+                   NonTerminal('expression'))
 
   return mk_diagram2('let-in', inner)
 
+
 def zilch_match():
   inner = Sequence(
-    Terminal('match'),
-    NonTerminal('expression'),
-    Terminal('with'),
+    Terminal('match'), NonTerminal('expression'), Terminal('with'),
     NonTerminal('{'),
     OneOrMore(
-      Sequence(
-        NonTerminal('pattern'),
-        Choice(1, Terminal('->'), Terminal('→')),
-        NonTerminal('expression')
-      ),
-      NonTerminal(';')
-    ),
-    NonTerminal('}')
-  )
+      Sequence(NonTerminal('pattern'), Choice(1, Terminal('->'),
+                                              Terminal('→')),
+               NonTerminal('expression')), NonTerminal(';')), NonTerminal('}'))
 
   return mk_diagram2('match', inner)
 
+
 def zilch_record():
-  record = ZeroOrMore(
-    NonTerminal('function-definition'),
-    Terminal(',')
-  )
-  
-  inner = Choice(
-    1,
-    Sequence(Terminal('{{'), record, Terminal('}}')),
-    Sequence(Terminal('⦃'), record, Terminal('⦄'))
-  )
+  record = ZeroOrMore(NonTerminal('function-definition'), Terminal(','))
+
+  inner = Choice(1, Sequence(Terminal('{{'), record, Terminal('}}')),
+                 Sequence(Terminal('⦃'), record, Terminal('⦄')))
 
   return mk_diagram2('record', inner)
 
-zilch_record().writeSvg(sys.stdout.write)
+def zilch_toplevel_function_definition():
+  inner = Stack(
+    Sequence(
+      Optional(NonTerminal('meta-information')),
+      Optional(Terminal('public')),
+      NonTerminal('function-definition')
+    ),
+    Optional(Sequence(
+      Terminal('where'),
+      NonTerminal('{'),
+      OneOrMore(
+        NonTerminal('function-definition'),
+        NonTerminal(';')
+      ),
+      NonTerminal('}')
+    ))
+  )
+
+  return mk_diagram2('toplevel-function', inner)
+
+zilch_toplevel_function_definition().writeSvg(sys.stdout.write)
