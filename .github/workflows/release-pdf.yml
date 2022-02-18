@@ -18,7 +18,7 @@ jobs:
       - name: Install required dependencies
         run: |
           sudo apt update -y
-          sudo apt install -y texlive texlive-science texlive-plain-generic texlive-pictures texlive-metapost texlive-latex-recommended texlive-latex-base texlive-latex-extra texlive-lang-english texlive-extra-utils texlive-binaries texlive-base texlive-bibtex-extra latexmk biber
+          sudo apt install -y texlive texlive-science texlive-plain-generic texlive-pictures texlive-metapost texlive-latex-recommended texlive-latex-base texlive-latex-extra texlive-lang-english texlive-extra-utils texlive-binaries texlive-base texlive-bibtex-extra latexmk biber texlive-fonts-extra
       
       - name: Build
         run: |
