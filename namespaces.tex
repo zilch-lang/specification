@@ -1,0 +1,75 @@
+\namespace{nstar:rules}{%
+\newcommand*\CodeTypeSequent[7]{\ensuremath{{#1};{#2};{#3};{#4};{#5}\vdash^\text{\tiny T}_\text{code}{#6:#7}}}
+\newcommand*\DataTypeSequent[3]{\ensuremath{{#1}\vdash^\text{\tiny T}_\text{data}{#2:#3}}}
+\newcommand*\KindSequent[3]{\ensuremath{{#1}\vdash^\text{\tiny K}{#2%
+			\ifx&#3&%
+			\else%
+			:#3%
+			\fi}}}
+\newcommand*\ISequent[9]{\ensuremath{{#1};{#2};{#3};{#4};{#5}\vdash^\text{\tiny I}{#6}\dashv{#7};{#8};{#9}}}
+}{}
+
+\namespace{nstar:grammar}{%
+%% TYPES
+\makeatletter
+\def\Tformat{\relax\ifmmode\boldmath\else\bfseries\fi\color{OliveGreen}}
+\makeatother
+%
+\newcommand*\Tunsigned[1]{\ensuremath{\text{\Tformat u#1}}}
+\newcommand*\Tsigned[1]{\ensuremath{\text{\Tformat s#1}}}
+\VARIADIC{Tstruct}{\ensuremath}{(}{,\,}{)}{}
+\VARIADIC{Tunion}{\ensuremath}{\langle}{,\,}{\rangle}{}
+\newcommand*\Tbang{\ensuremath{\text{\Tformat !}}}
+\newcommand*\Tptr[1]{\ensuremath{{\Tformat {}^\ast}#1}}
+\newcommand*\Tchar{\ensuremath{\text{\Tformat char}}}
+\newcommand*\Tcontext[3]{\ensuremath{\{ #1 \mid #2 \to #3 \}}}
+\newcommand*\Tforall[2]{\ensuremath{{\Tformat \forall}(#1){\Tformat .}\,{#2}}}
+\newcommand*\Tstack[2]{\ensuremath{#1\,{\Tformat \dblcolon}\,#2}}
+\VARIADIC{Tsstack}{\ensuremath}{}{\,{\Tformat \dblcolon}\,}{}{}
+\newcommand*\Tkind[1]{\ensuremath{\text{\Tformat T#1}}}
+
+\def\Ts{\T{s}}
+\def\Ta{\T{a}}
+\def\Tc{\T{c}}
+\let\T\Tkind
+
+%% EXPRESSIONS
+\newcommand*\Echar[1]{\ensuremath{\text{'#1'}}}
+\newcommand*\EInt[2][]{\ensuremath{#1#2}}
+\newcommand*\Eregister[1]{\ensuremath{\text{\bfseries \%r#1}}}
+\newcommand*\Ebyteoff[2]{\ensuremath{#1(#2)}}
+\newcommand*\Ebaseoff[2]{\ensuremath{#1 [#2]}}
+\VARIADIC{Earray}{\ensuremath}{[}{,\,}{]}{}
+\newcommand*\Estring[1]{\ensuremath{\text{"#1"}}}
+\VARIADIC{Estruct}{\ensuremath}{(}{,\,}{)}{}
+
+\let\r\Eregister
+
+%% INSTRUCTIONS
+\definecolor{kw}{HTML}{5B269A}
+\def\Iformat{\ttfamily\color{kw}}
+%
+\makeatletter
+\newcommand*\definstr[2][0]{%
+	\ifnum#1=0%
+		\expandafter\newcommand\csname I#2\endcsname{\ensuremath{\text{\Iformat #2}}}
+	\else%
+		\expandafter\VARIADIC{I#2}{\ensuremath}{\text{\Iformat #2}\ }{,\,}{}{}
+	\fi%
+}
+\makeatother
+%
+\definstr{nop}
+\definstr[1]{jmp}
+\definstr[1]{call}
+\definstr{ret}
+\definstr{halt}
+\definstr[2]{sld}
+\definstr[2]{sst}
+\definstr[1]{salloc}
+\definstr{sfree}
+\definstr[1]{sref}
+\definstr[2]{ld}
+\definstr[2]{st}
+\definstr[2]{mv}
+}{}

@@ -1,3 +1,22 @@
+% See: https://saswat.padhi.me/blog/2019-09_variadic-macros-in-latex/index.html
+%%%%
+% View a sample document: https://www.overleaf.com/read/bwkjcwcktsqd
+%
+% USAGE :: \VARIADIC {name} {before} {start} {mid} {stop} {after}
+\newcommand{\VARIADIC}[6]{%
+	\expandafter\newcommand\csname Gobble#1Arg\endcsname[2]{%
+		\csname Check#1Arg\endcsname{##1#4##2}%
+	}%
+	\expandafter\newcommand\csname Check#1Arg\endcsname[1]{%
+		\csname @ifnextchar\endcsname\bgroup{\csname Gobble#1Arg\endcsname{##1}}{#2{##1#5}#6}%
+	}%
+	\expandafter\newcommand\csname #1\endcsname[1]{%
+		\csname Check#1Arg\endcsname{#3##1}%
+	}%
+}
+
+\input{namespaces}
+
 \let\oldpart\part
 \renewcommand{\partmark}{}
 \renewcommand{\part}[1]{\oldpart{#1}\renewcommand{\partmark}{#1}}
@@ -40,21 +59,21 @@
 \definecolor{mintedbg}{rgb}{.96,.96,.96}
 
 \setminted{
-  breaklines=true,
-  mathescape=true,
-  breaksymbolleft={},
-  autogobble=true,
-  xleftmargin=\parindent,
-  xrightmargin=\parindent,
-  frame=single,
-  framerule=\fboxrule,
-  framesep=1.5\fboxsep,
-  style=xcode,
+	breaklines=true,
+	mathescape=true,
+	breaksymbolleft={},
+	autogobble=true,
+	xleftmargin=\parindent,
+	xrightmargin=\parindent,
+	frame=single,
+	framerule=\fboxrule,
+	framesep=1.5\fboxsep,
+	style=xcode,
 }
 \makesavenoteenv{minted}
 
 \BeforeBeginEnvironment{minted}{\begin{minipage}{\textwidth}}
-\AfterEndEnvironment{minted}{\end{minipage}}
+		\AfterEndEnvironment{minted}{\end{minipage}}
 
 \def\nstarlexer{lexer/nstar.py:NStarLexer -x}
 \def\zilchlexer{lexer/zilch.py:ZilchLexer -x}
@@ -63,17 +82,17 @@
 \setcounter{secnumdepth}{4}
 
 \defglsentryfmt{\glsgenentryfmt
-  \ifglsused{\glslabel}{}{$^*$}}
+	\ifglsused{\glslabel}{}{$^*$}}
 
 \renewcommand{\glossarysection}[2][\theglstoctitle]{%
- \def\theglstoctitle{#2}%
+	\def\theglstoctitle{#2}%
 }
 
 \makeglossaries{}
 \input{glossary}
 
 \hypersetup{
-  colorlinks=false
+	colorlinks=false
 }
 
 \graphicspath{{./res/}}
@@ -99,40 +118,40 @@
 \setlength{\fboxsep}{2ex}
 
 \hypersetup{
-    colorlinks=true,
-    linkcolor=black,
-    filecolor=black,
-    anchorcolor=black,
-    citecolor=RedViolet,
-    urlcolor=RoyalPurple,
-    pdftitle={The magical Zilch book},
-    bookmarks=true,
+	colorlinks=true,
+	linkcolor=black,
+	filecolor=black,
+	anchorcolor=black,
+	citecolor=RedViolet,
+	urlcolor=RoyalPurple,
+	pdftitle={The magical Zilch book},
+	bookmarks=true,
 }
 
 % Params:
 % - #1: color
 % - #2: left icon
 \newtcolorbox[]{alertmessage}[3][]{%
-    enhanced, breakable,
-    colback=#2!20,
-    colframe=#2!80,
-    coltitle=#2!80,
-    boxrule=1pt,
-    arc=5pt,
-    detach title,
-    %attach title to upper={\tcblower},
-    %sidebyside,
-    fonttitle={\LARGE},
-    title={#3},
-    %center upper,
-    %lefthand width=0.75cm,
-    %sidebyside gap=6mm,
-    %lower separated=false,
-    left=1.25cm,
-    overlay={
-        \node[minimum width=0.75cm, anchor=south, xshift=0.7cm, yshift=-0.45cm] at (frame.west) {\tcbtitle};
-    },
-    #1
+	enhanced, breakable,
+	colback=#2!20,
+	colframe=#2!80,
+	coltitle=#2!80,
+	boxrule=1pt,
+	arc=5pt,
+	detach title,
+	%attach title to upper={\tcblower},
+	%sidebyside,
+	fonttitle={\LARGE},
+	title={#3},
+	%center upper,
+	%lefthand width=0.75cm,
+	%sidebyside gap=6mm,
+	%lower separated=false,
+	left=1.25cm,
+	overlay={
+			\node[minimum width=0.75cm, anchor=south, xshift=0.7cm, yshift=-0.45cm] at (frame.west) {\tcbtitle};
+		},
+	#1
 }
 
 \newenvironment{warningbox}[1][]{\begin{alertmessage}[#1]{Orange}{\faicon{exclamation-circle}}}{\end{alertmessage}}

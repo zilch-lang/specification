@@ -1,5 +1,6 @@
 PDF = magical-zilch-book.pdf
 SRCS =                      \
+	namespaces.tex            \
 	config.tex              	\
 	cover.tex               	\
 	index.tex               	\

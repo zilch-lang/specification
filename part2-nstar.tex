@@ -1,3 +1,9 @@
+\begingroup
+\usingnamespace{nstar:grammar}
+\usingnamespace{nstar:rules}
+
+
+
 \part{The back end}\label{part:nstar}
 
 
@@ -24,36 +30,36 @@ Because \nstar\ supports compiling to multiple architectures, using different gr
 \section*{Small notes on the notation used in the next chapters}\label{sec:nstar-abstract-notation}
 
 \begin{itemize}
-  \item Kind inference
-        \begin{itemize}
-          \item $\Gamma$ is the typing context, containing every bindings from names to type variables;
-          \item $\vdash^{K}$ is the kind inference judgement;
-        \end{itemize}
-  \item Type inference
-        \begin{itemize}
-          \item $\Xi$ is the context containing all bound labels, composed of two other contexts: $\Xi_{c}$ and $\Xi_{d}$. $\Xi_{c}$ contains all the labels defined in \texttt{code} sections, and $\Xi_{d}$ contains all the labels defined in \texttt{data} sections;
-          \item $\chi$ is the current register-to-type mapping, and contains all known-to-be-bound registers.
-                A register which is not present in this context means that either it has never been bound, or the value in it has been forgotten at some point;
-          \item $\sigma$ is the current stack type;
-          \item $\epsilon$ is the current continuation;
-          \item $\vdash^{T}_{data}$ and $\vdash^{T}_{code}$ are the type inference judgements for expressions in their respective sections (\texttt{data} or \texttt{code}).
-                $\vdash^{T}_{data}$ uses no context, whereas $\vdash^{T}_{code}$ uses all four of the defined contexts above (namely $\Xi$, $\chi$, $\sigma$ and $\epsilon$);
-          \item $\Xi;\Gamma;\chi;\sigma;\epsilon\vdash^{I}instr\dashv\chi^\prime;\sigma^\prime;\epsilon^\prime$ denotes that the type inference of the instruction $instr$ in the current typing contexts $\Xi;\Gamma;\chi;\sigma;\epsilon$ yields a new typing context $\chi^\prime;\sigma^\prime;\epsilon^\prime$;
-          \item $t1 \sim t2$ (and its counterpart $t1 \nsim t2$) respectively mean that $t1$ and $t2$ can be unified (or not);
-        \end{itemize}
-  \item Grammar
-        \begin{figure}[H]
-          \centering
-          \scalebox{.5}{
-            \includegraphics{grammar-template}
-          }
-        \end{figure}
-        \begin{itemize}
-          \item Normal rectangles describe other grammar rules (whose name is given in the shape);
-          \item Rounded rectangles describe terminal nodes, that is invariant string pieces;
-          \item The name of the grammar rule is given in the top-left corner of the diagram
-                For a rule to match, it must be possible to go from one end to the other while staying on the black rails;
-        \end{itemize}
+	\item Kind inference
+	      \begin{itemize}
+		      \item $\Gamma$ is the typing context, containing every bindings from names to type variables;
+		      \item $\vdash^{\text{\tiny K}}$ is the kind inference judgement;
+	      \end{itemize}
+	\item Type inference
+	      \begin{itemize}
+		      \item $\Xi$ is the context containing all bound labels, composed of two other contexts: $\Xi_{c}$ and $\Xi_{d}$. $\Xi_{c}$ contains all the labels defined in \texttt{code} sections, and $\Xi_{d}$ contains all the labels defined in \texttt{data} sections;
+		      \item $\chi$ is the current register-to-type mapping, and contains all known-to-be-bound registers.
+		            A register which is not present in this context means that either it has never been bound, or the value in it has been forgotten at some point;
+		      \item $\sigma$ is the current stack type;
+		      \item $\epsilon$ is the current continuation;
+		      \item $\vdash^{\text{\tiny T}}_{\text{\tiny data}}$ and $\vdash^{\text{\tiny T}}_{\text{\tiny code}}$ are the type inference judgements for expressions in their respective sections (\texttt{data} or \texttt{code}).
+		            $\vdash^{\text{\tiny T}}_{\text{\tiny data}}$ uses no context, whereas $\vdash^{\text{\tiny T}}_{\text{\tiny code}}$ uses all four of the defined contexts above (namely $\Xi$, $\chi$, $\sigma$ and $\epsilon$);
+		      \item $\ISequent{\Xi}{\Gamma}{\chi}{\sigma}{\epsilon}{instr}{\chi^\prime}{\sigma^\prime}{\epsilon^\prime}$ denotes that the type inference of the instruction $instr$ in the current typing contexts $\Xi;\Gamma;\chi;\sigma;\epsilon$ yields a new typing context $\chi^\prime;\sigma^\prime;\epsilon^\prime$ (where $\Gamma$ and $\Xi$ cannot be altered);
+		      \item $t_1 \sim t_2$ (and its counterpart $t_1 \nsim t_2$) respectively mean that $t_1$ and $t_2$ can be unified (or not);
+	      \end{itemize}
+	\item Grammar
+	      \begin{figure}[H]
+		      \centering
+		      \scalebox{.5}{
+			      \includegraphics{grammar-template}
+		      }
+	      \end{figure}
+	      \begin{itemize}
+		      \item Normal rectangles describe other grammar rules (whose name is given in the shape);
+		      \item Rounded rectangles describe terminal nodes, that is invariant string pieces;
+		      \item The name of the grammar rule is given in the top-left corner of the diagram
+		            For a rule to match, it must be possible to go from one end to the other while staying on the black rails;
+	      \end{itemize}
 \end{itemize}
 
 \chapter{Non platform-specific features}\label{chap:nstar-common}
@@ -72,22 +78,22 @@ In programming, types are used mostly to prove at compile-time that a given prog
 Kinds (also known as types of types) mainly serve the purpose of indicating type sizes.
 There are three type of kinds in \nstar:
 \begin{itemize}
-  \item Stack kind, denotating stack-like types, which can be safely offsetted
-  \item Kinds whose size is abstracted away, useful to ask for any sized type
-  \item Kinds whose size is already known
-  \item Continuation kinds, for types that can be used as continuations
+	\item Stack kind, denotating stack-like types, which can be safely offsetted
+	\item Kinds whose size is abstracted away, useful to ask for any sized type
+	\item Kinds whose size is already known
+	\item Continuation kinds, for types that can be used as continuations
 \end{itemize}
 The grammar is given in Figure~\ref{fig:nstar-common-ts-kinds-syntax}.
 
 \begin{figure}[htb]
-  \centering
-  \framebox[\textwidth][c]{
-    \scalebox{.5}{
-      \includegraphics{nstar/types/kinds-syntax}
-    }
-  }
-  \caption{Grammar for kinds.}
-  \label{fig:nstar-common-ts-kinds-syntax}
+	\centering
+	\framebox[\textwidth][c]{
+		\scalebox{.5}{
+			\includegraphics{nstar/types/kinds-syntax}
+		}
+	}
+	\caption{Grammar for kinds.}
+	\label{fig:nstar-common-ts-kinds-syntax}
 \end{figure}
 
 \subsection{Integer types}\label{subsec:nstar-common-ts-integer}
@@ -97,63 +103,63 @@ This is not the case in \nstar, where ``integer''  only really means ``number''.
 The syntax for the types of integers is given in Figure~\ref{fig:nstar-common-ts-integer-syntax}.
 
 \begin{figure}[htb]
-  \centering
-  \framebox[\textwidth][c]{
-    \scalebox{.5}{
-      \includegraphics{nstar/types/integers-syntax}
-    }
-  }
-  \caption{Grammar for integer types.}
-  \label{fig:nstar-common-ts-integer-syntax}
+	\centering
+	\framebox[\textwidth][c]{
+		\scalebox{.5}{
+			\includegraphics{nstar/types/integers-syntax}
+		}
+	}
+	\caption{Grammar for integer types.}
+	\label{fig:nstar-common-ts-integer-syntax}
 \end{figure}
 
 Integers have two varying parameters: their sign and sizes.
 According to the sign (i.e.\ signed or unsigned), some operations may not perform the same (for example \texttt{mul} does not behave the same).
-The size is nothing more than the number of bits occupied by the integer (in \nstar, those are restricted to powers of 2 between $8$ and $64$ included).
+The size is nothing more than the number of bits occupied by the integer (in \nstar, those are restricted to some powers of 2 between $8$ and $64$ included).
 Most operations should perform the same no matter the integer size, however it is recommended to search in the target architecture manual for further reference.
 
 Kinds of integers are written under the form of inference rules in Figure~\ref{fig:nstar-common-ts-integer-kindrules}.
 
 \begin{figure}[htb]
-  \centering
+	\centering
 
-  \framebox[\textwidth][c]{\parbox{\textwidth}{
-      \centering
-      \begin{prooftree}
-        \infer0{\Gamma\vdash^K$ u64 : T8$}
-      \end{prooftree}
-      \hspace{3em}
-      \begin{prooftree}
-        \infer0{\Gamma\vdash^K$ s64 : T8$}
-      \end{prooftree}
-      \hspace{3em}
-      \begin{prooftree}
-        \infer0{\Gamma\vdash^K$ u32 : T4$}
-      \end{prooftree}
-      \hspace{3em}
-      \begin{prooftree}
-        \infer0{\Gamma\vdash^K$ s32 : T4$}
-      \end{prooftree}
-      \\\vspace{\baselineskip}
-      \begin{prooftree}
-        \infer0{\Gamma\vdash^K$ u16 : T2$}
-      \end{prooftree}
-      \hspace{3em}
-      \begin{prooftree}
-        \infer0{\Gamma\vdash^K$ s16 : T2$}
-      \end{prooftree}
-      \hspace{3em}
-      \begin{prooftree}
-        \infer0{\Gamma\vdash^K$ u8 : T1$}
-      \end{prooftree}
-      \hspace{3em}
-      \begin{prooftree}
-        \infer0{\Gamma\vdash^K$ s8 : T1$}
-      \end{prooftree}
-  }}
+	\framebox[\textwidth][c]{\parbox{\textwidth}{
+			\centering
+			\begin{prooftree}
+				\infer0{\KindSequent{\Gamma}{\Tunsigned{64}}{\T8}}
+			\end{prooftree}
+			\hspace{3em}
+			\begin{prooftree}
+				\infer0{\KindSequent{\Gamma}{\Tsigned{64}}{\T8}}
+			\end{prooftree}
+			\hspace{3em}
+			\begin{prooftree}
+				\infer0{\KindSequent{\Gamma}{\Tunsigned{32}}{\T4}}
+			\end{prooftree}
+			\hspace{3em}
+			\begin{prooftree}
+				\infer0{\KindSequent{\Gamma}{\Tsigned{32}}{\T4}}
+			\end{prooftree}
+			\\\vspace{\baselineskip}
+			\begin{prooftree}
+				\infer0{\KindSequent{\Gamma}{\Tunsigned{16}}{\T2}}
+			\end{prooftree}
+			\hspace{3em}
+			\begin{prooftree}
+				\infer0{\KindSequent{\Gamma}{\Tsigned{16}}{\T2}}
+			\end{prooftree}
+			\hspace{3em}
+			\begin{prooftree}
+				\infer0{\KindSequent{\Gamma}{\Tunsigned{8}}{\T1}}
+			\end{prooftree}
+			\hspace{3em}
+			\begin{prooftree}
+				\infer0{\KindSequent{\Gamma}{\Tsigned{8}}{\T1}}
+			\end{prooftree}
+		}}
 
-  \caption{Kind inference rules for integers.}
-  \label{fig:nstar-common-ts-integer-kindrules}
+	\caption{Kind inference rules for integers.}
+	\label{fig:nstar-common-ts-integer-kindrules}
 \end{figure}
 
 \subsection{Other atomic types}\label{subsec:nstar-common-ts-otheratomic}
@@ -161,18 +167,18 @@ Kinds of integers are written under the form of inference rules in Figure~\ref{f
 There are two other atomic types that we did not talk about, but refered to in the introduction of the type system: characters and pointers. Their respective syntax is given in Figure~\ref{fig:nstar-common-ts-atomic-syntax}.
 
 \begin{figure}[htb]
-  \centering
-  \framebox[\textwidth][c]{\parbox{\textwidth}{
-      \centering
-      \scalebox{.5}{
-        \includegraphics{nstar/types/ptr-syntax}
-      } \\
-      \scalebox{.5}{
-        \includegraphics{nstar/types/char-syntax}
-      }
-  }}
-  \caption{Grammar for character and pointer types}
-  \label{fig:nstar-common-ts-atomic-syntax}
+	\centering
+	\framebox[\textwidth][c]{\parbox{\textwidth}{
+			\centering
+			\scalebox{.5}{
+				\includegraphics{nstar/types/ptr-syntax}
+			} \\
+			\scalebox{.5}{
+				\includegraphics{nstar/types/char-syntax}
+			}
+		}}
+	\caption{Grammar for character and pointer types}
+	\label{fig:nstar-common-ts-atomic-syntax}
 \end{figure}
 
 In all assembly languages, characters are merely syntactic sugar for their ASCII code. This is how their are put in the machine code anyway, so it is not a huge problem (it might even not be at all).
@@ -190,25 +196,25 @@ There is no notion of ``null'' pointers, like \texttt{NULL} in C.
 However, it is possible to use the literal \texttt{\$0} (which represents a pointer to the address $0$).
 
 \begin{figure}[htb]
-  \centering
-  \framebox[\textwidth][c]{
-    \begin{prooftree}
-      \infer0{\Gamma\vdash^K$ char : T1$}
-    \end{prooftree}
-    \hspace{3em}
-    \begin{prooftree}
-      \hypo{\Gamma\vdash^K$ t : Ta$}
-      \infer1[64-bits pointers]{\Gamma\vdash^K$ *t : T8$}
-    \end{prooftree}
-    \hspace{3em}
-    \begin{prooftree}
-      \hypo{\Gamma\vdash^K$ t : Ta$}
-      \infer1[32-bits pointers]{\Gamma\vdash^K$ *t : T4$}
-    \end{prooftree}
-  }
+	\centering
+	\framebox[\textwidth][c]{
+		\begin{prooftree}
+			\infer0{\KindSequent{\Gamma}{\Tchar}{\T1}}
+		\end{prooftree}
+		\hspace{3em}
+		\begin{prooftree}
+			\hypo{\KindSequent{\Gamma}{t}{\Ta}}
+			\infer1[64-bits pointers]{\KindSequent{\Gamma}{\Tptr{t}}{\T8}}
+		\end{prooftree}
+		\hspace{3em}
+		\begin{prooftree}
+			\hypo{\KindSequent{\Gamma}{t}{\Ta}}
+			\infer1[32-bits pointers]{\KindSequent{\Gamma}{\Tptr{t}}{\T4}}
+		\end{prooftree}
+	}
 
-  \caption{Kind inference rules for other atomic types.}
-  \label{fig:nstar-common-ts-atomic-kindrules}
+	\caption{Kind inference rules for other atomic types.}
+	\label{fig:nstar-common-ts-atomic-kindrules}
 \end{figure}
 
 \subsection{The effectful type}\label{subsec:nstar-common-ts-effect}
@@ -219,30 +225,30 @@ Its use is mainly in context types, to indicate that a function may change a reg
 Grammar and kind inference rules are given in Figure~\ref{fig:nstar-common-ts-effect-syntax} and Figure~\ref{fig:nstar-common-ts-effect-kindrules}.
 
 \begin{figure}[htb]
-  \centering
+	\centering
 
-  \framebox[\textwidth][c]{\parbox{\textwidth}{
-      \centering
-      \scalebox{.5}{
-        \includegraphics{nstar/types/bang-syntax}
-      }
-    }}
+	\framebox[\textwidth][c]{\parbox{\textwidth}{
+			\centering
+			\scalebox{.5}{
+				\includegraphics{nstar/types/bang-syntax}
+			}
+		}}
 
-  \caption{Grammar for bang types.}
-  \label{fig:nstar-common-ts-effect-syntax}
+	\caption{Grammar for bang types.}
+	\label{fig:nstar-common-ts-effect-syntax}
 \end{figure}
 
 \begin{figure}[htb]
-  \centering
+	\centering
 
-  \framebox[\textwidth][c]{
-    \begin{prooftree}
-      \infer0{\Gamma\vdash^K$ ! : k$}
-    \end{prooftree}
-  }
+	\framebox[\textwidth][c]{
+		\begin{prooftree}
+			\infer0{\KindSequent{\Gamma}{\Tbang}{k}}
+		\end{prooftree}
+	}
 
-  \caption{Type inference rules for bang types.}
-  \label{fig:nstar-common-ts-effect-kindrules}
+	\caption{Type inference rules for bang types.}
+	\label{fig:nstar-common-ts-effect-kindrules}
 \end{figure}
 
 \subsection{Context types}\label{subsec:nstar-common-ts-records}
@@ -252,35 +258,35 @@ They are used to indicate that a register is bound to a value of a given type at
 The grammar is described in Figure~\ref{fig:nstar-common-ts-records-syntax}.
 
 \begin{figure}[htb]
-  \centering
-  \framebox[\textwidth][c]{\parbox{\textwidth}{
-      \centering
-      \scalebox{.5}{
-        \includegraphics{nstar/types/records-syntax}
-      }
-      \\
-      \scalebox{.5}{
-        \includegraphics{nstar/types/continuation-syntax}
-      }
-  }}
-  \caption{Grammar for context and continuation types.}
-  \label{fig:nstar-common-ts-records-syntax}
+	\centering
+	\framebox[\textwidth][c]{\parbox{\textwidth}{
+			\centering
+			\scalebox{.5}{
+				\includegraphics{nstar/types/records-syntax}
+			}
+			\\
+			\scalebox{.5}{
+				\includegraphics{nstar/types/continuation-syntax}
+			}
+		}}
+	\caption{Grammar for context and continuation types.}
+	\label{fig:nstar-common-ts-records-syntax}
 \end{figure}
 
 \begin{figure}[htb]
-  \centering
+	\centering
 
-  \framebox[\textwidth][c]{
-    \begin{prooftree}
-      \hypo{\Gamma\vdash^K\hat{\chi}}
-      \hypo{\Gamma\vdash^K$ s : Ts$}
-      \hypo{\Gamma\vdash^K$ e : Tc$}
-      \infer3{\Gamma\vdash^K$\{ $\hat{\chi}$ | s $\to$ e \} : Ta$}
-    \end{prooftree}
-  }
+	\framebox[\textwidth][c]{
+		\begin{prooftree}
+			\hypo{\KindSequent{\Gamma}{\hat{\chi}}{}}
+			\hypo{\KindSequent{\Gamma}{s}{\Ts}}
+			\hypo{\KindSequent{\Gamma}{e}{\Tc}}
+			\infer3{\KindSequent{\Gamma}{\Tcontext{\hat{\chi}}{s}{e}}{\Ta}}
+		\end{prooftree}
+	}
 
-  \caption{Type inference rules for record types.}
-  \label{fig:nstar-common-ts-records-typerules}
+	\caption{Type inference rules for record types.}
+	\label{fig:nstar-common-ts-records-typerules}
 \end{figure}
 
 Context types are used to represent data contexts where any mapping is some sort of a proof that some data of some type is accessible through some register.
@@ -292,28 +298,28 @@ The grammar is described in Figure~\ref{fig:nstar-common-ts-label-types-syntax}.
 The type variable binder is used to abstract away some details of the type through an opaque variable specialized at the call site.
 
 \begin{figure}[htb]
-  \centering
-  \framebox[\textwidth][c]{
-    \scalebox{.5}{
-      \includegraphics{nstar/types/label-syntax}
-    }
-  }
-  \caption{Grammar for label context types.}
-  \label{fig:nstar-common-ts-label-types-syntax}
+	\centering
+	\framebox[\textwidth][c]{
+		\scalebox{.5}{
+			\includegraphics{nstar/types/label-syntax}
+		}
+	}
+	\caption{Grammar for label context types.}
+	\label{fig:nstar-common-ts-label-types-syntax}
 \end{figure}
 
 \begin{figure}[htb]
-  \centering
+	\centering
 
-  \framebox[\textwidth][c]{
-    \begin{prooftree}
-      \hypo{\Gamma,\hat{v}\vdash^K$ ctx : Ta$}
-      \infer1{\Gamma\vdash^K\forall$($\hat{v}$).ctx : T8$}
-    \end{prooftree}
-  }
+	\framebox[\textwidth][c]{
+		\begin{prooftree}
+			\hypo{\KindSequent{\Gamma,\hat{v}}{\zeta}{\Ta}}
+			\infer1{\KindSequent{\Gamma}{\Tforall{\hat{v}}{\zeta}}{\T8}}
+		\end{prooftree}
+	}
 
-  \caption{Type inference rules for label context types.}
-  \label{fig:nstar-common-ts-label-types-typerules}
+	\caption{Type inference rules for label context types.}
+	\label{fig:nstar-common-ts-label-types-typerules}
 \end{figure}
 
 The example code given in Listing~\ref{lst:nstar-common-ts-records-stackmask} shows a use for type variables.
@@ -321,11 +327,11 @@ The stack is abstracted away, meaning that we can call this function from anywhe
 The type variable \texttt{s} is specialized at the call site.
 
 \begin{listing}[htb]
-  \centering
-  \inputminted{\nstarlexer}{examples/stack-masking.nst}
+	\centering
+	\inputminted{\nstarlexer}{examples/stack-masking.nst}
 
-  \caption{Stack masking using a type variable binder.}
-  \label{lst:nstar-common-ts-records-stackmask}
+	\caption{Stack masking using a type variable binder.}
+	\label{lst:nstar-common-ts-records-stackmask}
 \end{listing}
 
 \subsection{Stack types}\label{subsec:nstar-common-ts-stack}
@@ -340,30 +346,30 @@ The grammar for stack types is given in Figure~\ref{fig:nstar-common-ts-stack-ty
 Inference rules for kinds of stack types are written in Figure~\ref{fig:nstar-common-ts-stack-types-kindrules}
 
 \begin{figure}[htb]
-  \centering
-  \framebox[\textwidth][c]{
-    \scalebox{.5}{
-      \includegraphics{nstar/types/stack-cons-syntax}
-    }
-  }
-  \caption{Grammar for stack types.}
-  \label{fig:nstar-common-ts-stack-types-syntax}
+	\centering
+	\framebox[\textwidth][c]{
+		\scalebox{.5}{
+			\includegraphics{nstar/types/stack-cons-syntax}
+		}
+	}
+	\caption{Grammar for stack types.}
+	\label{fig:nstar-common-ts-stack-types-syntax}
 \end{figure}
 
 \begin{figure}[H]
-  \centering
+	\centering
 
-  \framebox[\textwidth][c]{
-    \begin{prooftree}
-      \hypo{$n : $\mathbb{N}$ $}
-      \hypo{\Gamma\vdash^K$ t : Tn$}
-      \hypo{\Gamma\vdash^K$ s : Ts$}
-      \infer3{\Gamma\vdash^K$ t :: s : Ts$}
-    \end{prooftree}
-  }
+	\framebox[\textwidth][c]{
+		\begin{prooftree}
+			\hypo{n\in\mathbb{N}}
+			\hypo{\KindSequent{\Gamma}{t}{\T{n}}}
+			\hypo{\KindSequent{\Gamma}{s}{\Ts}}
+			\infer3{\KindSequent{\Gamma}{\Tstack{t}{s}}{\Ts}}
+		\end{prooftree}
+	}
 
-  \caption{Kind inference rules for stack types}
-  \label{fig:nstar-common-ts-stack-types-kindrules}
+	\caption{Kind inference rules for stack types}
+	\label{fig:nstar-common-ts-stack-types-kindrules}
 \end{figure}
 
 \subsection{Structure types}\label{subsec:nstar-common-ts-structs}
@@ -375,32 +381,32 @@ Grammar is described in Figure~\ref{fig:nstar-common-ts-structs-syntax} and kind
 Structures take as much space as all their fields, thus can mainly be put on the stack (unless being less than 8 bytes, which is the upper limit for register sizes in current architectures).
 
 \begin{figure}[htb]
-  \centering
+	\centering
 
-  \framebox[\textwidth][c]{
-    \scalebox{.5}{
-      \includegraphics{nstar/types/struct-syntax}
-    }
-  }
+	\framebox[\textwidth][c]{
+		\scalebox{.5}{
+			\includegraphics{nstar/types/struct-syntax}
+		}
+	}
 
-  \caption{Grammar for structure types.}
-  \label{fig:nstar-common-ts-structs-syntax}
+	\caption{Grammar for structure types.}
+	\label{fig:nstar-common-ts-structs-syntax}
 \end{figure}
 
 \begin{figure}[H]
-  \centering
+	\centering
 
-  \framebox[\textwidth][c]{
-    \begin{prooftree}
-      \hypo{$n$_0$, n$_1$, $\ldots$, n$_p$ : $\mathbb{N}}
-      \hypo{\Gamma\vdash^K$ t$_0$ : Tn$_0$, t$_1$ : Tn$_1$, $\ldots$, t$_p$ : Tn$_p}
-      \hypo{$m = $\sum_{i = 0}^{p}{n_i}}
-      \infer3{\Gamma\vdash^K$ (t$_0$, t$_1$, $\ldots$, t$_p$) : Tm$}
-    \end{prooftree}
-  }
+	\framebox[\textwidth][c]{
+		\begin{prooftree}
+			\hypo{n_0, n_1, \ldots, n_p \in \mathbb{N}}
+			\hypo{\KindSequent{\Gamma}{t_i}{\T{n$_i$}}}
+			\hypo{m = \sum_{i = 0}^{p}{n_i}}
+			\infer3{\KindSequent{\Gamma}{\Tstruct{t_0}{t_1}{\ldots}{t_p}}{\T{m}}}
+		\end{prooftree}
+	}
 
-  \caption{Kind inference rule for structures.}
-  \label{fig:nstar-common-ts-structs-kindrules}
+	\caption{Kind inference rule for structures.}
+	\label{fig:nstar-common-ts-structs-kindrules}
 \end{figure}
 
 \subsection{Union types}\label{subsec:nstar-common-ts-unions}
@@ -409,35 +415,35 @@ Union types simply are overlapping data bits, which can be given meaning dependi
 Grammar for union types is given in Figure~\ref{fig:nstar-common-ts-unions-syntax}.
 
 \begin{figure}[htb]
-  \centering
+	\centering
 
-  \framebox[\textwidth][c]{
-    \scalebox{.5}{
-      \includegraphics{nstar/types/union-syntax}
-    }
-  }
+	\framebox[\textwidth][c]{
+		\scalebox{.5}{
+			\includegraphics{nstar/types/union-syntax}
+		}
+	}
 
-  \caption{Grammar for union types.}
-  \label{fig:nstar-common-ts-unions-syntax}
+	\caption{Grammar for union types.}
+	\label{fig:nstar-common-ts-unions-syntax}
 \end{figure}
 
 Unions are sized depending on the types they unite: their sizes will be the maximum of all the sizes of all the components.
 This is more clear in the kind inference rule given in Figure~\ref{fig:nstar-common-ts-unions-kindrules}.
 
 \begin{figure}[H]
-  \centering
+	\centering
 
-  \framebox[\textwidth][c]{
-    \begin{prooftree}
-      \hypo{$n$_0$, n$_1$, $\ldots$, n$_p$ : $\mathbb{N}}
-      \hypo{\Gamma\vdash^K$ t$_0$ : Tn$_0$, t$_1$ : Tn$_1$, $\ldots$, t$_p$ : Tn$_p}
-      \hypo{$m = $\max_{i = 0}^{p}{n_i}}
-      \infer3{\Gamma\vdash^K$ $\langle$t$_0$, t$_1$, $\ldots$, t$_p\rangle$ : Tm$}
-    \end{prooftree}
-  }
+	\framebox[\textwidth][c]{
+		\begin{prooftree}
+			\hypo{n_0, n_1, \ldots, n_p \in \mathbb{N}}
+			\hypo{\KindSequent{\Gamma}{t_1}{\T{n$_i$}}}
+			\hypo{m = \max_{i = 0}^{p}{n_i}}
+			\infer3{\KindSequent{\Gamma}{\Tunion{t_0}{t_1}{\ldots}{t_p}}{\T{m}}}
+		\end{prooftree}
+	}
 
-  \caption{Kind inference rules for union types.}
-  \label{fig:nstar-common-ts-unions-kindrules}
+	\caption{Kind inference rules for union types.}
+	\label{fig:nstar-common-ts-unions-kindrules}
 \end{figure}
 
 Note that unlike structure types, you will most likely be storing union types in registers, unless working with very big unions.
@@ -455,48 +461,48 @@ These are values that you can directly read in the source file, and which do not
 Grammar and inference rules are given respectively in Figure~\ref{fig:nstar-common-expressions-immediate-grammar} and Figure~\ref{fig:nstar-common-expressions-immediate-typerules}.
 
 \begin{figure}[H]
-  \centering
+	\centering
 
-  \framebox[\textwidth][c]{\parbox{\textwidth}{
-      \centering
-      \scalebox{.5}{
-        \includegraphics{nstar/exprs/imm-char-grammar}
-      }
-      \\
-      \scalebox{.5}{
-        \includegraphics{nstar/exprs/imm-int-grammar}
-      }
-   }}
+	\framebox[\textwidth][c]{\parbox{\textwidth}{
+			\centering
+			\scalebox{.5}{
+				\includegraphics{nstar/exprs/imm-char-grammar}
+			}
+			\\
+			\scalebox{.5}{
+				\includegraphics{nstar/exprs/imm-int-grammar}
+			}
+		}}
 
-  \caption{Grammar for immediate values in \nstar.}
-  \label{fig:nstar-common-expressions-immediate-grammar}
+	\caption{Grammar for immediate values in \nstar.}
+	\label{fig:nstar-common-expressions-immediate-grammar}
 \end{figure}
 
 \begin{figure}[H]
-  \centering
+	\centering
 
-  \framebox[\textwidth][c]{\parbox{\textwidth}{
-      \centering
-      \begin{prooftree}
-        \hypo{$c is a character immediate$}
-        \infer1{\Xi;\Gamma;\chi;\sigma;\epsilon\vdash^T_{code}$ c : char$}
-      \end{prooftree}
-      \\\vspace{\baselineskip}
-      \begin{prooftree}
-        \hypo{$i is an unsigned integer immediate$}
-        \hypo{$t $\in\{$ u8, u16, u32, u64 $\}}
-        \infer2{\Xi;\Gamma;\chi;\sigma;\epsilon\vdash^T_{code}$ i : t$}
-      \end{prooftree}
-      \\\vspace{\baselineskip}
-      \begin{prooftree}
-        \hypo{$i is a signed integer immediate$}
-        \hypo{$t $\in\{$ s8, s16, s32, s64 $\}}
-        \infer2{\Xi;\Gamma;\chi;\sigma;\epsilon\vdash^T_{code}$ i : t$}
-      \end{prooftree}
-  }}
+	\framebox[\textwidth][c]{\parbox{\textwidth}{
+			\centering
+			\begin{prooftree}
+				\hypo{c$ is a character immediate$}
+				\infer1{\CodeTypeSequent{\Xi}{\Gamma}{\chi}{\sigma}{\epsilon}{c}{\Tchar}}
+			\end{prooftree}
+			\\\vspace{\baselineskip}
+			\begin{prooftree}
+				\hypo{i$ is an unsigned integer immediate$}
+				\hypo{t \in\{ \Tunsigned{8}, \Tunsigned{16}, \Tunsigned{32}, \Tunsigned{64} \}}
+				\infer2{\CodeTypeSequent{\Xi}{\Gamma}{\chi}{\sigma}{\epsilon}{i}{t}}
+			\end{prooftree}
+			\\\vspace{\baselineskip}
+			\begin{prooftree}
+				\hypo{i$ is a signed integer immediate$}
+				\hypo{t \in\{ \Tsigned{8}, \Tsigned{16}, \Tsigned{32}, \Tsigned{64} \}}
+				\infer2{\CodeTypeSequent{\Xi}{\Gamma}{\chi}{\sigma}{\epsilon}{i}{t}}
+			\end{prooftree}
+		}}
 
-  \caption{Type inference rules for immediate values in \nstar.}
-  \label{fig:nstar-common-expressions-immediate-typerules}
+	\caption{Type inference rules for immediate values in \nstar.}
+	\label{fig:nstar-common-expressions-immediate-typerules}
 \end{figure}
 
 \subsection{Labels}\label{subsec:nstar-common-expressions-labels}
@@ -508,29 +514,29 @@ They can be dereferenced and offset using the constructs given in \nstar.
 Grammar and inference rules are given respectively in Figure~\ref{fig:nstar-common-expressions-labels-data-grammar} and Figure~\ref{fig:nstar-common-expressions-labels-data-typerules}.
 
 \begin{figure}[H]
-  \centering
+	\centering
 
-  \framebox[\textwidth][c]{
-    \scalebox{.5}{
-      \includegraphics{nstar/exprs/label-expr-grammar}
-    }
-  }
-  \caption{Grammar for data labels in \nstar.}
-  \label{fig:nstar-common-expressions-labels-data-grammar}
+	\framebox[\textwidth][c]{
+		\scalebox{.5}{
+			\includegraphics{nstar/exprs/label-expr-grammar}
+		}
+	}
+	\caption{Grammar for data labels in \nstar.}
+	\label{fig:nstar-common-expressions-labels-data-grammar}
 \end{figure}
 
 \begin{figure}[H]
-  \centering
+	\centering
 
-  \framebox[\textwidth][c]{
-    \begin{prooftree}
-      \hypo{$l : t $\in\Xi_d}
-      \infer1{\Xi;\Gamma;\chi;\sigma;\epsilon\vdash^T_{code}$ l : *t$}
-    \end{prooftree}
-  }
+	\framebox[\textwidth][c]{
+		\begin{prooftree}
+			\hypo{l : t \in\Xi_d}
+			\infer1{\CodeTypeSequent{\Xi}{\Gamma}{\chi}{\sigma}{\epsilon}{l}{\Tptr{t}}}
+		\end{prooftree}
+	}
 
-  \caption{Type inference rules for data labels in \nstar.}
-  \label{fig:nstar-common-expressions-labels-data-typerules}
+	\caption{Type inference rules for data labels in \nstar.}
+	\label{fig:nstar-common-expressions-labels-data-typerules}
 \end{figure}
 
 \subsubsection{Code labels}\label{subsubsec:nstar-common-expressions-labels-code}
@@ -540,33 +546,33 @@ Unlike data labels, they cannot be dereferenced or offset, but are instead autom
 Grammar and inference rules are given respectively in Figure~\ref{fig:nstar-common-expressions-labels-code-grammar} and Figure~\ref{fig:nstar-common-expressions-labels-code-typerules}.
 
 \begin{figure}[H]
-  \centering
+	\centering
 
-  \framebox[\textwidth][c]{
-    \scalebox{.5}{
-      \includegraphics{nstar/exprs/label-value-grammar}
-    }
-  }
+	\framebox[\textwidth][c]{
+		\scalebox{.5}{
+			\includegraphics{nstar/exprs/label-value-grammar}
+		}
+	}
 
-  \caption{Grammar for code labels in \nstar.}
-  \label{fig:nstar-common-expressions-labels-code-grammar}
+	\caption{Grammar for code labels in \nstar.}
+	\label{fig:nstar-common-expressions-labels-code-grammar}
 \end{figure}
 
 \begin{figure}[H]
-  \centering
+	\centering
 
-  \framebox[\textwidth][c]{
-    \begin{prooftree}
-      \hypo{$l : $\forall$($\vec{v}$).\{$\chi$ | $\sigma\to\epsilon$\} $\in\Xi_c}
-      \hypo{\Gamma\vdash^K$ s$_1$ : k$_1$, s$_2$ : k$_2$, \ldots, s$_p$ : k$_p}
-      \infer[no rule, rule margin=1.0ex]2{\vec{s}$ = $\{$ s$_1$ : k$_1$, s$_2$ : k$_2$, \ldots, s$_p$ : k$_p$ $\}$\hspace{1.5em}$%
-                                          \vec{s}\sim\vec{v}$\hspace{1.5em}$}
-      \infer1{\Xi;\Gamma;\chi;\sigma;\epsilon\vdash^T_{code}$ l<$\vec{s}$> : $\forall$().\{$\chi[\vec{v}\setminus\vec{s}]$ | $\sigma[\vec{v}\setminus\vec{s}]\to\epsilon[\vec{v}\setminus\vec{s}]$\}$}
-    \end{prooftree}
-  }
+	\framebox[\textwidth][c]{
+		\begin{prooftree}
+			\hypo{l : \Tforall{\vec{v}}{\Tcontext{\chi}{\sigma}{\epsilon}} \in \Xi_c}
+			\hypo{\KindSequent{\Gamma}{s_i}{k_i}}
+			\infer[no rule, rule margin=1.0ex]2{\vec{s} = \{ s_1 : k_1, s_2 : k_2, \ldots, s_p : k_p \}\hspace{1.5em}%
+			\vec{s}\sim\vec{v}\hspace{1.5em}}
+			\infer1{\CodeTypeSequent{\Xi}{\Gamma}{\chi}{\sigma}{\epsilon}{l\Tunion{\vec{s}}}{\Tforall{}{\Tcontext{\chi[\vec{v}\setminus\vec{s}]}{\sigma[\vec{v}\setminus\vec{s}]}{\epsilon[\vec{v}\setminus\vec{s}]}}}}
+		\end{prooftree}
+	}
 
-  \caption{Type inference rules for code labels in \nstar.}
-  \label{fig:nstar-common-expressions-labels-code-typerules}
+	\caption{Type inference rules for code labels in \nstar.}
+	\label{fig:nstar-common-expressions-labels-code-typerules}
 \end{figure}
 
 \subsection{Registers}\label{subsec:nstar-common-expressions-registers}
@@ -578,29 +584,29 @@ They can be 4 to 8 bytes large depending on the target architecture mappings.
 Grammar for all those registers is given in Figure~\ref{fig:nstar-common-expressions-registers-grammar} and inference rules are given in Figure~\ref{fig:nstar-common-expressions-registers-typerules}.
 
 \begin{figure}[htb]
-  \centering
+	\centering
 
-  \framebox[\textwidth][c]{
-    \scalebox{.5}{
-      \includegraphics{nstar/exprs/register-grammar}
-    }
-  }
+	\framebox[\textwidth][c]{
+		\scalebox{.5}{
+			\includegraphics{nstar/exprs/register-grammar}
+		}
+	}
 
-  \caption{Grammar for registers in \nstar.}
-  \label{fig:nstar-common-expressions-registers-grammar}
+	\caption{Grammar for registers in \nstar.}
+	\label{fig:nstar-common-expressions-registers-grammar}
 \end{figure}
 
 \begin{figure}[htb]
-  \centering
+	\centering
 
-  \framebox[\textwidth][c]{
-    \begin{prooftree}
-      \infer0{\Xi;\Gamma;\chi$, r : t$;\sigma;\epsilon\vdash^T_{code}$ r : t$}
-    \end{prooftree}
-  }
+	\framebox[\textwidth][c]{
+		\begin{prooftree}
+			\infer0{\CodeTypeSequent{\Xi}{\Gamma}{\chi, r : t}{\sigma}{\epsilon}{r}{t}}
+		\end{prooftree}
+	}
 
-  \caption{Type inference rules for registers in \nstar}
-  \label{fig:nstar-common-expressions-registers-typerules}
+	\caption{Type inference rules for registers in \nstar}
+	\label{fig:nstar-common-expressions-registers-typerules}
 \end{figure}
 
 \subsection{Pointer offsets}\label{fig:nstar-common-expressions-pointeroffsets}
@@ -609,52 +615,52 @@ Pointer offsets allow accessing data that may be located relative to a given mem
 Grammar for pointer offsets is given in Figure~\ref{fig:nstar-common-expressions-pointeroffsets-grammar} and type inference rules are given in Figure~\ref{fig:nstar-common-expressions-pointeroffsets-typerules}.
 
 \begin{figure}[H]
-  \centering
+	\centering
 
-  \framebox[\textwidth][c]{\parbox{\textwidth}{
-      \centering
-      \scalebox{.45}{
-        \includegraphics{nstar/exprs/pointer-byte-offset-grammar}
-      }
-      \\
-      \scalebox{.5}{
-        \includegraphics{nstar/exprs/pointer-offset-grammar}
-      }
-  }}
+	\framebox[\textwidth][c]{\parbox{\textwidth}{
+			\centering
+			\scalebox{.45}{
+				\includegraphics{nstar/exprs/pointer-byte-offset-grammar}
+			}
+			\\
+			\scalebox{.5}{
+				\includegraphics{nstar/exprs/pointer-offset-grammar}
+			}
+		}}
 
-  \caption{Grammar for pointer offsets.}
-  \label{fig:nstar-common-expressions-pointeroffsets-grammar}
+	\caption{Grammar for pointer offsets.}
+	\label{fig:nstar-common-expressions-pointeroffsets-grammar}
 \end{figure}
 
 \begin{figure}[H]
-  \centering
+	\centering
 
-  \framebox[\textwidth][c]{\parbox{\textwidth}{
-      \centering
-      \begin{prooftree}
-        \hypo{\Gamma\vdash^K$ t : k$}
-        \hypo{\Xi;\Gamma;\chi;\sigma;\epsilon\vdash^T_{code}$ p : *t$}
-        \hypo{\Xi;\Gamma;\chi;\sigma;\epsilon\vdash^T_{code}$ o : s64$}
-        \infer3[raw pointer byte offset]{\Xi;\Gamma;\chi;\sigma;\epsilon\vdash^T_{code}$ o(p) : *t$}
-      \end{prooftree}
-      \\\vspace{\baselineskip}
-      \begin{prooftree}
-        \hypo{\Gamma\vdash^K$ t : k$}
-        \hypo{\Xi;\Gamma;\chi;\sigma;\epsilon\vdash^T_{code}$ p : *t$}
-        \hypo{\Xi;\Gamma;\chi;\sigma;\epsilon\vdash^T_{code}$ o : s64$}
-        \infer3[raw pointer base offset]{\Xi;\Gamma;\chi;\sigma;\epsilon\vdash^T_{code}$ p[o] : *t$}
-      \end{prooftree}
-      \\\vspace{\baselineskip}
-      \begin{prooftree}
-        \hypo{\Gamma\vdash^K$ t$_1$ : Tn$_0$, t$_2$ : Tn$_1$, \ldots, t$_m$ : Tn$_{m-1}}
-        \infer[no rule, rule margin=1.0ex]1{$n$_0$, n$_1$, \ldots, n$_p\in\mathbb{N}$\hspace{1.5em}$%
-          \Xi;\Gamma;\chi;\sigma;\epsilon\vdash^T_{code}$ p : *(t$_1$, t$_2$, \ldots, t$_m$)$}
-        \infer1[structure pointer offset]{\Xi;\Gamma;\chi;\sigma;\epsilon\vdash^T_{code}$ p[n$_i$] : *t$_{i-1}}
-      \end{prooftree}
-  }}
+	\framebox[\textwidth][c]{\parbox{\textwidth}{
+			\centering
+			\begin{prooftree}
+				\hypo{\KindSequent{\Gamma}{t}{k}}
+				\hypo{\CodeTypeSequent{\Xi}{\Gamma}{\chi}{\sigma}{\epsilon}{p}{\Tptr{t}}}
+				\hypo{\CodeTypeSequent{\Xi}{\Gamma}{\chi}{\sigma}{\epsilon}{o}{\Tsigned{64}}}
+				\infer3[raw pointer byte offset]{\CodeTypeSequent{\Xi}{\Gamma}{\chi}{\sigma}{\epsilon}{\Ebyteoff{o}{p}}{\Tptr{t}}}
+			\end{prooftree}
+			\\\vspace{\baselineskip}
+			\begin{prooftree}
+				\hypo{\KindSequent{\Gamma}{t}{k}}
+				\hypo{\CodeTypeSequent{\Xi}{\Gamma}{\chi}{\sigma}{\epsilon}{p}{\Tptr{t}}}
+				\hypo{\CodeTypeSequent{\Xi}{\Gamma}{\chi}{\sigma}{\epsilon}{o}{\Tsigned{64}}}
+				\infer3[raw pointer base offset]{\CodeTypeSequent{\Xi}{\Gamma}{\chi}{\sigma}{\epsilon}{\Ebaseoff{o}{p}}{\Tptr{t}}}
+			\end{prooftree}
+			\\\vspace{\baselineskip}
+			\begin{prooftree}
+				\hypo{\KindSequent{\Gamma}{t_i}{\T{n$_i$}}}
+				\hypo{n_j \in \mathbb{N}}
+				\hypo{\CodeTypeSequent{\Xi}{\Gamma}{\chi}{\sigma}{\epsilon}{p}{\Tptr{\Tstruct{t_0}{t_1}{\ldots}{t_m}}}}
+				\infer3[structure pointer offset]{\CodeTypeSequent{\Xi}{\Gamma}{\chi}{\sigma}{\epsilon}{\Ebaseoff{p}{i}}{\Tptr{t_i}}}
+			\end{prooftree}
+		}}
 
-  \caption{Type inference rules for pointer offsets.}
-  \label{fig:nstar-common-expressions-pointeroffsets-typerules}
+	\caption{Type inference rules for pointer offsets.}
+	\label{fig:nstar-common-expressions-pointeroffsets-typerules}
 \end{figure}
 
 Although offsetting a pointer works with any expression as the offset (as long as it is a signed integer), if the offset is a register, it is considered an unsafe operation\footnote{See Section~\ref{subsec:nstar-common-unsafe-ptroffsetreg}~``\nameref{subsec:nstar-common-unsafe-ptroffsetreg}''}.
@@ -680,25 +686,25 @@ If a label has the type \texttt{\{reg:s64\}} then there needs to be the register
 However, some restrictions apply to labels in order to make the type-checking meaningful (or at least handle some aspects that cannot be handled with types only). See more about that in Section~\ref{sec:nstar-common-bs-restrictions}~``\nameref{sec:nstar-common-bs-restrictions}''.
 
 \begin{figure}[htb]
-  \centering
+	\centering
 
-  \framebox[\textwidth][c]{\parbox{\textwidth}{
-      \centering
-      \scalebox{.5}{
-        \includegraphics{nstar/sections/code-1}
-      }
-      \\
-      \scalebox{.5}{
-        \includegraphics{nstar/sections/code-2}
-      }
-      \\
-      \scalebox{.5}{
-        \includegraphics{nstar/sections/code-3}
-      }
-  }}
+	\framebox[\textwidth][c]{\parbox{\textwidth}{
+			\centering
+			\scalebox{.5}{
+				\includegraphics{nstar/sections/code-1}
+			}
+			\\
+			\scalebox{.5}{
+				\includegraphics{nstar/sections/code-2}
+			}
+			\\
+			\scalebox{.5}{
+				\includegraphics{nstar/sections/code-3}
+			}
+		}}
 
-  \caption{Grammar for \texttt{code} sections.}
-  \label{fig:nstar-common-sections-code-grammar}
+	\caption{Grammar for \texttt{code} sections.}
+	\label{fig:nstar-common-sections-code-grammar}
 \end{figure}
 
 Every assembly instruction makes the current context vary in some way, either by binding registers, forgetting about some bindings, changing register types, or some other way. The current context is just a record keeping track of the currently bound registers, along with the data type they contain.
@@ -713,26 +719,26 @@ Each label in those sections is used as a pointer to the given value, but only t
 The grammar of those sections is given in Figure~\ref{fig:nstar-common-sections-data-grammar}.
 
 \begin{figure}[htb]
-  \centering
+	\centering
 
-  \framebox[\textwidth][c]{\parbox{\textwidth}{
-      \centering
-      \scalebox{.5}{
-        \includegraphics{nstar/sections/data-1}
-      }\\
-      \scalebox{.5}{
-        \includegraphics{nstar/sections/data-2}
-      }\\
-      \scalebox{.5}{
-        \includegraphics{nstar/sections/data-3}
-      }\\
-      \scalebox{.5}{
-        \includegraphics{nstar/sections/data-4}
-      }
-  }}
+	\framebox[\textwidth][c]{\parbox{\textwidth}{
+			\centering
+			\scalebox{.5}{
+				\includegraphics{nstar/sections/data-1}
+			}\\
+			\scalebox{.5}{
+				\includegraphics{nstar/sections/data-2}
+			}\\
+			\scalebox{.5}{
+				\includegraphics{nstar/sections/data-3}
+			}\\
+			\scalebox{.5}{
+				\includegraphics{nstar/sections/data-4}
+			}
+		}}
 
-  \caption{Grammar for the \texttt{data}, \texttt{rodata} and \texttt{udata} sections.}
-  \label{fig:nstar-common-sections-data-grammar}
+	\caption{Grammar for the \texttt{data}, \texttt{rodata} and \texttt{udata} sections.}
+	\label{fig:nstar-common-sections-data-grammar}
 \end{figure}
 
 \noindent Note that, while the grammar allows labels in the \texttt{data} section to be pointers to context types, this cannot be typed because there is no such constant value referencing a code-space address.
@@ -754,16 +760,16 @@ The two types of imports are indicated from the absence (or presence) of the \te
 The grammar showing this is given in figure~\ref{fig:nstar-common-sections-extern-code-grammar}.
 
 \begin{figure}[htb]
-  \centering
+	\centering
 
-  \framebox[\textwidth][c]{
-    \scalebox{.47}{
-      \includegraphics{nstar/sections/externcode-grammar}
-    }
-  }
+	\framebox[\textwidth][c]{
+		\scalebox{.47}{
+			\includegraphics{nstar/sections/externcode-grammar}
+		}
+	}
 
-  \caption{Grammar for the \texttt{extern.code} file section.}
-  \label{fig:nstar-common-sections-extern-code-grammar}
+	\caption{Grammar for the \texttt{extern.code} file section.}
+	\label{fig:nstar-common-sections-extern-code-grammar}
 \end{figure}
 
 \subsubsection{The \texttt{extern.data} and \texttt{extern.rodata} sections}\label{subsubsec:nstar-common-sections-extern-data}
@@ -774,16 +780,16 @@ Same as for the \texttt{extern.code} section, the import type (dynamic or static
 The grammar for this section is given in Figure~\ref{fig:nstar-common-sections-extern-data-grammar}.
 
 \begin{figure}[htb]
-  \centering
+	\centering
 
-  \framebox[\textwidth][c]{
-    \scalebox{.45}{
-      \includegraphics{nstar/sections/externdata-grammar}
-    }
-  }
+	\framebox[\textwidth][c]{
+		\scalebox{.45}{
+			\includegraphics{nstar/sections/externdata-grammar}
+		}
+	}
 
-  \caption{Grammar for the \texttt{extern.data} and \texttt{extern.rodata} sections.}
-  \label{fig:nstar-common-sections-extern-data-grammar}
+	\caption{Grammar for the \texttt{extern.data} and \texttt{extern.rodata} sections.}
+	\label{fig:nstar-common-sections-extern-data-grammar}
 \end{figure}
 
 \subsection{The special \texttt{include} section}\label{subsec:nstar-common-sections-include}
@@ -796,16 +802,16 @@ Operationally, the \texttt{include} section behaves as if it was replaced with t
 The grammar is described in Figure~\ref{fig:nstar-common-sections-include-grammar}.
 
 \begin{figure}[htb]
-  \centering
+	\centering
 
-  \framebox[\textwidth][c]{
-    \scalebox{.5}{
-      \includegraphics{nstar/sections/include}
-    }
-  }
+	\framebox[\textwidth][c]{
+		\scalebox{.5}{
+			\includegraphics{nstar/sections/include}
+		}
+	}
 
-  \caption{Grammar for the special \texttt{include} section.}
-  \label{fig:nstar-common-sections-include-grammar}
+	\caption{Grammar for the special \texttt{include} section.}
+	\label{fig:nstar-common-sections-include-grammar}
 \end{figure}
 
 \section{Constant values}\label{sec:nstar-common-constvalue}
@@ -817,117 +823,121 @@ Note that strings are automatically null-terminated (i.e.\ a \texttt{\textbacksl
 Their grammar is given in Figure~\ref{fig:nstar-common-constvalue-grammar} and the type inference rules are given in Figure~\ref{fig:nstar-common-constvalue-toplevel-typerules} and Figure~\ref{fig:nstar-common-constvalue-embedded-typerules}.
 
 \begin{figure}[H]
-  \centering
+	\centering
 
-  \framebox[\textwidth][c]{\parbox{\textwidth}{
-      \centering
-      \scalebox{.5}{
-        \includegraphics{nstar/constants/string-character}
-      }
-      \\
-      \scalebox{.5}{
-        \includegraphics{nstar/constants/integer-grammar}
-      }
-      \\
-      \scalebox{.5}{
-        \includegraphics{nstar/constants/character-grammar}
-      }
-      \\
-      \scalebox{.5}{
-        \includegraphics{nstar/constants/array-grammar}
-      }
-      \\
-      \scalebox{.5}{
-        \includegraphics{nstar/constants/string-grammar}
-      }
-      \\
-      \scalebox{.5}{
-        \includegraphics{nstar/constants/struct-grammar}
-      }
-  }}
+	\framebox[\textwidth][c]{\parbox{\textwidth}{
+			\centering
+			\scalebox{.5}{
+				\includegraphics{nstar/constants/string-character}
+			}
+			\\
+			\scalebox{.5}{
+				\includegraphics{nstar/constants/integer-grammar}
+			}
+			\\
+			\scalebox{.5}{
+				\includegraphics{nstar/constants/character-grammar}
+			}
+			\\
+			\scalebox{.5}{
+				\includegraphics{nstar/constants/array-grammar}
+			}
+			\\
+			\scalebox{.5}{
+				\includegraphics{nstar/constants/string-grammar}
+			}
+			\\
+			\scalebox{.5}{
+				\includegraphics{nstar/constants/struct-grammar}
+			}
+		}}
 
-  \caption{Grammar for constant values.}
-  \label{fig:nstar-common-constvalue-grammar}
+	\caption{Grammar for constant values.}
+	\label{fig:nstar-common-constvalue-grammar}
 \end{figure}
 
 \underline{Note:} inference rules for constant values are divided into two parts, depending on whether they are ``top-level'' constants or not.
 A ``top-level'' constant is a constant that is found directly after the \texttt{=} symbol in a \texttt{data} binding.
 
 \begin{figure}[H]
-  \centering
+	\centering
 
-  \framebox[\textwidth][c]{\parbox{\textwidth}{
-      \hspace{1.5em}\underline{Top-level constants:}\\
+	\framebox[\textwidth][c]{\parbox{\textwidth}{
+			\hspace{1.5em}\underline{Top-level constants:}\\
 
-      \begin{center}
-        \begin{prooftree}
-          \hypo{$d is a signed integer constant$}
-          \hypo{$t $\in\{$s8, s16, s32, s64$\}}
-          \infer2{\Gamma\vdash^T_{data}$ d : *t$}
-        \end{prooftree}
-        \\\vspace{\baselineskip}
-        \begin{prooftree}
-          \hypo{$d is an unsigned integer constant$}
-          \hypo{$t $\in\{$u8, u16, u32, u64$\}}
-          \infer2{\Gamma\vdash^T_{data}$ d : *t$}
-        \end{prooftree}
-        \\\vspace{\baselineskip}
-        \begin{prooftree}
-          \hypo{\Gamma\vdash^T_{data}$ c$_1$ : t$_1$, c$_2$ : t$_2$, \ldots, c$_p$ : t$_p}
-          \infer1{\Gamma\vdash^T_{data}$ (c$_1$, c$_2$ \ldots, c$_p$) : *(t$_1$, t$_2$, \ldots, t$_p$)$}
-        \end{prooftree}\hspace{1.5em}
-        \begin{prooftree}
-          \hypo{$c is a character constant$}
-          \infer1{\Gamma\vdash^T_{data}$ c : *s8$}
-        \end{prooftree}
-        \\\vspace{\baselineskip}
-        \begin{prooftree}
-          \hypo{$n : $\mathbb{N}}
-          \hypo{\Gamma\vdash^K$ t : Tn$}
-          \hypo{\Gamma\vdash^T_{data}$ c$_1$, c$_2$, \ldots, c$_n$ : t$}
-          \infer3{\Gamma\vdash^T_{data}$ [c$_1$, c$_2$, \ldots, c$_n$] : *t$}
-        \end{prooftree}\hspace{1.5em}
-        \begin{prooftree}
-          \hypo{$s is a string constant$}
-          \infer1{\Gamma\vdash^T_{data}$ s : *s8$}
-        \end{prooftree}
-      \end{center}
-    }}
-  \caption{Type inference rules for constant values.}
-  \label{fig:nstar-common-constvalue-toplevel-typerules}
+			\begin{center}
+				\begin{prooftree}
+					\hypo{d$ is a signed integer constant$}
+					\hypo{t \in \{ \Tsigned{8}, \Tsigned{16}, \Tsigned{32}, \Tsigned{64} \}}
+					\infer2{\DataTypeSequent{\Gamma}{d}{\Tptr{t}}}
+				\end{prooftree}
+				\\\vspace{\baselineskip}
+				\begin{prooftree}
+					\hypo{d$ is an unsigned integer constant$}
+					\hypo{t \in \{ \Tunsigned{8}, \Tunsigned{16}, \Tunsigned{32}, \Tunsigned{64} \}}
+					\infer2{\DataTypeSequent{\Gamma}{d}{\Tptr{t}}}
+				\end{prooftree}
+				\\\vspace{\baselineskip}
+				\begin{prooftree}
+					\hypo{n_i \in \mathbb{N}}
+					\hypo{\KindSequent{\Gamma}{t_i}{\T{n$_i$}}}
+					\hypo{\DataTypeSequent{\Gamma}{c_i}{t_i}}
+					\infer3{\DataTypeSequent{\Gamma}{\Estruct{c_0}{c_1}{\ldots}{c_p}}{\Tptr{\Tstruct{t_0}{t_1}{\ldots}{t_p}}}}
+				\end{prooftree}\hspace{1.5em}
+				\begin{prooftree}
+					\hypo{c$ is a character constant$}
+					\infer1{\DataTypeSequent{\Gamma}{c}{\Tptr{\Tchar}}}
+				\end{prooftree}
+				\\\vspace{\baselineskip}
+				\begin{prooftree}
+					\hypo{n \in \mathbb{N}}
+					\hypo{\KindSequent{\Gamma}{t}{\T{n}}}
+					\hypo{\DataTypeSequent{\Gamma}{c_i}{t}}
+					\infer3{\DataTypeSequent{\Gamma}{\Earray{c_0}{c_1}{\ldots}{c_n}}{\Tptr{t}}}
+				\end{prooftree}\hspace{1.5em}
+				\begin{prooftree}
+					\hypo{s$ is a string constant$}
+					\infer1{\DataTypeSequent{\Gamma}{s}{\Tptr{\Tchar}}}
+				\end{prooftree}
+			\end{center}
+		}}
+	\caption{Type inference rules for constant values.}
+	\label{fig:nstar-common-constvalue-toplevel-typerules}
 \end{figure}
 \begin{figure}[H]
-  \centering
+	\centering
 
-  \framebox[\textwidth][c]{\parbox{\textwidth}{
-      \hspace{1.5em}\underline{Embedded constants:}\\
+	\framebox[\textwidth][c]{\parbox{\textwidth}{
+			\hspace{1.5em}\underline{Embedded constants:}\\
 
-      \begin{center}
-        \begin{prooftree}
-          \hypo{$d is a signed integer constant$}
-          \hypo{$t $\in\{$s8, s16, s32, s64$\}}
-          \infer2{\Gamma\vdash^T_{data}$ d : t$}
-        \end{prooftree}
-        \\\vspace{\baselineskip}
-        \begin{prooftree}
-          \hypo{$d is an unsigned integer constant$}
-          \hypo{$t $\in\{$u8, u16, u32, u64$\}}
-          \infer2{\Gamma\vdash^T_{data}$ d : t$}
-        \end{prooftree}
-        \\\vspace{\baselineskip}
-        \begin{prooftree}
-          \hypo{$c is a character constant$}
-          \infer1{\Gamma\vdash^T_{data}$ c : s8$}
-        \end{prooftree}\hspace{1.5em}
-        \begin{prooftree}
-          \hypo{\Gamma\vdash^T_{data}$ c$_1$ : t$_1$, c$_2$ : t$_2$, \ldots, c$_p$ : t$_p}
-          \infer1{\Gamma\vdash^T_{data}$ (c$_1$, c$_2$ \ldots, c$_p$) : (t$_1$, t$_2$, \ldots, t$_p$)$}
-        \end{prooftree}
+			\begin{center}
+				\begin{prooftree}
+					\hypo{d$ is a signed integer constant$}
+					\hypo{t \in \{ \Tsigned{8}, \Tsigned{16}, \Tsigned{32}, \Tsigned{64} \}}
+					\infer2{\DataTypeSequent{\Gamma}{d}{t}}
+				\end{prooftree}
+				\\\vspace{\baselineskip}
+				\begin{prooftree}
+					\hypo{d$ is an unsigned integer constant$}
+					\hypo{t \in \{ \Tunsigned{8}, \Tunsigned{16}, \Tunsigned{32}, \Tunsigned{64} \}}
+					\infer2{\DataTypeSequent{\Gamma}{d}{t}}
+				\end{prooftree}
+				\\\vspace{\baselineskip}
+				\begin{prooftree}
+					\hypo{c$ is a character constant$}
+					\infer1{\DataTypeSequent{\Gamma}{c}{\Tchar}}
+				\end{prooftree}\hspace{1.5em}
+				\begin{prooftree}
+					\hypo{n_i \in \mathbb{N}}
+					\hypo{\KindSequent{\Gamma}{t_i}{\T{n$_i$}}}
+					\hypo{\DataTypeSequent{\Gamma}{c_i}{t_i}}
+					\infer3{\DataTypeSequent{\Gamma}{\Estruct{c_0}{c_1}{\ldots}{c_p}}{\Tstruct{t_0}{t_1}{\ldots}{t_p}}}
+				\end{prooftree}
 
-      \end{center}
-    }}
-  \caption{Type inference rules for constant values.}
-  \label{fig:nstar-common-constvalue-embedded-typerules}
+			\end{center}
+		}}
+	\caption{Type inference rules for constant values.}
+	\label{fig:nstar-common-constvalue-embedded-typerules}
 \end{figure}
 
 \section{Restrictions applied to branching}\label{sec:nstar-common-bs-restrictions}
@@ -938,25 +948,25 @@ It also is restricted not to integrate some sort of scoping, which would add som
 \subsection{Returning to a known code-space address}\label{subsec:nstar-common-bs-restrictions-ret}
 
 \nstar\ offers what we call ``continuations'', which are a mean of easily controlling the instruction control flow of the program.
-Thanks to that, this is actually easy to check whether we would be returning to some valid piece of code: the continuation part of th context must be bound to something of the form $\forall().ctx$.
-When anything else is in the continuation (in fact, it cannot be, because we do not allow overwriting the continuation --- which can be worked around by moving the continuation somewhere else before), it is strictly impossible to either \texttt{call} or \texttt{jmp} to a label, or \texttt{ret} from a piece of code, which would yield a very nasty undefined behavior at runtime in mainstream assembly languages.
+Thanks to that, this is actually easy to check whether we would be returning to some valid piece of code: the continuation part of th context must be bound to something of the form $\Tforall{}{\zeta}$.
+When anything else is in the continuation (in fact, it cannot be, because we do not allow overwriting the continuation --- which can be worked around by moving the continuation somewhere else before), it is strictly impossible to either {\Iformat call} or {\Iformat jmp} to a label, or {\Iformat ret} from a piece of code, which would yield a very nasty undefined behavior at runtime in mainstream assembly languages.
 
 \subsection{Missing return values (a.k.a.\ registers not bound before return)}\label{subsec:nstar-common-bs-restrictions-unboundregs}
 
 Along with checking that we are returning to a valid code-space address, we can also, thanks to context types, determine if returning from a function preserves the value in registers, and if after returning we have access to return values of a function.
 Consider the example given in Listing~\ref{lst:nstar-common-bs-returnvalues}.
 
-When \texttt{ret}urning from the \texttt{example} ``function'', we give access to the values of type \texttt{u64} in the \texttt{\%r0} and \texttt{\%r3} registers.
-Note that if either of those registers were not bound before (not given as parameters, or bound using \texttt{mv}), type-checking \textit{must} fail to prevent undefined behavior when later accessing the ``value'' in either register.
-We can easily see that the return context contains \texttt{\%r0: u64} and \texttt{\%r3: u64}, which means that both registers must have been bound before, and are accessible for reading later on, after the \texttt{call} that went until here.
+When {\Iformat ret}urning from the \texttt{example} ``function'', we give access to the values of type \texttt{u64} in the \texttt{\%r0} and \texttt{\%r3} registers.
+Note that if either of those registers were not bound before (not given as parameters, or bound using {\Iformat mv}), type-checking \textit{must} fail to prevent undefined behavior when later accessing the ``value'' in either register.
+We can easily see that the return context contains \texttt{\%r0: u64} and \texttt{\%r3: u64}, which means that both registers must have been bound before, and are accessible for reading later on, after the {\Iformat call} that went until here.
 This gives a safe way of using return values, and guaranteeing that there are indeed return values stored in the target registers.
 
 \begin{listing}[htb]
-  \centering
-  \inputminted{\nstarlexer}{examples/return-multiple-values.nst}
+	\centering
+	\inputminted{\nstarlexer}{examples/return-multiple-values.nst}
 
-  \caption{An example of returning multiple values from a simple function.}
-  \label{lst:nstar-common-bs-returnvalues}
+	\caption{An example of returning multiple values from a simple function.}
+	\label{lst:nstar-common-bs-returnvalues}
 \end{listing}
 
 \section{Unsafe operations}\label{sec:nstar-common-unsafe}
@@ -989,7 +999,7 @@ As offsetting a pointer can lead to an invalid address dereferencing (or at leas
 \subsection{Pointer offsetting using a register}\label{subsec:nstar-common-unsafe-ptroffsetreg}
 
 Offsetting a stack pointer or a structure pointer is considered a safe operation because it is possible to guarantee at compile-time that the offset is correct and points to valid data, unless the offset is a register.
-Because of this, offsetting any pointer using a register (e.g. \texttt{\%r1(\$0 : u64)}) is considered an unsafe operation and should be surrounded by an \texttt{unsafe} block, no matter the instruction used (\texttt{mov}, \texttt{push}, \texttt{pop}, \ldots).
+Because of this, offsetting any pointer using a register (e.g. \texttt{\%r1(\$0 : u64)}) is considered an unsafe operation and should be surrounded by an \texttt{unsafe} block, no matter the instruction used.
 
 \chapter{Instruction set}\label{chap:nstar-instructionset}
 
@@ -1000,387 +1010,385 @@ Most of them are jumps to other components, or program ending statements (which 
 
 \subsection{\texttt{jmp}}\label{subsec:nstar-instructionset-teminal-jmp}
 
-The \texttt{jmp} instruction moves the instruction pointer to the given code-space address (specified using a label).
+The {\Iformat jmp} instruction moves the instruction pointer to the given code-space address (specified using a label).
 Grammar and inference rules are respectively given in Figure~\ref{fig:nstar-instructionset-terminal-jmp-grammar} and Figure~\ref{fig:nstar-instructionset-terminal-jmp-typerules}.
 
 \begin{figure}[H]
-  \centering
+	\centering
 
-  \framebox[\textwidth][c]{
-    \scalebox{.5}{
-      \includegraphics{nstar/instructions/jmp-grammar}
-    }
-  }
+	\framebox[\textwidth][c]{
+		\scalebox{.5}{
+			\includegraphics{nstar/instructions/jmp-grammar}
+		}
+	}
 
-  \caption{Grammar of the \texttt{jmp} instruction.}
-  \label{fig:nstar-instructionset-terminal-jmp-grammar}
+	\caption{Grammar of the {\Iformat jmp} instruction.}
+	\label{fig:nstar-instructionset-terminal-jmp-grammar}
 \end{figure}
 
 \begin{figure}[H]
-  \centering
+	\centering
 
-  \framebox[\textwidth][c]{
-    \begin{prooftree}
-      \hypo{\Xi;\Gamma;\chi;\sigma;\epsilon\vdash^T_{code}$ l<$\vec{v}$> : $\forall$().\{ $\chi^\prime$ | $\sigma\to\epsilon$ \}$}
-      \hypo{\chi\sim\chi^\prime}
-      \infer2[jump to label]{\Xi;\Gamma;\chi;\sigma;\epsilon\vdash^I$ jmp l<$\vec{v}$> $\dashv\chi;\sigma;\epsilon}
-    \end{prooftree}
-  }
+	\framebox[\textwidth][c]{
+		\begin{prooftree}
+			\hypo{\CodeTypeSequent{\Xi}{\Gamma}{\chi}{\sigma}{\epsilon}{l\Tunion{\vec{v}}}{\Tforall{}{\Tcontext{\chi^\prime}{\sigma}{\epsilon}}}}
+			\hypo{\chi\sim\chi^\prime}
+			\infer2[jump to label]{\ISequent{\Xi}{\Gamma}{\chi}{\sigma}{\epsilon}{\Ijmp{l\Tunion{\vec{v}}}}{\chi}{\sigma}{\epsilon}}
+		\end{prooftree}
+	}
 
-  \caption{Type inference rules for the \texttt{jmp} instruction.}
-  \label{fig:nstar-instructionset-terminal-jmp-typerules}
+	\caption{Type inference rules for the {\Iformat jmp} instruction.}
+	\label{fig:nstar-instructionset-terminal-jmp-typerules}
 \end{figure}
 
-The \texttt{jmp} instruction takes a single parameter: a function label, whose type must subtype the current context $\chi$.
+The {\Iformat jmp} instruction takes a single parameter: a function label, whose type must subtype the current context $\chi$.
 The next context is the same as the current context because our type system does not materialize context switches.
-However, this is not an issue because \texttt{jmp} is a terminal instruction.
+However, this is not an issue because {\Iformat jmp} is a terminal instruction.
 
 \subsection{\texttt{call}}\label{subsec:nstar-instructionset-terminal-call}
 
-The \texttt{call} instruction simply jumps to the target address (specified using a label).
+The {\Iformat call} instruction simply jumps to the target address (specified using a label).
 Grammar and inference rules are given in Figure~\ref{fig:nstar-instructionset-terminal-call-grammar} and Figure~\ref{fig:nstar-instructionset-terminal-call-typerules}.
 
 \begin{figure}[H]
-  \centering
+	\centering
 
-  \framebox[\textwidth][c]{
-    \scalebox{.5}{
-      \includegraphics{nstar/instructions/call-grammar}
-    }
-  }
+	\framebox[\textwidth][c]{
+		\scalebox{.5}{
+			\includegraphics{nstar/instructions/call-grammar}
+		}
+	}
 
-  \caption{Grammar of the \texttt{call} instruction.}
-  \label{fig:nstar-instructionset-terminal-call-grammar}
+	\caption{Grammar of the {\Iformat call} instruction.}
+	\label{fig:nstar-instructionset-terminal-call-grammar}
 \end{figure}
 
 \begin{figure}[H]
-  \centering
+	\centering
 
-  \framebox[\textwidth][c]{\parbox{\textwidth}{
-      \centering
-      \begin{prooftree}
-        \hypo{$r is a register$}
-        \hypo{\rho=\chi^\prime\setminus\hat{\chi}^\prime}
-        \infer[no rule, rule margin=1ex]2{\Xi;\Gamma;\chi;\sigma;$ r $\vdash^T_{code}$ l<$\vec{v}$> : $\forall$().\{ $\hat{\chi},$ r : $\forall().\{$ $\hat{\chi}^\prime$ | $\sigma^\prime\to\epsilon^\prime$ $\}$ | $\sigma\to$ r \}$}
-        \infer[no rule, rule margin=1.0ex]1{\Xi;\Gamma;\chi;\sigma;$ r $\vdash^T_{code}$ r : $\forall$().\{ $\chi^\prime$ | $\sigma^\prime\to\epsilon^\prime$ \}\hspace{1.5em}$%
-                                            \bigwedge_{\text{r}\in\text{bang}(\hat{\chi})} $r $\not\in\rho$\hspace{1.5em}$%
-                                            \chi\sim\hat{\chi}\cup\rho}
+	\framebox[\textwidth][c]{\parbox{\textwidth}{
+			\centering
+			\begin{prooftree}
+				\hypo{r$ is a register$}
+				\hypo{\rho=\chi^\prime\setminus\hat{\chi}^\prime}
+				\infer[no rule, rule margin=1ex]2{\CodeTypeSequent{\Xi}{\Gamma}{\chi}{\sigma}{r}{l\Tunion{\vec{v}}}{\Tforall{}{\Tcontext{\hat{\chi}, r : \Tforall{}{\Tcontext{\hat{\chi}^\prime}{\sigma^\prime}{\epsilon^\prime}}}{\sigma}{r}}}}
+				\infer[no rule, rule margin=1.0ex]1{\CodeTypeSequent{\Xi}{\Gamma}{\chi}{\sigma}{r}{r}{\Tforall{}{\Tcontext{\chi^\prime}{\sigma^\prime}{\epsilon^\prime}}}\hspace{1.5em}%
+				\forall{r\in\operatorname{bang}(\hat{\chi})}, r\not\in\rho\hspace{1.5em}%
+				\chi\sim\hat{\chi}\cup\rho}
+				\infer1[function call]{\ISequent{\Xi}{\Gamma}{\chi}{\sigma}{r}{\Icall{l\Tunion{\vec{v}}}}{\chi}{\sigma}{r}}
+			\end{prooftree}
+			\\\vspace{\baselineskip}
+			\begin{prooftree}
+				\hypo{n \in\mathbb{N}}
+				\hypo{n \leq p}
+				\hypo{\CodeTypeSequent{\Xi}{\Gamma}{\chi}{\sigma}{n}{l\Tunion{\vec{v}}}{\Tforall{}{\Tcontext{\hat{\chi}}{\hat{\sigma}}{n}}}}
+				\infer[no rule, rule margin=1ex]3{\sigma=\Tsstack{t_0}{t_1}{\ldots}{t_p}{s}\hspace{1.5em}%
+				\hat{\sigma}=\Tsstack{\hat{t_0}}{\hat{t_1}}{\ldots}{\hat{t_p}}{\hat{s}}\hspace{1.5em}%
+				\rho=\chi^\prime\setminus\hat{\chi}^\prime\hspace{1.5em}%
+				\chi\sim\hat{\chi}\cup\rho}
+				\infer[no rule, rule margin=1.0ex]1{t_n\sim \Tforall{}{\Tcontext{\chi^\prime}{\sigma^\prime}{\epsilon^\prime}}\hspace{1.5em}%
+				\hat{t_n}\sim \Tforall{}{\Tcontext{\hat{\chi}^\prime}{\sigma^\prime}{\epsilon^\prime}}\hspace{1.5em}%
+				\forall{r\in\operatorname{bang}(\hat{\chi})} r\not\in\rho}
+				\infer1[function call]{\ISequent{\Xi}{\Gamma}{\chi}{\sigma}{n}{\Icall{l\Tunion{\vec{v}}}}{\chi}{\sigma}{n}}
+			\end{prooftree}
+		}}
 
-        \infer1[function call]{\Xi;\Gamma;\chi;\sigma;$ r $\vdash^I$ call l<$\vec{v}$> $\dashv\chi;\sigma;$ r$}
-      \end{prooftree}
-      \\\vspace{\baselineskip}
-      \begin{prooftree}
-        \hypo{$n $\in\mathbb{N}}
-        \hypo{$n $\leq$ p$}
-        \hypo{\Xi;\Gamma;\chi;\sigma;$ n $\vdash^T_{code}$ l<$\vec{v}$> : $\forall$().\{ $\hat{\chi}$ | $\hat{\sigma}\to$ n \}$}
-        \infer[no rule, rule margin=1ex]3{\sigma=$ t$_0\dblcolon$ t$_1\dblcolon$ \ldots $\dblcolon$ t$_p\dblcolon$ s\hspace{1.5em}$%
-                                          \hat{\sigma}=\hat{\text{t}_0}\dblcolon\hat{\text{t}_1}\dblcolon$ \ldots $\dblcolon\hat{\text{t}_p}\dblcolon$ $\hat{\text{s}}$\hspace{1.5em}$%
-                                          \rho=\chi^\prime\setminus\hat{\chi}^\prime$\hspace{1.5em}$%
-                                          \chi\sim\hat{\chi}\cup\rho}
-        \infer[no rule, rule margin=1.0ex]1{$t$_n\sim\forall$().\{ $\chi^\prime$ | $\sigma^\prime\to\epsilon^\prime$ \}\hspace{1.5em}$%
-                                            \hat{\text{t}_n}\sim\forall$().\{ $\hat{\chi}^\prime$ | $\sigma^\prime\to\epsilon^\prime$ \}\hspace{1.5em}$%
-                                            \bigwedge_{\text{r}\in\text{bang}(\hat{\chi})} $r $\not\in\rho}
-        \infer1[function call]{\Xi;\Gamma;\chi;\sigma;$ n $\vdash^I$ call l<$\vec{v}$> $\dashv\chi;\sigma;$ n$}
-      \end{prooftree}
-  }}
-
-  \caption{Type inference rules for the \texttt{call} instruction.}
-  \label{fig:nstar-instructionset-terminal-call-typerules}
+	\caption{Type inference rules for the {\Iformat call} instruction.}
+	\label{fig:nstar-instructionset-terminal-call-typerules}
 \end{figure}
 
-The \texttt{call} instruction takes a single function label as argument.
+The {\Iformat call} instruction takes a single function label as argument.
 Its continuation must be bound in the current context, and not allow preserving ``bang''-ed registers (as those must be forgotten about: nobody knows what they became in the process of calling the function) unless explicitly set by the function.
 
 \subsection{\texttt{ret}}\label{sec:nstar-instructionset-terminal-ret}
 
-The \texttt{ret} instruction moves the instruction pointer to the address on top of the stack, and pops it from the stack.
-It is essentially equivalent to doing \texttt{pop \%ip} at runtime.
+The {\Iformat ret} instruction moves the instruction pointer to the address to the current continuation.
 Grammar is given in Figure~\ref{fig:nstar-instructionset-terminal-ret-grammar} and type inference rules are given in Figure~\ref{fig:nstar-instructionset-terminal-ret-typerules}.
 
 \begin{figure}[H]
-  \centering
+	\centering
 
-  \framebox[\textwidth][c]{
-    \scalebox{.5}{
-      \includegraphics{nstar/instructions/ret-grammar}
-    }
-  }
+	\framebox[\textwidth][c]{
+		\scalebox{.5}{
+			\includegraphics{nstar/instructions/ret-grammar}
+		}
+	}
 
-  \caption{Grammar for the \texttt{ret} instruction.}
-  \label{fig:nstar-instructionset-terminal-ret-grammar}
+	\caption{Grammar for the {\Iformat ret} instruction.}
+	\label{fig:nstar-instructionset-terminal-ret-grammar}
 \end{figure}
 
 \begin{figure}[H]
-  \centering
+	\centering
 
-  \framebox[\textwidth][c]{
-    \begin{prooftree}
-      \hypo{$r is a register$}
-      \hypo{\Xi;\Gamma;\chi;\sigma;$ r $\vdash^T_{code}$ r : $\forall$().\{ $\chi^\prime$ | $\sigma\to\epsilon$ \}$}
-      \hypo{\chi\sim\chi^\prime}
-      \infer3[return to caller in register]{\Xi;\Gamma;\chi;\sigma;$ r $\vdash^I$ ret $\dashv\chi;\sigma;$ r$}
-    \end{prooftree}
-  }
+	\framebox[\textwidth][c]{
+		\begin{prooftree}
+			\hypo{r$ is a register$}
+			\hypo{\CodeTypeSequent{\Xi}{\Gamma}{\chi}{\sigma}{r}{r}{\Tforall{}{\Tcontext{\chi^\prime}{\sigma}{\epsilon}}}}
+			\hypo{\chi\sim\chi^\prime}
+			\infer3[return to caller in register]{\ISequent{\Xi}{\Gamma}{\chi}{\sigma}{r}{\Iret}{\chi}{\sigma}{r}}
+		\end{prooftree}
+	}
 
-  \caption{Type inference rules for the \texttt{ret} instruction.}
-  \label{fig:nstar-instructionset-terminal-ret-typerules}
+	\caption{Type inference rules for the {\Iformat ret} instruction.}
+	\label{fig:nstar-instructionset-terminal-ret-typerules}
 \end{figure}
 
-The \texttt{ret} instruction takes no argument, but requires its continuation to be bound in the current context, and that the context of the continuation subtypes the current context (to avoid improperly typed/unbound registers).
-Note that it does not allow returning to a stack-continuation because this would lead to writing infinite types (the stack continuation not being dropped, it must be present in the stack of the continuation, leading to such case: $\sigma_{1}\dblcolon\forall().\{ \zeta | \sigma_{1}\dblcolon\ldots\dblcolon\sigma_{2} \to \epsilon \}\dblcolon\sigma_{2}$ where $\ldots$ is the $\forall$-type representing the continuation).
+The {\Iformat ret} instruction takes no argument, but requires its continuation to be bound in the current context, and that the context of the continuation subtypes the current context (to avoid improperly typed/unbound registers).
+Note that it does not allow returning to a stack-continuation because this would lead to writing infinite types (the stack continuation not being dropped, it must be present in the stack of the continuation, leading to such case: $\Tsstack{\sigma_1}{\Tforall{}{\Tcontext{\chi}{\Tsstack{\sigma_1}{T}{\sigma_2}}{\epsilon}}}{\sigma_2}$ where $T$ is the $\forall$-type representing the continuation -- $T = \Tforall{}{\Tcontext{\chi}{\Tsstack{\sigma_1}{T}{\sigma_2}}{\epsilon}}$ which is an infinite type).
 
 \section{Stack handling instructions}\label{sec:nstar-instructionset-stack}
 
 \subsection{\texttt{sld}}\label{subsec:nstar-instructionset-stack-sld}
 
-The \texttt{sld} instruction stores the value at the given index on the stack in a register.
+The {\Iformat sld} instruction stores the value at the given index on the stack in a register.
 Grammar and inference rules are given in Figure~\ref{fig:nstar-instructionset-stack-sld-grammar} and Figure~\ref{fig:nstar-instructionset-stack-sld-typerules}.
 
 \begin{figure}[H]
-  \centering
+	\centering
 
-  \framebox[\textwidth][c]{
-    \scalebox{.5}{
-      \includegraphics{nstar/instructions/sld-grammar}
-    }
-  }
+	\framebox[\textwidth][c]{
+		\scalebox{.5}{
+			\includegraphics{nstar/instructions/sld-grammar}
+		}
+	}
 
-  \caption{Grammar for the \texttt{sld} instruction.}
-  \label{fig:nstar-instructionset-stack-sld-grammar}
+	\caption{Grammar for the {\Iformat sld} instruction.}
+	\label{fig:nstar-instructionset-stack-sld-grammar}
 \end{figure}
 
 \begin{figure}[H]
-  \centering
+	\centering
 
-  \framebox[\textwidth][c]{\parbox{\textwidth}{
-      \centering
-      \begin{prooftree}
-        \hypo{$r is a register$}
-        \hypo{$n $\in\mathbb{N}}
-        \hypo{$n $\leq$ p$}
-        \infer[no rule, rule margin=1.0ex]3{\hat{\sigma}=$ t$_0\dblcolon$ t$_1\dblcolon$ \ldots $\dblcolon$ t$_p\dblcolon$ s\hspace{1.5em}$%
-          $t$_n\sim\forall$().ctx$}
-        \infer1[load cont from stack in register]{\Xi;\Gamma;\chi;\hat{\sigma};$ n $\vdash^I$ sld n, r $\dashv\chi,$ r : t$_n;\hat{\sigma};$ r$}
-      \end{prooftree}
-      \\\vspace{\baselineskip}
-      \begin{prooftree}
-        \hypo{$r is a register$}
-        \hypo{$n, k $\in\mathbb{N}}
-        \infer[no rule, rule margin=1.0ex]2{$n $\leq$ p\hspace{1.5em}$%
-          $k $\leq8$\hspace{1.5em}$%
-          \hat{\sigma}=$ t$_0\dblcolon$ t$_1\dblcolon$ \ldots $\dblcolon$ t$_p\dblcolon$ s\hspace{1.5em}$%
-          \Gamma\vdash^K$ t$_n$ : Tk$}
-        \infer1[load value from stack]{\Xi;\Gamma;\chi;\hat{\sigma};\epsilon\vdash^I$ sld n, r $\dashv\chi,$ r : t$_n;\hat{\sigma};\epsilon}
-      \end{prooftree}
-  }}
+	\framebox[\textwidth][c]{\parbox{\textwidth}{
+			\centering
+			\begin{prooftree}
+				\hypo{r$ is a register$}
+				\hypo{n \in\mathbb{N}}
+				\hypo{n \leq p}
+				\infer[no rule, rule margin=1.0ex]3{\sigma= \Tsstack{t_0}{t_1}{\ldots}{t_p}{s}\hspace{1.5em}%
+				t_n\sim\Tforall{}{\zeta}}
+				\infer1[load cont from stack in register]{\ISequent{\Xi}{\Gamma}{\chi}{\sigma}{n}{\Isld{n}{r}}{\chi, r : t_n}{\sigma}{r}}
+			\end{prooftree}
+			\\\vspace{\baselineskip}
+			\begin{prooftree}
+				\hypo{r$ is a register$}
+				\hypo{n, k \in\mathbb{N}}
+				\infer[no rule, rule margin=1.0ex]2{n \leq p\hspace{1.5em}%
+				k \leq 8\hspace{1.5em}%
+				\sigma=\Tsstack{t_0}{t_1}{\ldots}{t_p}{s}\hspace{1.5em}%
+				\KindSequent{\Gamma}{t_n}{\T{k}}}
+				\infer1[load value from stack]{\ISequent{\Xi}{\Gamma}{\chi}{\sigma}{\epsilon}{\Isld{n}{r}}{\chi, r : t_n}{\sigma}{\epsilon}}
+			\end{prooftree}
+		}}
 
-  \caption{Type inference rules for the \texttt{sld} instruction.}
-  \label{fig:nstar-instructionset-stack-sld-typerules}
+	\caption{Type inference rules for the {\Iformat sld} instruction.}
+	\label{fig:nstar-instructionset-stack-sld-typerules}
 \end{figure}
 
-The \texttt{sld} instruction takes two arguments: an integer and a register, and requires the integer to be a valid stack index.
+The {\Iformat sld} instruction takes two arguments: an integer and a register, and requires the integer to be a valid stack index.
 The register is then bound to a value of the type at the stack index, if it can fit in it (depending on the platform, it may need to be either 8 or 4 bytes wide).
 Note that it is possible to move a continuation from the stack into a register using this instruction, but overwriting the current continuation is forbidden.
 
 \subsection{\texttt{sst}}\label{subsec:nstar-instructionset-stack-sst}
 
-The \texttt{sst} instruction stores a value at the given index on the stack.
+The {\Iformat sst} instruction stores a value at the given index on the stack.
 Grammar and inference rules are given in Figure~\ref{fig:nstar-instructionset-stack-sst-grammar} and Figure~\ref{fig:nstar-instructionset-stack-sst-typerules}.
 
 \begin{figure}[H]
-  \centering
+	\centering
 
-  \framebox[\textwidth][c]{
-    \scalebox{.5}{
-      \includegraphics{nstar/instructions/sst-grammar}
-    }
-  }
+	\framebox[\textwidth][c]{
+		\scalebox{.5}{
+			\includegraphics{nstar/instructions/sst-grammar}
+		}
+	}
 
-  \caption{Grammar for the \texttt{sst} instruction.}
-  \label{fig:nstar-instructionset-stack-sst-grammar}
+	\caption{Grammar for the {\Iformat sst} instruction.}
+	\label{fig:nstar-instructionset-stack-sst-grammar}
 \end{figure}
 
 \begin{figure}[H]
-  \centering
+	\centering
 
-  \framebox[\textwidth][c]{\parbox{\textwidth}{
-      \centering
-      \begin{prooftree}
-        \hypo{$r is a register$}
-        \hypo{$n $\in\mathbb{N}}
-        \hypo{\hat{\sigma}=$ t$_0\dblcolon$ t$_1\dblcolon$ \ldots $\dblcolon$ t$_p\dblcolon$ s$}
-        \infer[no rule, rule margin=1.0ex]3{$n $\leq$ p\hspace{1.5em}$%
-                                            $t$_n\sim\forall$().ctx\hspace{1.5em}$%
-                                            \Xi;\Gamma;\chi;\hat{\sigma};\epsilon\vdash^T_{code}$ r : $\forall$().ctx$}
-        \infer1[store continuation in stack]{\Xi;\Gamma;\chi;\hat{\sigma};$ r $\vdash^I$ sst r, n $\dashv\chi;\hat{\sigma};$ n$}
-      \end{prooftree}
-      \\\vspace{\baselineskip}
-      \begin{prooftree}
-        \hypo{$n $\in\mathbb{N}}
-        \hypo{\hat{\sigma}=$ t$_0\dblcolon$ t$_1\dblcolon$ \ldots $\dblcolon$ t$_p\dblcolon$ s$}
-        \infer[no rule, rule margin=1ex]2{$n $\leq$ p\hspace{1.5em}$%
-                                          \Xi;\Gamma;\chi;\hat{\sigma};\epsilon\vdash^T_{code}$ e : t$_n$\hspace{1.5em}$%
-                                          $t$_n\neq$ !$}
-        \infer1[store value in stack]{\Xi;\Gamma;\chi;\hat{\sigma};\epsilon\vdash^I$ sst e, n $\dashv\chi;\hat{\sigma};\epsilon}
-      \end{prooftree}
-  }}
+	\framebox[\textwidth][c]{\parbox{\textwidth}{
+			\centering
+			\begin{prooftree}
+				\hypo{r$ is a register$}
+				\hypo{n \in\mathbb{N}}
+				\hypo{\sigma= \Tsstack{t_0}{t_1}{\ldots}{t_p}{s}}
+				\infer[no rule, rule margin=1.0ex]3{n \leq p\hspace{1.5em}%
+				t_n\sim\Tforall{}{\zeta}\hspace{1.5em}%
+				\CodeTypeSequent{\Xi}{\Gamma}{\chi}{\sigma}{\epsilon}{r}{\Tforall{}{\zeta}}}
+				\infer1[store continuation in stack]{\ISequent{\Xi}{\Gamma}{\chi}{\sigma}{r}{\Isst{r}{n}}{\chi}{\sigma}{n}}
+			\end{prooftree}
+			\\\vspace{\baselineskip}
+			\begin{prooftree}
+				\hypo{$n $\in\mathbb{N}}
+				\hypo{\sigma=\Tsstack{t_0}{t_1}{\ldots}{t_p}{s}}
+				\infer[no rule, rule margin=1ex]2{n \leq p\hspace{1.5em}%
+				\CodeTypeSequent{\Xi}{\Gamma}{\chi}{\sigma}{\epsilon}{e}{t_n}\hspace{1.5em}%
+				t_n\neq \Tbang\hspace{1.5em}%
+				\epsilon \neq n}
+				\infer1[store value in stack]{\ISequent{\Xi}{\Gamma}{\chi}{\sigma}{\epsilon}{\Isst{e}{n}}{\chi}{\sigma}{\epsilon}}
+			\end{prooftree}
+		}}
 
 
-  \caption{Type inference rules for the \texttt{sst} instruction.}
-  \label{fig:nstar-instructionset-stack-sst-typerules}
+	\caption{Type inference rules for the {\Iformat sst} instruction.}
+	\label{fig:nstar-instructionset-stack-sst-typerules}
 \end{figure}
 
-The \texttt{sst} instruction takes two arguments: a register and an integer, requiring the integer to be a valid stack index pointing to a 4 or 8 bytes wide cell.
+The {\Iformat sst} instruction takes two arguments: a register and an integer, requiring the integer to be a valid stack index pointing to a 4 or 8 bytes wide cell.
 This instruction can be used to move the continuation from a register onto the stack, but overwriting the current continuation is forbidden.
 
 \subsection{\texttt{salloc}}\label{subsec:nstar-instructionset-stack-salloc}
 
-The \texttt{salloc} instructions allocates some space on top of the stack for some data of the given type.
+The {\Iformat salloc} instructions allocates some space on top of the stack for some data of the given type.
 Grammar and type inference rules are given in Figure~\ref{fig:nstar-instructionset-stack-salloc-grammar} and Figure~\ref{fig:nstar-instructionset-stack-salloc-typerules}.
 
 \begin{figure}[H]
-  \centering
+	\centering
 
-  \framebox[\textwidth][c]{
-    \scalebox{.5}{
-      \includegraphics{nstar/instructions/salloc-grammar}
-    }
-  }
+	\framebox[\textwidth][c]{
+		\scalebox{.5}{
+			\includegraphics{nstar/instructions/salloc-grammar}
+		}
+	}
 
-  \caption{Grammar for the \texttt{salloc} instruction.}
-  \label{fig:nstar-instructionset-stack-salloc-grammar}
+	\caption{Grammar for the {\Iformat salloc} instruction.}
+	\label{fig:nstar-instructionset-stack-salloc-grammar}
 \end{figure}
 
 \begin{figure}[H]
-  \centering
+	\centering
 
-  \framebox[\textwidth][c]{\parbox{\textwidth}{
-      \centering
-      \begin{prooftree}
-        \hypo{$n, m $\in\mathbb{N}}
-        \hypo{\Gamma\vdash^K$ t : Tm$}
-        \hypo{\sigma^\prime=$ t $\dblcolon\sigma}
-        \infer3[\texttt{salloc} with stack continuation]{\Xi;\Gamma;\chi;\sigma;$ n $\vdash^I$ salloc t $\dashv\chi;\sigma^\prime;$ n$+1}
-      \end{prooftree}
-      \\\vspace{\baselineskip}
-      \begin{prooftree}
-        \hypo{$m $\in\mathbb{N}}
-        \hypo{\Gamma\vdash^K$ t : Tm$}
-        \hypo{\sigma^\prime=$ t $\dblcolon\sigma}
-        \infer3{\Xi;\Gamma;\chi;\sigma;\epsilon\vdash^I$ salloc t $\dashv\chi;\sigma^\prime;\epsilon}
-      \end{prooftree}
-  }}
+	\framebox[\textwidth][c]{\parbox{\textwidth}{
+			\centering
+			\begin{prooftree}
+				\hypo{m \in\mathbb{N}}
+				\hypo{\KindSequent{\Gamma}{t}{\T{m}}}
+				\hypo{\sigma^\prime=\Tstack{t}{\sigma}}
+				\infer3[\texttt{salloc} with stack continuation]{\ISequent{\Xi}{\Gamma}{\chi}{\sigma}{n}{\Isalloc{t}}{\chi}{\sigma^\prime}{n+1}}
+			\end{prooftree}
+			\\\vspace{\baselineskip}
+			\begin{prooftree}
+				\hypo{m \in\mathbb{N}}
+				\hypo{\KindSequent{\Gamma}{t}{\T{m}}}
+				\hypo{\sigma^\prime=\Tstack{t}{\sigma}}
+				\infer3{\ISequent{\Xi}{\Gamma}{\chi}{\sigma}{\epsilon}{\Isalloc{t}}{\chi}{\sigma^\prime}{\epsilon}}
+			\end{prooftree}
+		}}
 
-  \caption{Type inference rules for the \texttt{salloc} instruction.}
-  \label{fig:nstar-instructionset-stack-salloc-typerules}
+	\caption{Type inference rules for the {\Iformat salloc} instruction.}
+	\label{fig:nstar-instructionset-stack-salloc-typerules}
 \end{figure}
 
-The \texttt{salloc} instruction allows reserving (allocating) $n$ bytes of memory on top of the stack, for a specific type which is $n$ bytes wide.
-Note that according to the \texttt{sst} instruction, the type may be changed later on.
+The {\Iformat salloc} instruction allows reserving (allocating) $n$ bytes of memory on top of the stack, for a specific type which is $n$ bytes wide.
+Note that according to the {\Iformat sst} instruction, the type may be changed later on.
 If the continuation is currently on the stack, then it is shifted one cell to the right (its stack index is incremented by 1).
 
 \subsection{\texttt{sfree}}\label{subsec:nstar-instructionset-stack-sfree}
 
-The \texttt{sfree} instruction frees the top-most stack cell.
+The {\Iformat sfree} instruction frees the top-most stack cell.
 Grammar and type inference rules are respectively given in Figure~\ref{fig:nstar-instructionset-stack-sfree-grammar} and Figure~\ref{fig:nstar-instructionset-stack-sfree-typerules}.
 
 \begin{figure}[H]
-  \centering
+	\centering
 
-  \framebox[\textwidth][c]{
-    \scalebox{.5}{
-      \includegraphics{nstar/instructions/sfree-grammar}
-    }
-  }
+	\framebox[\textwidth][c]{
+		\scalebox{.5}{
+			\includegraphics{nstar/instructions/sfree-grammar}
+		}
+	}
 
-  \caption{Grammar for the \texttt{sfree} instruction.}
-  \label{fig:nstar-instructionset-stack-sfree-grammar}
+	\caption{Grammar for the {\Iformat sfree} instruction.}
+	\label{fig:nstar-instructionset-stack-sfree-grammar}
 \end{figure}
 
 \begin{figure}[H]
-  \centering
+	\centering
 
-  \framebox[\textwidth][c]{\parbox{\textwidth}{
-      \centering
-      \begin{prooftree}
-        \hypo{$n $\geq 1}
-        \hypo{$n $\leq$ p$}
-        \infer[no rule, rule margin=1.0ex]2{\sigma=$ t$_0\dblcolon$ t$_1\dblcolon$ \ldots $\dblcolon$ t$_p\dblcolon$ s\hspace{1.5em}$%
-                                            \sigma^\prime=$ t$_1\dblcolon$ \ldots $\dblcolon$ t$_p\dblcolon$ s$}
-        \infer1[\texttt{sfree} with stack continuation]{\Xi;\Gamma;\chi;\sigma;$ n $\vdash^I$ sfree $\dashv\chi;\sigma^\prime;$ n$-1}
-      \end{prooftree}
-      \\\vspace{\baselineskip}
-      \begin{prooftree}
-        \hypo{\sigma=$ t$_0\dblcolon$ t$_1\dblcolon$ \ldots $\dblcolon$ t$_p\dblcolon$ s$}
-        \hypo{\sigma^\prime=$ t$_1\dblcolon$ \ldots $\dblcolon$ t$_p\dblcolon$ s$}
-        \infer2{\Xi;\Gamma;\chi;\sigma;\epsilon\vdash^I$ sfree $\dashv\chi;\sigma^\prime;\epsilon}
-      \end{prooftree}
-  }}
+	\framebox[\textwidth][c]{\parbox{\textwidth}{
+			\centering
+			\begin{prooftree}
+				\hypo{1 \leq n \leq p}
+				\hypo{\sigma=\Tsstack{t_0}{t_1}{\ldots}{t_p}{s}}
+				\hypo{\sigma^\prime=\Tsstack{t_1}{\ldots}{t_p}{s}}
+				\infer3[\texttt{sfree} with stack continuation]{\ISequent{\Xi}{\Gamma}{\chi}{\sigma}{n}{\Isfree}{\chi}{\sigma^\prime}{n-1}}
+			\end{prooftree}
+			\\\vspace{\baselineskip}
+			\begin{prooftree}
+				\hypo{\sigma=\sigma=\Tsstack{t_0}{t_1}{\ldots}{t_p}{s}}
+				\hypo{\sigma^\prime=\Tsstack{t_1}{\ldots}{t_p}{s}}
+				\infer2{\ISequent{\Xi}{\Gamma}{\chi}{\sigma}{\epsilon}{\Isfree}{\chi}{\sigma^\prime}{\epsilon}}
+			\end{prooftree}
+		}}
 
-  \caption{Type inference rules for the \texttt{sfree} instruction.}
-  \label{fig:nstar-instructionset-stack-sfree-typerules}
+	\caption{Type inference rules for the {\Iformat sfree} instruction.}
+	\label{fig:nstar-instructionset-stack-sfree-typerules}
 \end{figure}
 
-The \texttt{sfree} instruction frees the top-most stack cell available unless it contains the current continuation.
+The {\Iformat sfree} instruction frees the top-most stack cell available unless it contains the current continuation.
 If not, the continuation is shifted left (its stack index is decremented by 1).
 Note that freeing a stack cell does not mean all the pointers to it are invalidated, nor that the memory occupied is zeroed out.
 Accessing old references to it is considered Undefined Behavior, and is therefore unreliable.
 
 \subsection{\texttt{sref}}\label{subsec:nstar-instructionset-stack-sref}
 
-The \texttt{sref} instruction fetches a pointer (to be used by memory instructions) to some data available on the stack.
+The {\Iformat sref} instruction fetches a pointer (to be used by memory instructions) to some data available on the stack.
 This can be used to construct references to e.g.\ stack-allocated structures (which cannot be written to nor read from otherwise).
 The grammar and inference rules are given respectively in Figure~\ref{fig:nstar-instructionset-stack-sref-grammar} and Figure~\ref{fig:nstar-instructionset-stack-sref-typerules}.
 
 \begin{figure}[H]
-  \centering
+	\centering
 
-  \framebox[\textwidth][c]{
-    \scalebox{.5}{
-      \includegraphics{nstar/instructions/sref-grammar}
-    }
-  }
+	\framebox[\textwidth][c]{
+		\scalebox{.5}{
+			\includegraphics{nstar/instructions/sref-grammar}
+		}
+	}
 
-  \caption{Grammar for the \texttt{sref} instruction.}
-  \label{fig:nstar-instructionset-stack-sref-grammar}
+	\caption{Grammar for the {\Iformat sref} instruction.}
+	\label{fig:nstar-instructionset-stack-sref-grammar}
 \end{figure}
 
 \begin{figure}[H]
-  \centering
+	\centering
 
-  \framebox[\textwidth][c]{
-    \parbox{\textwidth}{
-      \centering
+	\framebox[\textwidth][c]{
+		\parbox{\textwidth}{
+			\centering
 
-      \begin{prooftree}
-        \hypo{$r is a register$}
-        \hypo{$n $\in\mathbb{N}}
-        \hypo{$n $\leq$ p$}
-        \infer[no rule, rule margin=1ex]3{\sigma=$ t$_0\dblcolon$ t$_1\dblcolon$ \ldots $\dblcolon$ t$_p\dblcolon$ s\hspace{1.5em}$%
-                                          $t$_n\nsim$ !\hspace{1.5em}$%
-                                          $t$_n\nsim\forall$().$\zeta$\hspace{1.5em}$%
-                                          \epsilon\neq$ n$}
-        \infer1{\Xi;\Gamma;\chi;\sigma;\epsilon\vdash^I$ sref n, r $\dashv\chi,$ r : *t$_n;\sigma;\epsilon}
-      \end{prooftree}
-    }
-  }
+			\begin{prooftree}
+				\hypo{r$ is a register$}
+				\hypo{n \in\mathbb{N}}
+				\hypo{n \leq p}
+				\infer[no rule, rule margin=1ex]3{\sigma=\Tsstack{t_0}{t_1}{\ldots}{t_p}{s}\hspace{1.5em}%
+				t_n\nsim \Tbang\hspace{1.5em}%
+				t_n\nsim \Tforall{}{\zeta}\hspace{1.5em}%
+				\epsilon\neq n}
+				\infer1{\ISequent{\Xi}{\Gamma}{\chi}{\sigma}{\epsilon}{\Isref{n}{r}}{\chi, r : \Tptr{t_n}}{\sigma}{\epsilon}}
+			\end{prooftree}
+		}
+	}
 
-  \caption{Type inference rules for the \texttt{sref} instruction.}
-  \label{fig:nstar-instructionset-stack-sref-typerules}
+	\caption{Type inference rules for the {\Iformat sref} instruction.}
+	\label{fig:nstar-instructionset-stack-sref-typerules}
 \end{figure}
 
-The \texttt{sref} instruction takes an integer and a register as arguments, and requires the integer to be a valid stack index to a type at most 4 or 8 bytes wide.
+The {\Iformat sref} instruction takes an integer and a register as arguments, and requires the integer to be a valid stack index to a type at most 4 or 8 bytes wide.
 For security reasons, it is forbidden to take a reference to a bang-type (which is unsized) or to a function pointer, as it could lead to duplicating a continuation.
 
-Note that trying to write to a pointer to stack data which has been freed with \texttt{sfree} (as in Listing~\ref{lst:nstar-instructionset-stack-sref-ubexample}) is Undefined Behavior.
+Note that trying to write to a pointer to stack data which has been freed with {\Iformat sfree} (as in Listing~\ref{lst:nstar-instructionset-stack-sref-ubexample}) is Undefined Behavior.
 This is something that we cannot check (it could be possible with linear types) in \nstar\ because it goes beyond the type system described in this document.
 
 \begin{listing}[H]
-  \centering
-  \inputminted{\nstarlexer}{examples/sref-undefined-behavior.nst}
+	\centering
+	\inputminted{\nstarlexer}{examples/sref-undefined-behavior.nst}
 
-  \caption{An undefined behavior triggered through the use of \texttt{sref}.}
-  \label{lst:nstar-instructionset-stack-sref-ubexample}
+	\caption{An undefined behavior triggered through the use of {\Iformat sref}.}
+	\label{lst:nstar-instructionset-stack-sref-ubexample}
 \end{listing}
 
 \section{Memory handling instructions}\label{sec:nstar-instructionset-memory}
@@ -1390,145 +1398,145 @@ Those may be used to access data in the \texttt{data} sections or even \texttt{m
 
 \subsection{\texttt{ld}}\label{subsec:nstar-instructionset-memory-ld}
 
-The \texttt{ld} instruction loads a value from a memory area into a register.
+The {\Iformat ld} instruction loads a value from a memory area into a register.
 Grammar and inference rules are given in Figure~\ref{fig:nstar-instructionset-memory-ld-grammar} and Figure~\ref{fig:nstar-instructionset-memory-ld-typerules}.
 
 \begin{figure}[H]
-  \centering
+	\centering
 
-  \framebox[\textwidth][c]{
-    \scalebox{.5}{
-      \includegraphics{nstar/instructions/ld-grammar}
-    }
-  }
+	\framebox[\textwidth][c]{
+		\scalebox{.5}{
+			\includegraphics{nstar/instructions/ld-grammar}
+		}
+	}
 
-  \caption{Grammar for the \texttt{ld} instruction.}
-  \label{fig:nstar-instructionset-memory-ld-grammar}
+	\caption{Grammar for the {\Iformat ld} instruction.}
+	\label{fig:nstar-instructionset-memory-ld-grammar}
 \end{figure}
 
 \begin{figure}[H]
-  \centering
+	\centering
 
-  \framebox[\textwidth][c]{\parbox{\textwidth}{
-      \centering
-      \begin{prooftree}
-        \hypo{$r is a register$}
-        \hypo{$r $\neq\epsilon}
-        \hypo{\Xi;\Gamma;\chi;\sigma;\epsilon\vdash^T_{code}$ o(p) : *t$}
-        \infer3[load value from pointer byte offset]{\Xi;\Gamma;\chi;\sigma;\epsilon\vdash^I$ ld o(p), r $\dashv\chi,$ r : t$;\sigma;\epsilon}
-      \end{prooftree}
-      \\\vspace{\baselineskip}
-      \begin{prooftree}
-        \hypo{$r is a register$}
-        \hypo{$r $\neq\epsilon}
-        \hypo{\Xi;\Gamma;\chi;\sigma;\epsilon\vdash^T_{code}$ p[o] : *t$}
-        \infer3[load value from pointer base offset]{\Xi;\Gamma;\chi;\sigma;\epsilon\vdash^I$ ld p[o], r $\dashv\chi,$ r : t$;\sigma;\epsilon}
-      \end{prooftree}
-  }}
+	\framebox[\textwidth][c]{\parbox{\textwidth}{
+			\centering
+			\begin{prooftree}
+				\hypo{r$ is a register$}
+				\hypo{r \neq\epsilon}
+				\hypo{\CodeTypeSequent{\Xi}{\Gamma}{\chi}{\sigma}{\epsilon}{\Ebyteoff{o}{p}}{\Tptr{t}}}
+				\infer3[load value from pointer byte offset]{\ISequent{\Xi}{\Gamma}{\chi}{\sigma}{\epsilon}{\Ild{\Ebyteoff{o}{p}}{r}}{\chi, r : t}{\sigma}{\epsilon}}
+			\end{prooftree}
+			\\\vspace{\baselineskip}
+			\begin{prooftree}
+				\hypo{r$ is a register$}
+				\hypo{r \neq\epsilon}
+				\hypo{\CodeTypeSequent{\Xi}{\Gamma}{\chi}{\sigma}{\epsilon}{\Ebaseoff{p}{o}}{\Tptr{t}}}
+				\infer3[load value from pointer base offset]{\ISequent{\Xi}{\Gamma}{\chi}{\sigma}{\epsilon}{\Ild{\Ebaseoff{p}{o}}{r}}{\chi, r : t}{\sigma}{\epsilon}}
+			\end{prooftree}
+		}}
 
-  \caption{Type inference rules for the \texttt{ld} instruction.}
-  \label{fig:nstar-instructionset-memory-ld-typerules}
+	\caption{Type inference rules for the {\Iformat ld} instruction.}
+	\label{fig:nstar-instructionset-memory-ld-typerules}
 \end{figure}
 
-The \texttt{ld} instruction takes a register and a pointer offset as arguments, and requires that the value held in the register matches the value behind the pointer.
+The {\Iformat ld} instruction takes a register and a pointer offset as arguments, and requires that the value held in the register matches the value behind the pointer.
 This instruction does not allow overwriting the current continuation, if stored in the register passed as argument.
 
 \subsection{\texttt{st}}\label{subsec:nstar-instructionset-memory-st}
 
-The \texttt{st} instruction stores a value into a memory area denoted by pointer offset.
+The {\Iformat st} instruction stores a value into a memory area denoted by pointer offset.
 The grammar and inference rules are given in Figure~\ref{fig:nstar-instructionset-memory-st-grammar} and Figure~\ref{fig:nstar-instructionset-memory-st-typerules}.
 
 \begin{figure}[H]
-  \centering
+	\centering
 
-  \framebox[\textwidth][c]{
-    \scalebox{.5}{
-      \includegraphics{nstar/instructions/st-grammar}
-    }
-  }
+	\framebox[\textwidth][c]{
+		\scalebox{.5}{
+			\includegraphics{nstar/instructions/st-grammar}
+		}
+	}
 
-  \caption{Grammar for the \texttt{st} instruction.}
-  \label{fig:nstar-instructionset-memory-st-grammar}
+	\caption{Grammar for the {\Iformat st} instruction.}
+	\label{fig:nstar-instructionset-memory-st-grammar}
 \end{figure}
 
 \begin{figure}[H]
-  \centering
+	\centering
 
-  \framebox[\textwidth][c]{\parbox{\textwidth}{
-      \centering
-      \begin{prooftree}
-        \hypo{\Xi;\Gamma;\chi;\sigma;\epsilon\vdash^T_{code}$ e : t$}
-        \infer[no rule, rule margin=1ex]1{$e $\neq\epsilon$\hspace{1.5em}$
-                                          $t $\neq$ !\hspace{1.5em}$
-                                          \Xi;\Gamma;\chi;\sigma;\epsilon\vdash^T_{code}$ o(p) : *t$}
-        \infer1[store value in pointer byte offset]{\Xi;\Gamma;\chi;\sigma;\epsilon\vdash^I$ st e, o(p) $\dashv\chi;\sigma;\epsilon}
-      \end{prooftree}
-      \\\vspace{\baselineskip}
-      \begin{prooftree}
-        \hypo{\Xi;\Gamma;\chi;\sigma;\epsilon\vdash^T_{code}$ e : t$}
-        \infer[no rule, rule margin=1ex]1{$e $\neq\epsilon$\hspace{1.5em}$
-                                          $t $\neq$ !\hspace{1.5em}$
-                                          \Xi;\Gamma;\chi;\sigma;\epsilon\vdash^T_{code}$ p[o] : *t$}
-        \infer1[store value in pointer base offset]{\Xi;\Gamma;\chi;\sigma;\epsilon\vdash^I$ st e, p[o] $\dashv\chi;\sigma;\epsilon}
-      \end{prooftree}
-  }}
+	\framebox[\textwidth][c]{\parbox{\textwidth}{
+			\centering
+			\begin{prooftree}
+				\hypo{\CodeTypeSequent{\Xi}{\Gamma}{\chi}{\sigma}{\epsilon}{e}{t}}
+				\infer[no rule, rule margin=1ex]1{e \neq\epsilon\hspace{1.5em}
+				t \neq \Tbang\hspace{1.5em}
+				\CodeTypeSequent{\Xi}{\Gamma}{\chi}{\sigma}{\epsilon}{\Ebyteoff{o}{p}}{\Tptr{t}}}
+				\infer1[store value in pointer byte offset]{\ISequent{\Xi}{\Gamma}{\chi}{\sigma}{\epsilon}{\Ist{e}{\Ebyteoff{o}{p}}}{\chi}{\sigma}{\epsilon}}
+			\end{prooftree}
+			\\\vspace{\baselineskip}
+			\begin{prooftree}
+				\hypo{\CodeTypeSequent{\Xi}{\Gamma}{\chi}{\sigma}{\epsilon}{e}{t}}
+				\infer[no rule, rule margin=1ex]1{e \neq\epsilon\hspace{1.5em}
+				t \neq \Tbang\hspace{1.5em}
+				\CodeTypeSequent{\Xi}{\Gamma}{\chi}{\sigma}{\epsilon}{\Ebaseoff{p}{o}}{\Tptr{t}}}
+				\infer1[store value in pointer base offset]{\ISequent{\Xi}{\Gamma}{\chi}{\sigma}{\epsilon}{\Ist{e}{\Ebaseoff{p}{o}}}{\chi}{\sigma}{\epsilon}}
+			\end{prooftree}
+		}}
 
-  \caption{Type inference rules for the \texttt{st} instruction.}
-  \label{fig:nstar-instructionset-memory-st-typerules}
+	\caption{Type inference rules for the {\Iformat st} instruction.}
+	\label{fig:nstar-instructionset-memory-st-typerules}
 \end{figure}
 
-The \texttt{st} instruction takes a value (literal value or register) and a pointer offset as arguments.
+The {\Iformat st} instruction takes a value (literal value or register) and a pointer offset as arguments.
 If a register is passed, it cannot contain the current continuation.
 Note that the value is not moved from the register, it is simply copied into the pointer.
-The register must also not hold a value of unknown type \texttt{!}, because its type is not known.
+The register must also not hold a value of unknown type $\Tbang$, because its type is not known.
 
 \section{Register handling instructions}\label{sec:nstar-instructionset-registers}
 
 \subsection{\texttt{mv}}\label{subsec:nstar-instructionset-registers-mv}
 
-The \texttt{mv} instruction moves a value (immediate value or stored in a register) into a register.
+The {\Iformat mv} instruction moves a value (immediate value or stored in a register) into a register.
 Grammar is given in Figure~\ref{fig:nstar-instructionset-registers-mv-grammar}.
 Type inference rules are given in Figure~\ref{fig:nstar-instructionset-registers-mv-typerules}.
 
 \begin{figure}[H]
-  \centering
+	\centering
 
-  \framebox[\textwidth][c]{
-    \scalebox{.5}{
-      \includegraphics{nstar/instructions/mov-grammar}
-    }
-  }
+	\framebox[\textwidth][c]{
+		\scalebox{.5}{
+			\includegraphics{nstar/instructions/mov-grammar}
+		}
+	}
 
-  \caption{Grammar of the \texttt{mv} instruction.}
-  \label{fig:nstar-instructionset-registers-mv-grammar}
+	\caption{Grammar of the {\Iformat mv} instruction.}
+	\label{fig:nstar-instructionset-registers-mv-grammar}
 \end{figure}
 
 \begin{figure}[H]
-  \centering
+	\centering
 
-  \framebox[\textwidth][c]{\parbox{\textwidth}{
-      \centering
-      \begin{prooftree}
-        \hypo{$r, d are registers$}
-        \hypo{\Xi;\Gamma;\chi;\sigma;\epsilon\vdash^T_{code}$ r : $\forall$().$\zeta}
-        \infer2[move cont from register to register]{\Xi;\Gamma;\chi;\sigma;$ r $\vdash^I$ mv r, d $\dashv\chi\setminus$\{ r, d \}$,$ d : $\forall$().$\zeta;\sigma;$ d$}
-      \end{prooftree}
-      \\\vspace{\baselineskip}
-      \begin{prooftree}
-        \hypo{$r is a register$}
-        \hypo{$n $\leq 8}
-        \infer[no rule, rule margin=1ex]2{\Gamma\vdash^K$ t : Tn\hspace{1.5em}$
-                                          \Xi;\Gamma;\chi;\sigma;\epsilon\vdash^T_{code}$ e : t\hspace{1.5em}$
-                                          $t $\neq$ !$}
-        \infer1[move value to register]{\Xi;\Gamma;\chi;\sigma;\epsilon\vdash^I$ mv e, r $\dashv\chi\setminus$r, r : t$;\sigma;\epsilon}
-      \end{prooftree}
-  }}
+	\framebox[\textwidth][c]{\parbox{\textwidth}{
+			\centering
+			\begin{prooftree}
+				\hypo{r, d$ are registers$}
+				\hypo{\CodeTypeSequent{\Xi}{\Gamma}{\chi}{\sigma}{\epsilon}{r}{\Tforall{}{\zeta}}}
+				\infer2[move cont from register to register]{\ISequent{\Xi}{\Gamma}{\chi}{\sigma}{r}{\Imv{r}{d}}{\chi\setminus\{r\}, d : \Tforall{}{\zeta}}{\sigma}{d}}
+			\end{prooftree}
+			\\\vspace{\baselineskip}
+			\begin{prooftree}
+				\hypo{r$ is a register$}
+				\hypo{n \leq 8}
+				\infer[no rule, rule margin=1ex]2{\KindSequent{\Gamma}{t}{\T{n}}\hspace{1.5em}
+				\CodeTypeSequent{\Xi}{\Gamma}{\chi}{\sigma}{\epsilon}{e}{t}\hspace{1.5em}
+				t \neq \Tbang}
+				\infer1[move value to register]{\ISequent{\Xi}{\Gamma}{\chi}{\sigma}{\epsilon}{\Imv{e}{r}}{\chi\setminus\{r\}, r : t}{\sigma}{\epsilon}}
+			\end{prooftree}
+		}}
 
-  \caption{Type inference rules for the \texttt{mv} instruction.}
-  \label{fig:nstar-instructionset-registers-mv-typerules}
+	\caption{Type inference rules for the {\Iformat mv} instruction.}
+	\label{fig:nstar-instructionset-registers-mv-typerules}
 \end{figure}
 
-The \texttt{mv} instruction takes a value (literal value or register) and a register as arguments, and overwrites the second register with a copy of the first value (if in a register).
+The {\Iformat mv} instruction takes a value (literal value or register) and a register as arguments, and overwrites the second register with a copy of the first value (if in a register).
 The value in the first register is not discarded.
 This instruction can be used to \textit{move} the continuation from one register to another, in which case no copy is performed (the function pointer is moved, to prevent from duplicating the continuation).
 If the first argument is a register, then it cannot be bound to a bang-type.
@@ -1537,33 +1545,33 @@ If the first argument is a register, then it cannot be bound to a bang-type.
 
 \subsection{\texttt{nop}}\label{subsec:nstar-instructionset-other-nop}
 
-The \texttt{nop} instruction does absolutely nothing else than skipping a CPU cycle and taking space in the end executable.
+The {\Iformat nop} instruction does absolutely nothing else than skipping a CPU cycle and taking space in the end executable.
 Grammar and type inference rules are respectively given in Figure~\ref{fig:nstar-instructionset-other-nop-grammar} and Figure~\ref{fig:nstar-instructionset-other-nop-typerules}.
 
 \begin{figure}[H]
-  \centering
+	\centering
 
-  \framebox[\textwidth][c]{
-    \scalebox{.5}{
-      \includegraphics{nstar/instructions/nop-grammar}
-    }
-  }
+	\framebox[\textwidth][c]{
+		\scalebox{.5}{
+			\includegraphics{nstar/instructions/nop-grammar}
+		}
+	}
 
-  \caption{Grammar for the \texttt{nop} instruction.}
-  \label{fig:nstar-instructionset-other-nop-grammar}
+	\caption{Grammar for the {\Iformat nop} instruction.}
+	\label{fig:nstar-instructionset-other-nop-grammar}
 \end{figure}
 
 \begin{figure}[H]
-  \centering
+	\centering
 
-  \framebox[\textwidth][c]{
-    \begin{prooftree}
-      \infer0{\Xi;\Gamma;\chi;\sigma;\epsilon\vdash^I$ nop $\dashv\chi;\sigma;\epsilon}
-    \end{prooftree}
-  }
+	\framebox[\textwidth][c]{
+		\begin{prooftree}
+			\infer0{\ISequent{\Xi}{\Gamma}{\chi}{\sigma}{\epsilon}{\Inop}{\chi}{\sigma}{\epsilon}}
+		\end{prooftree}
+	}
 
-  \caption{Type inference rules for the \texttt{nop} instruction.}
-  \label{fig:nstar-instructionset-other-nop-typerules}
+	\caption{Type inference rules for the {\Iformat nop} instruction.}
+	\label{fig:nstar-instructionset-other-nop-typerules}
 \end{figure}
 
 \chapter{Target-dependent features}\label{chap:nstar-specific}
@@ -1573,16 +1581,16 @@ Grammar and type inference rules are respectively given in Figure~\ref{fig:nstar
 \subsection{Register mappings}\label{subsec:nstar-specific-x86amd64-registers}
 
 \begin{tabularx}{\textwidth}{Y Y Y}
-  \toprule
-  \nstar & x86 & amd64 \\
-  \midrule
-  r0 & eax & rax \\
-  r1 & ecx & rcx \\
-  r2 & edx & rdx \\
-  r3 & ebx & rbx \\
-  r4 & esi & rsi \\
-  r5 & edi & rdi \\
-  \bottomrule
+	\toprule
+	\nstar & x86 & amd64 \\
+	\midrule
+	r0     & eax & rax   \\
+	r1     & ecx & rcx   \\
+	r2     & edx & rdx   \\
+	r3     & ebx & rbx   \\
+	r4     & esi & rsi   \\
+	r5     & edi & rdi   \\
+	\bottomrule
 \end{tabularx}
 
 \chapter{The NSAM}\label{chap:nstar-nsam}
@@ -1596,28 +1604,28 @@ But some instructions like \texttt{call} may be encoded using the defined primit
 A rough translation of some \nstar\ instructions will be proposed as a simple beginning point in Figure~\ref{fig:nstar-nsam-translation-nstar-nsam}, but this is by no mean meant to be an exhaustive list of the possible translations.
 
 \begin{figure}[htb]
-  \centering
+	\centering
 
-  \framebox[\textwidth][c]{
-  \begin{tabular}{*{3}{>{\centering\arraybackslash}p{0.30\textwidth}}}
-    $\_;\_;\_\vdash\text{jmp l<}\vec{\text{t}}\text{>} \rightsquigarrow \textit{jmp l}$ &
-    $\_;\_;\_\vdash\text{call l<}\vec{\text{t}}\text{>} \rightsquigarrow \textit{jmp l}$ &
-    $\_;\_;\text{r}\vdash\text{ret} \rightsquigarrow \textit{ret r}$ \\
+	\framebox[\textwidth][c]{
+		\begin{tabular}{*{3}{>{\centering\arraybackslash}p{0.30\textwidth}}}
+			$\_;\_;\_\vdash\text{jmp l<}\vec{\text{t}}\text{>} \rightsquigarrow \textit{jmp l}$         &
+			$\_;\_;\_\vdash\text{call l<}\vec{\text{t}}\text{>} \rightsquigarrow \textit{jmp l}$        &
+			$\_;\_;\text{r}\vdash\text{ret} \rightsquigarrow \textit{ret r}$                                         \\
 
-    \rule{0pt}{1ex} \\
+			\rule{0pt}{1ex}                                                                                          \\
 
-    $\_;\_;\_\vdash\text{salloc t} \rightsquigarrow \textit{salloc sizeof(t)}$ &
-    $\_;\text{t}\dblcolon\sigma;\_\vdash\text{sfree} \rightsquigarrow \textit{sfree sizeof(t)}$ &
-    $\_;\_;\_\vdash\text{halt} \rightsquigarrow \textit{halt}$ \\
+			$\_;\_;\_\vdash\text{salloc t} \rightsquigarrow \textit{salloc sizeof(t)}$                  &
+			$\_;\text{t}\dblcolon\sigma;\_\vdash\text{sfree} \rightsquigarrow \textit{sfree sizeof(t)}$ &
+			$\_;\_;\_\vdash\text{halt} \rightsquigarrow \textit{halt}$                                               \\
 
-    \rule{0pt}{1ex} \\
+			\rule{0pt}{1ex}                                                                                          \\
 
-    & $\ldots$ &
-  \end{tabular}
-  }
+			                                                                                            & $\ldots$ &
+		\end{tabular}
+	}
 
-  \caption{The beginning of a small translation model from \nstar\ to the NSAM core. \textbf{$\chi;\sigma;\epsilon\vdash\text{i} \rightsquigarrow \textit{i}$} is the translation from the \nstar\ typed instruction \textbf{$\chi;\sigma;\epsilon\vdash\text{i}$} into the NSAM core instruction \textbf{$\textit{i}$}.}
-  \label{fig:nstar-nsam-translation-nstar-nsam}
+	\caption{The beginning of a small translation model from \nstar\ to the NSAM core. \textbf{$\chi;\sigma;\epsilon\vdash\text{i} \rightsquigarrow \textit{i}$} is the translation from the \nstar\ typed instruction \textbf{$\chi;\sigma;\epsilon\vdash\text{i}$} into the NSAM core instruction \textbf{$\textit{i}$}.}
+	\label{fig:nstar-nsam-translation-nstar-nsam}
 \end{figure}
 
 \section{Core instructions}\label{sec:nstar-nsam-core}
@@ -1626,88 +1634,92 @@ The NSAM is composed of several core instructions which all form a subset of the
 These instructions are described in Figure~\ref{fig:nstar-nsam-core-instructions}.
 
 \begin{longtable}[H]{p{0.45\textwidth}p{0.45\textwidth}}
-  \toprule
-  Instruction & Description \\
-  \midrule \endhead
-  \texttt{jmp l} & Transfers the control flow to the code address pointed by the label \texttt{l} \\
-  \texttt{salloc n} & Allocates a space of \texttt{n} bytes on top of the stack \\
-  \texttt{sfree n} & Pops a space of \texttt{n} bytes off the top of the stack \\
-  \texttt{halt} & Stops the execution of code by emptying the code buffer \\
-  \texttt{mv s, d} & Moves a value (either a literal value or a value taken from a register) into the destination register \texttt{d} \\
-  \texttt{sld n, s, r} & Copies \texttt{s} bytes taken \texttt{n} bytes from the top of the stack into the register \texttt{r} \\
-  \texttt{sst r, n} & Copies the value in the register \texttt{r} to \texttt{n} bytes from the top of the stack \\
-  \texttt{ld o, p, s, r} & Copies \texttt{s} bytes at the address \texttt{p + o} into the register \texttt{r} \\
-  \texttt{st r, o, p} & Copies the value in the register \texttt{r} into the memory space at the address \texttt{p + o} \\
-  \texttt{sref n, p, r} & Retrieves a pointer to \texttt{p} bytes long data located at \texttt{n} bytes onto the stack in the register \texttt{r} \\
-  \bottomrule
+	\toprule
+	Instruction            & Description                                                                                                             \\
+	\midrule \endhead
+	\texttt{jmp l}         & Transfers the control flow to the code address pointed by the label \texttt{l}                                          \\
+	\texttt{salloc n}      & Allocates a space of \texttt{n} bytes on top of the stack                                                               \\
+	\texttt{sfree n}       & Pops a space of \texttt{n} bytes off the top of the stack                                                               \\
+	\texttt{halt}          & Stops the execution of code by emptying the code buffer                                                                 \\
+	\texttt{mv s, d}       & Moves a value (either a literal value or a value taken from a register) into the destination register \texttt{d}        \\
+	\texttt{sld n, s, r}   & Copies \texttt{s} bytes taken \texttt{n} bytes from the top of the stack into the register \texttt{r}                   \\
+	\texttt{sst r, n}      & Copies the value in the register \texttt{r} to \texttt{n} bytes from the top of the stack                               \\
+	\texttt{ld o, p, s, r} & Copies \texttt{s} bytes at the address \texttt{p + o} into the register \texttt{r}                                      \\
+	\texttt{st r, o, p}    & Copies the value in the register \texttt{r} into the memory space at the address \texttt{p + o}                         \\
+	\texttt{sref n, p, r}  & Retrieves a pointer to \texttt{p} bytes long data located at \texttt{n} bytes onto the stack in the register \texttt{r} \\
+	\bottomrule
 
-  \caption{The core instructions of the NSAM along with a small description of each one of them.}
-  \label{fig:nstar-nsam-core-instructions}
+	\caption{The core instructions of the NSAM along with a small description of each one of them.}
+	\label{fig:nstar-nsam-core-instructions}
 \end{longtable}
 
 \section{Operational semantics}\label{sec:nstar-nsam-opsem}
 
 This section describes the operational semantics of the core instructions described in Section~\ref{sec:nstar-nsam-core}~``\nameref{sec:nstar-nsam-core}''. It contains some specific notation as described below:
 \begin{itemize}
-  \item $\zeta = (H, \chi, \sigma, C)$ is the evaluation context composed of several subcontexts:
-        \begin{itemize}
-          \item $H = H_{C} \cup H_{D}$ is the global heap, composed of two smaller heaps: $H_{C}$ is the heap containing all the code, as well as labels and $H_{D}$ is the heap containing any data binding;
-          \item $\chi$ is the current set of bound registers, associated to their values. It may be the empty set $\cdot$ which means that no register is currently bound (or at least that no register can be read);
-          \item $\sigma$ is the current stack. It may be the empty stack $\cdot$ or the stack constructor $v^{n} \dblcolon s$, which means that there is a value $v$ of size $n$ on top of the stack $s$;
-          \item $C$ is the code buffer, and contains either no instruction (written as $\cdot$), one instruction or a sequence of multiple instructions, written as $i; I$;
-        \end{itemize}
-  \item $v$ always denotes a literal value, $r, s, d$ registers, $l$ a label and $n, p, o$ literal integers;
-  \item A reduction step $\zeta \mapsto \zeta^{\prime}$ is a step taking the context $\zeta$ and outputting the new context $\zeta^{\prime}$ (which may or may not be the same as $\zeta$);
-  \item When multiple operations are defined for a single instruction, the rule matching the above notation rules should be applied;
+	\item $\zeta = (H, \chi, \sigma, C)$ is the evaluation context composed of several subcontexts:
+	      \begin{itemize}
+		      \item $H = H_{C} \cup H_{D}$ is the global heap, composed of two smaller heaps: $H_{C}$ is the heap containing all the code, as well as labels and $H_{D}$ is the heap containing any data binding;
+		      \item $\chi$ is the current set of bound registers, associated to their values. It may be the empty set $\cdot$ which means that no register is currently bound (or at least that no register can be read);
+		      \item $\sigma$ is the current stack. It may be the empty stack $\cdot$ or the stack constructor $v^{n} \dblcolon s$, which means that there is a value $v$ of size $n$ on top of the stack $s$;
+		      \item $C$ is the code buffer, and contains either no instruction (written as $\cdot$), one instruction or a sequence of multiple instructions, written as $i; I$;
+	      \end{itemize}
+	\item $v$ always denotes a literal value, $r, s, d$ registers, $l$ a label and $n, p, o$ literal integers;
+	\item A reduction step $\zeta \mapsto \zeta^{\prime}$ is a step taking the context $\zeta$ and outputting the new context $\zeta^{\prime}$ (which may or may not be the same as $\zeta$);
+	\item When multiple operations are defined for a single instruction, the rule matching the above notation rules should be applied;
 \end{itemize}
 
 \begin{xltabular}{\textwidth}{*{4}{>{\scriptsize}c}>{\tiny\bfseries}Y*{4}{>{\scriptsize}c}}
-  \toprule
-  {\footnotesize \bfseries heap} & {\footnotesize \bfseries env} & {\footnotesize \bfseries stack} & {\footnotesize \bfseries code} & $\mapsto$ & {\footnotesize \bfseries heap} & {\footnotesize \bfseries env} & {\footnotesize \bfseries stack} & {\footnotesize \bfseries code} \\
-  \midrule \endhead
+	\toprule
+	{\footnotesize \bfseries heap} & {\footnotesize \bfseries env} & {\footnotesize \bfseries stack} & {\footnotesize \bfseries code} & $\mapsto$ & {\footnotesize \bfseries heap} & {\footnotesize \bfseries env} & {\footnotesize \bfseries stack} & {\footnotesize \bfseries code} \\
+	\midrule \endhead
 
-  \multicolumn{9}{l}{\footnotesize \bfseries Control-flow instructions} \\
+	\multicolumn{9}{l}{\footnotesize \bfseries Control-flow instructions} \\
 
 
 
-  $H$ & $\chi$ & $\sigma$ & jmp r$; C$ &  & $H$ & $\chi$ & $\sigma$ & ${}^{\ast}H_{C}[\chi[r]]; C$ \\
-  $H$ & $\chi$ & $\sigma$ & jmp l$; C$ &  & $H$ & $\chi$ & $\sigma$ & ${}^{\ast}H_{C}[l]; C$ \\
+	$H$ & $\chi$ & $\sigma$ & jmp r$; C$ &  & $H$ & $\chi$ & $\sigma$ & ${}^{\ast}H_{C}[\chi[r]]; C$ \\
+	$H$ & $\chi$ & $\sigma$ & jmp l$; C$ &  & $H$ & $\chi$ & $\sigma$ & ${}^{\ast}H_{C}[l]; C$ \\
 
-  $H$ & $\chi$ & $\sigma$ & halt$; C$ &  & $H$ & $\chi$ & $\sigma$ & $\cdot$ \\
+	$H$ & $\chi$ & $\sigma$ & halt$; C$ &  & $H$ & $\chi$ & $\sigma$ & $\cdot$ \\
 
-  \midrule
+	\midrule
 
-  \multicolumn{9}{l}{\footnotesize \bfseries Stack-handling instructions} \\
+	\multicolumn{9}{l}{\footnotesize \bfseries Stack-handling instructions} \\
 
-  $H$ & $\chi$ & $\sigma$ & salloc n$; C$ &  & $H$ & $\chi$ & $\cdot^{n}\dblcolon\sigma$ & $C$ \\
-  $H$ & $\chi$ & $\cdot^{n}\dblcolon\sigma$ & sfree n$; C$ &  & $H$ & $\chi$ & $\sigma$ & $C$ \\
-  $H$ & $\chi$ & $\cdot^{n}\dblcolon v^{p}\dblcolon\sigma$ & sld n, p, r$; C$ &  & $H$ & $\chi, r \gets v$ & $\cdot^{n}\dblcolon v^{p}\dblcolon\sigma$ & $C$ \\
-  $H$ & $\chi$ & $\cdot^{n}\dblcolon\cdot^{p}\dblcolon\sigma$ & sst r, p, n$; C$ &  & $H$ & $\chi$ & $\cdot^{n}\dblcolon\chi[r]\dblcolon\sigma$ & $C$ \\
-  $H$ & $\chi$ & $\cdot^{n}\dblcolon v^{p}\dblcolon\sigma$ & sref n, p, r$; C$ &  & $H$ & $\chi, r \gets \&v$ & $\cdot^{n}\dblcolon v^{p}\dblcolon\sigma$ & $C$ \\
+	$H$ & $\chi$ & $\sigma$ & salloc n$; C$ &  & $H$ & $\chi$ & $\cdot^{n}\dblcolon\sigma$ & $C$ \\
+	$H$ & $\chi$ & $\cdot^{n}\dblcolon\sigma$ & sfree n$; C$ &  & $H$ & $\chi$ & $\sigma$ & $C$ \\
+	$H$ & $\chi$ & $\cdot^{n}\dblcolon v^{p}\dblcolon\sigma$ & sld n, p, r$; C$ &  & $H$ & $\chi, r \gets v$ & $\cdot^{n}\dblcolon v^{p}\dblcolon\sigma$ & $C$ \\
+	$H$ & $\chi$ & $\cdot^{n}\dblcolon\cdot^{p}\dblcolon\sigma$ & sst r, p, n$; C$ &  & $H$ & $\chi$ & $\cdot^{n}\dblcolon\chi[r]\dblcolon\sigma$ & $C$ \\
+	$H$ & $\chi$ & $\cdot^{n}\dblcolon v^{p}\dblcolon\sigma$ & sref n, p, r$; C$ &  & $H$ & $\chi, r \gets \&v$ & $\cdot^{n}\dblcolon v^{p}\dblcolon\sigma$ & $C$ \\
 
-  \midrule
+	\midrule
 
-  \multicolumn{9}{l}{\footnotesize \bfseries Memory-handling instructions} \\
+	\multicolumn{9}{l}{\footnotesize \bfseries Memory-handling instructions} \\
 
-  $H$ & $\chi$ & $\sigma$ & ld s, l, p, r$; C$ &  & $H$ & \makecell{\tiny$\chi, r \gets$\\\tiny${H_{D}[l + \chi[s]]}^{p}$} & $\sigma$ & $C$ \\
-  $H$ & $\chi$ & $\sigma$ & ld o, l, p, r$; C$ &  & $H$ & \makecell{\tiny$\chi, r \gets$\\\tiny${H_{D}[l + o]}^{p}$} & $\sigma$ & $C$ \\
-  $H$ & $\chi$ & $\sigma$ & ld s, r, p, d$;C$ &  & $H$ & \makecell{\tiny$\chi, d \gets$\\\tiny${H_{D}[\chi[r] + \chi[s]]}^{p}$} & $\sigma$ & $C$ \\
-  $H$ & $\chi$ & $\sigma$ & ld s, n, p, d$;C$ &  & $H$ & \makecell{\tiny$\chi, d \gets$\\\tiny${H_{D}[\chi[s] + n]}^{p}$} & $\sigma$ & $C$ \\
-  $H$ & $\chi$ & $\sigma$ & st s, n, d$; C$ &  & \makecell{\tiny$H, {H_{D}[\chi[d] + n]}^{8}$\\\tiny$ \gets \chi[s]$} & $\chi$ & $\sigma$ & $C$ \\
-  $H$ & $\chi$ & $\sigma$ & st s, r, d$; C$ &  & \makecell{\tiny$H, {H_{D}[\chi[d] + \chi[r]]}^{8}$\\\tiny$ \gets \chi[s]$} & $\chi$ & $\sigma$ & $C$ \\
-  $H$ & $\chi$ & $\sigma$ & st s, o, l$; C$ &  & \makecell{\tiny$H, {H_{D}[l + o]}^{8}$\\\tiny$ \gets \chi[s]$} & $\chi$ & $\sigma$ & $C$ \\
-  $H$ & $\chi$ & $\sigma$ & st s, r, l$; C$ &  & \makecell{\tiny$H, {H_{D}[l + \chi[o]]}^{8}$\\\tiny$ \gets \chi[s]$} & $\chi$ & $\sigma$ & $C$ \\
+	$H$ & $\chi$ & $\sigma$ & ld s, l, p, r$; C$ &  & $H$ & \makecell{\tiny$\chi, r \gets$\\\tiny${H_{D}[l + \chi[s]]}^{p}$} & $\sigma$ & $C$ \\
+	$H$ & $\chi$ & $\sigma$ & ld o, l, p, r$; C$ &  & $H$ & \makecell{\tiny$\chi, r \gets$\\\tiny${H_{D}[l + o]}^{p}$} & $\sigma$ & $C$ \\
+	$H$ & $\chi$ & $\sigma$ & ld s, r, p, d$;C$ &  & $H$ & \makecell{\tiny$\chi, d \gets$\\\tiny${H_{D}[\chi[r] + \chi[s]]}^{p}$} & $\sigma$ & $C$ \\
+	$H$ & $\chi$ & $\sigma$ & ld s, n, p, d$;C$ &  & $H$ & \makecell{\tiny$\chi, d \gets$\\\tiny${H_{D}[\chi[s] + n]}^{p}$} & $\sigma$ & $C$ \\
+	$H$ & $\chi$ & $\sigma$ & st s, n, d$; C$ &  & \makecell{\tiny$H, {H_{D}[\chi[d] + n]}^{8}$\\\tiny$ \gets \chi[s]$} & $\chi$ & $\sigma$ & $C$ \\
+	$H$ & $\chi$ & $\sigma$ & st s, r, d$; C$ &  & \makecell{\tiny$H, {H_{D}[\chi[d] + \chi[r]]}^{8}$\\\tiny$ \gets \chi[s]$} & $\chi$ & $\sigma$ & $C$ \\
+	$H$ & $\chi$ & $\sigma$ & st s, o, l$; C$ &  & \makecell{\tiny$H, {H_{D}[l + o]}^{8}$\\\tiny$ \gets \chi[s]$} & $\chi$ & $\sigma$ & $C$ \\
+	$H$ & $\chi$ & $\sigma$ & st s, r, l$; C$ &  & \makecell{\tiny$H, {H_{D}[l + \chi[o]]}^{8}$\\\tiny$ \gets \chi[s]$} & $\chi$ & $\sigma$ & $C$ \\
 
-  \midrule
+	\midrule
 
-  \multicolumn{9}{l}{\footnotesize \bfseries Register instructions} \\
+	\multicolumn{9}{l}{\footnotesize \bfseries Register instructions} \\
 
-  $H$ & $\chi$ & $\sigma$ & mv s, d$; C$ &  & $H$ & $\chi, d \gets \chi[s]$ & $\sigma$ & $C$ \\
-  $H$ & $\chi$ & $\sigma$ & mv l, r$; C$ &  & $H$ & $\chi, r \gets {H_{C}[l]}^{8}$ & $\sigma$ & $C$ \\
-  $H$ & $\chi$ & $\sigma$ & mv v, r$; C$ &  & $H$ & $\chi, r \gets v$ & $\sigma$ & $C$ \\
+	$H$ & $\chi$ & $\sigma$ & mv s, d$; C$ &  & $H$ & $\chi, d \gets \chi[s]$ & $\sigma$ & $C$ \\
+	$H$ & $\chi$ & $\sigma$ & mv l, r$; C$ &  & $H$ & $\chi, r \gets {H_{C}[l]}^{8}$ & $\sigma$ & $C$ \\
+	$H$ & $\chi$ & $\sigma$ & mv v, r$; C$ &  & $H$ & $\chi, r \gets v$ & $\sigma$ & $C$ \\
 
-  \bottomrule
+	\bottomrule
 
-  \caption{Operational semantics for the NASM.}
-  \label{fig:nstar-nsam-core-opsemantics}
+	\caption{Operational semantics for the NASM.}
+	\label{fig:nstar-nsam-core-opsemantics}
 \end{xltabular}
+
+
+
+\endgroup

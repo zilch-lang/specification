@@ -459,7 +459,13 @@ Top-level function bindings can additionnally be prefixed with special meta-attr
 
 \subsection{Effect definition}\label{subsec:zilch-grammar-declaration-effect}
 
-% TODO
+Side effects lie everywhere in programming: from basic console I/O, networking, etc to mutating global variables.
+Some programming languages (e.g. C, Java, etc) do not restrict those side effects to occur, leading to uncontrolled/undefined/undesirable behaviors.
+Some other take a stricter route (e.g. Haskell, Koka, etc) and do not allow side effects occurring anywhere (Haskell uses monads, Koka uses algebraic effects).
+
+In Zilch, the algebraic effects route has been taken as it seems to lead to more readable code, and can be compiled more efficiently, and mostly without surprises.
+
+% TODO: include grammar for effects (top-level decl)
 
 \subsection{New type definition}\label{subsec:zilch-grammar-declarations-type}
 
