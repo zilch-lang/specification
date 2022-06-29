@@ -1,15 +1,11 @@
-\namespace{nstar:rules}{%
+\namespace{nstar:rules}{
 \newcommand*\CodeTypeSequent[7]{\ensuremath{{#1};{#2};{#3};{#4};{#5}\vdash^\text{\tiny T}_\text{code}{#6:#7}}}
 \newcommand*\DataTypeSequent[3]{\ensuremath{{#1}\vdash^\text{\tiny T}_\text{data}{#2:#3}}}
-\newcommand*\KindSequent[3]{\ensuremath{{#1}\vdash^\text{\tiny K}{#2%
-			\ifx&#3&%
-			\else%
-			:#3%
-			\fi}}}
+\newcommand*\KindSequent[3]{\ensuremath{{#1}\vdash^\text{\tiny K}{#2\ifx&#3&\else:#3\fi}}}
 \newcommand*\ISequent[9]{\ensuremath{{#1};{#2};{#3};{#4};{#5}\vdash^\text{\tiny I}{#6}\dashv{#7};{#8};{#9}}}
 }{}
 
-\namespace{nstar:grammar}{%
+\namespace{nstar:grammar}{
 %% TYPES
 \def\Tformat#1{\color{OliveGreen}\relax\ifmmode\bm{#1}\else\textbf{#1}\fi}
 %
@@ -47,7 +43,6 @@
 \definecolor{kw}{HTML}{5B269A}
 \def\Iformat{\ttfamily\color{kw}}
 %
-\makeatletter
 \newcommand*\definstr[2][0]{%
 	\ifnum#1=0%
 		\expandafter\newcommand\csname I#2\endcsname{\ensuremath{\text{\Iformat #2}}}
@@ -55,7 +50,6 @@
 		\expandafter\VARIADIC{I#2}{\ensuremath}{\text{\Iformat #2}\ }{,\,}{}{}
 	\fi%
 }
-\makeatother
 %
 \definstr{nop}
 \definstr[1]{jmp}
@@ -70,4 +64,44 @@
 \definstr[2]{ld}
 \definstr[2]{st}
 \definstr[2]{mv}
+
+% Add more instructions here, not below
+
+\let\definstr\undefined
+}{}
+
+\namespace{nsam}{
+	\definecolor{kw2}{HTML}{A90D91}
+	\def\Ifmt{\ttfamily\itshape\color{kw2}}
+
+	\newcommand*\definstr[2][0]{%
+		\ifnum#1=0%
+			\expandafter\newcommand\csname In#2\endcsname{\ensuremath{\text{\Ifmt #2}}}
+		\else%
+			\expandafter\VARIADIC{In#2}{\ttfamily}{\text{\Ifmt #2}\ }{\ }{}{}
+		\fi%
+	}
+
+	\definstr[1]{jmp}
+	\definstr[1]{salloc}
+	\definstr[1]{sfree}
+	\definstr{halt}
+	\definstr[2]{mv}
+	\definstr[3]{sld}
+	\definstr[2]{sst}
+	\definstr[4]{ld}
+	\definstr[3]{st}
+	\definstr[3]{sref}
+
+	%% ENVS
+
+	\def\Efmt{\color{MidnightBlue}}
+
+	\newcommand*\Enstack[3]{\ensuremath{{#1}^{#2}\,{\Efmt \dblcolon}\,#3}}
+	\newcommand*\Enaddrof[1]{\ensuremath{{\Efmt {}^\&}#1}}
+	\newcommand*\Enindex[2]{\ensuremath{{#1}_{#2}}}
+	\newcommand*\Enderef[1]{\ensuremath{{\Efmt {}^\ast}#1}}
+
+	\def\HC{H^{\scriptscriptstyle C}}
+	\def\HD{H^{\scriptscriptstyle D}}
 }{}

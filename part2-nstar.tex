@@ -1595,6 +1595,8 @@ Grammar and type inference rules are respectively given in Figure~\ref{fig:nstar
 
 \chapter{The NSAM}\label{chap:nstar-nsam}
 
+\usingnamespace{nsam}
+
 The \nstar\ abstract machine (``NSAM'' for short) is a computation model for low-level assembly languages, especially \nstar.
 Its core is untyped and may yield undefined behavior when used incorrectly.
 However, in the context of \nstar, the core of the NSAM does not need to be type-safe because \nstar\ already is.
@@ -1608,19 +1610,19 @@ A rough translation of some \nstar\ instructions will be proposed as a simple be
 
 	\framebox[\textwidth][c]{
 		\begin{tabular}{*{3}{>{\centering\arraybackslash}p{0.30\textwidth}}}
-			$\_;\_;\_\vdash\text{jmp l<}\vec{\text{t}}\text{>} \rightsquigarrow \textit{jmp l}$         &
-			$\_;\_;\_\vdash\text{call l<}\vec{\text{t}}\text{>} \rightsquigarrow \textit{jmp l}$        &
-			$\_;\_;\text{r}\vdash\text{ret} \rightsquigarrow \textit{ret r}$                                         \\
+			$\_;\_;\_\vdash\Ijmp{l\Tunion{\vec{t}}} \rightsquigarrow \text{\Injmp{l}}$          &
+			$\_;\_;\_\vdash\Icall{l\Tunion{\vec{t}}} \rightsquigarrow \text{\Injmp{l}}$         &
+			$\_;\_;r\vdash\Iret \rightsquigarrow \text{\Injmp{r}}$                                           \\
 
-			\rule{0pt}{1ex}                                                                                          \\
+			\rule{0pt}{1ex}                                                                                  \\
 
-			$\_;\_;\_\vdash\text{salloc t} \rightsquigarrow \textit{salloc sizeof(t)}$                  &
-			$\_;\text{t}\dblcolon\sigma;\_\vdash\text{sfree} \rightsquigarrow \textit{sfree sizeof(t)}$ &
-			$\_;\_;\_\vdash\text{halt} \rightsquigarrow \textit{halt}$                                               \\
+			$\_;\_;\_\vdash\Isalloc{t} \rightsquigarrow \text{\Insalloc{sizeof(t)}}$            &
+			$\_;\Tstack{t}{\sigma};\_\vdash\Isfree \rightsquigarrow \text{\Insfree{sizeof(t)}}$ &
+			$\_;\_;\_\vdash\Ihalt \rightsquigarrow \text{\Inhalt}$                                           \\
 
-			\rule{0pt}{1ex}                                                                                          \\
+			\rule{0pt}{1ex}                                                                                  \\
 
-			                                                                                            & $\ldots$ &
+			                                                                                    & $\ldots$ &
 		\end{tabular}
 	}
 
@@ -1635,18 +1637,19 @@ These instructions are described in Figure~\ref{fig:nstar-nsam-core-instructions
 
 \begin{longtable}[H]{p{0.45\textwidth}p{0.45\textwidth}}
 	\toprule
-	Instruction            & Description                                                                                                             \\
+	Instruction       & Description                                                                                                             \\
 	\midrule \endhead
-	\texttt{jmp l}         & Transfers the control flow to the code address pointed by the label \texttt{l}                                          \\
-	\texttt{salloc n}      & Allocates a space of \texttt{n} bytes on top of the stack                                                               \\
-	\texttt{sfree n}       & Pops a space of \texttt{n} bytes off the top of the stack                                                               \\
-	\texttt{halt}          & Stops the execution of code by emptying the code buffer                                                                 \\
-	\texttt{mv s, d}       & Moves a value (either a literal value or a value taken from a register) into the destination register \texttt{d}        \\
-	\texttt{sld n, s, r}   & Copies \texttt{s} bytes taken \texttt{n} bytes from the top of the stack into the register \texttt{r}                   \\
-	\texttt{sst r, n}      & Copies the value in the register \texttt{r} to \texttt{n} bytes from the top of the stack                               \\
-	\texttt{ld o, p, s, r} & Copies \texttt{s} bytes at the address \texttt{p + o} into the register \texttt{r}                                      \\
-	\texttt{st r, o, p}    & Copies the value in the register \texttt{r} into the memory space at the address \texttt{p + o}                         \\
-	\texttt{sref n, p, r}  & Retrieves a pointer to \texttt{p} bytes long data located at \texttt{n} bytes onto the stack in the register \texttt{r} \\
+	\Injmp{l}         & Transfers the control flow to the code address pointed by the label \texttt{l}                                          \\
+	\Injmp{r}         & Transfers the control flow to the code address stored in the register \texttt{r}                                        \\
+	\Insalloc{n}      & Allocates a space of \texttt{n} bytes on top of the stack                                                               \\
+	\Insfree{n}       & Pops a space of \texttt{n} bytes off the top of the stack                                                               \\
+	\Inhalt           & Stops the execution of code by emptying the code buffer                                                                 \\
+	\Inmv{s}{d}       & Moves a value (either a literal value or a value taken from a register) into the destination register \texttt{d}        \\
+	\Insld{n}{s}{r}   & Copies \texttt{s} bytes taken \texttt{n} bytes from the top of the stack into the register \texttt{r}                   \\
+	\Insst{r}{n}      & Copies the value in the register \texttt{r} to \texttt{n} bytes from the top of the stack                               \\
+	\Inld{o}{p}{s}{r} & Copies \texttt{s} bytes at the address \texttt{p + o} into the register \texttt{r}                                      \\
+	\Inst{r}{o}{p}    & Copies the value in the register \texttt{r} into the memory space at the address \texttt{p + o}                         \\
+	\Insref{n}{p}{r}  & Retrieves a pointer to \texttt{p} bytes long data located at \texttt{n} bytes onto the stack in the register \texttt{r} \\
 	\bottomrule
 
 	\caption{The core instructions of the NSAM along with a small description of each one of them.}
@@ -1659,9 +1662,9 @@ This section describes the operational semantics of the core instructions descri
 \begin{itemize}
 	\item $\zeta = (H, \chi, \sigma, C)$ is the evaluation context composed of several subcontexts:
 	      \begin{itemize}
-		      \item $H = H_{C} \cup H_{D}$ is the global heap, composed of two smaller heaps: $H_{C}$ is the heap containing all the code, as well as labels and $H_{D}$ is the heap containing any data binding;
+		      \item $H = \HC \cup \HD$ is the global heap, composed of two smaller heaps: $\HC$ is the heap containing all the code, as well as labels and $\HD$ is the heap containing any data binding;
 		      \item $\chi$ is the current set of bound registers, associated to their values. It may be the empty set $\cdot$ which means that no register is currently bound (or at least that no register can be read);
-		      \item $\sigma$ is the current stack. It may be the empty stack $\cdot$ or the stack constructor $v^{n} \dblcolon s$, which means that there is a value $v$ of size $n$ on top of the stack $s$;
+		      \item $\sigma$ is the current stack. It may be the empty stack $\cdot$ or the stack constructor $\Enstack{v}{n}{s}$, which means that there is a value $v$ of size $n$ on top of the stack $s$;
 		      \item $C$ is the code buffer, and contains either no instruction (written as $\cdot$), one instruction or a sequence of multiple instructions, written as $i; I$;
 	      \end{itemize}
 	\item $v$ always denotes a literal value, $r, s, d$ registers, $l$ a label and $n, p, o$ literal integers;
@@ -1671,48 +1674,48 @@ This section describes the operational semantics of the core instructions descri
 
 \begin{xltabular}{\textwidth}{*{4}{>{\scriptsize}c}>{\tiny\bfseries}Y*{4}{>{\scriptsize}c}}
 	\toprule
-	{\footnotesize \bfseries heap} & {\footnotesize \bfseries env} & {\footnotesize \bfseries stack} & {\footnotesize \bfseries code} & $\mapsto$ & {\footnotesize \bfseries heap} & {\footnotesize \bfseries env} & {\footnotesize \bfseries stack} & {\footnotesize \bfseries code} \\
+	{\footnotesize \bfseries heap} & {\footnotesize \bfseries env} & {\footnotesize \bfseries stack} & {\footnotesize \bfseries code} & $\bm{\mapsto}$ & {\footnotesize \bfseries heap} & {\footnotesize \bfseries env} & {\footnotesize \bfseries stack} & {\footnotesize \bfseries code} \\
 	\midrule \endhead
 
 	\multicolumn{9}{l}{\footnotesize \bfseries Control-flow instructions} \\
 
 
 
-	$H$ & $\chi$ & $\sigma$ & jmp r$; C$ &  & $H$ & $\chi$ & $\sigma$ & ${}^{\ast}H_{C}[\chi[r]]; C$ \\
-	$H$ & $\chi$ & $\sigma$ & jmp l$; C$ &  & $H$ & $\chi$ & $\sigma$ & ${}^{\ast}H_{C}[l]; C$ \\
+	$H$ & $\chi$ & $\sigma$ & \Injmp{r}$; C$ & $\bm{\mapsto}$ & $H$ & $\chi$ & $\sigma$ & $\Enderef{\Enindex{\HC}{\Enindex{\chi}{r}}}; C$ \\
+	$H$ & $\chi$ & $\sigma$ & \Injmp{l}$; C$ & $\bm{\mapsto}$ & $H$ & $\chi$ & $\sigma$ & $\Enderef{\Enindex{\HC}{l}}; C$ \\
 
-	$H$ & $\chi$ & $\sigma$ & halt$; C$ &  & $H$ & $\chi$ & $\sigma$ & $\cdot$ \\
+	$H$ & $\chi$ & $\sigma$ & \Inhalt$; C$ & $\bm{\mapsto}$ & $H$ & $\chi$ & $\sigma$ & $\cdot$ \\
 
 	\midrule
 
 	\multicolumn{9}{l}{\footnotesize \bfseries Stack-handling instructions} \\
 
-	$H$ & $\chi$ & $\sigma$ & salloc n$; C$ &  & $H$ & $\chi$ & $\cdot^{n}\dblcolon\sigma$ & $C$ \\
-	$H$ & $\chi$ & $\cdot^{n}\dblcolon\sigma$ & sfree n$; C$ &  & $H$ & $\chi$ & $\sigma$ & $C$ \\
-	$H$ & $\chi$ & $\cdot^{n}\dblcolon v^{p}\dblcolon\sigma$ & sld n, p, r$; C$ &  & $H$ & $\chi, r \gets v$ & $\cdot^{n}\dblcolon v^{p}\dblcolon\sigma$ & $C$ \\
-	$H$ & $\chi$ & $\cdot^{n}\dblcolon\cdot^{p}\dblcolon\sigma$ & sst r, p, n$; C$ &  & $H$ & $\chi$ & $\cdot^{n}\dblcolon\chi[r]\dblcolon\sigma$ & $C$ \\
-	$H$ & $\chi$ & $\cdot^{n}\dblcolon v^{p}\dblcolon\sigma$ & sref n, p, r$; C$ &  & $H$ & $\chi, r \gets \&v$ & $\cdot^{n}\dblcolon v^{p}\dblcolon\sigma$ & $C$ \\
+	$H$ & $\chi$ & $\sigma$ & \Insalloc{n}$; C$ & $\bm{\mapsto}$ & $H$ & $\chi$ & $\Enstack{\cdot}{n}{\sigma}$ & $C$ \\
+	$H$ & $\chi$ & $\Enstack{\cdot}{n}{\sigma}$ & \Insfree{n}$; C$ & $\bm{\mapsto}$ & $H$ & $\chi$ & $\sigma$ & $C$ \\
+	$H$ & $\chi$ & $\Enstack{\cdot}{n}{\Enstack{v}{p}{\sigma}}$ & \Insld{n}{p}{r}$; C$ & $\bm{\mapsto}$ & $H$ & $\chi, {r}\gets{v}$ & $\Enstack{\cdot}{n}{\Enstack{v}{p}{\sigma}}$ & $C$ \\
+	$H$ & $\chi$ & $\Enstack{\cdot}{n}{\Enstack{\cdot}{p}{\sigma}}$& \Insst{r}{p}{n}$; C$ & $\bm{\mapsto}$ & $H$ & $\chi$ & $\Enstack{\cdot}{n}{\Enstack{\Enindex{\chi}{r}}{p}{\sigma}}$ & $C$ \\
+	$H$ & $\chi$ & $\Enstack{\cdot}{n}{\Enstack{v}{p}{\sigma}}$ & \Insref{n}{p}{r}$; C$ & $\bm{\mapsto}$ & $H$ & $\chi, {r}\gets{\Enaddrof{v}}$ & $\Enstack{\cdot}{n}{\Enstack{v}{p}{\sigma}}$ & $C$ \\
 
 	\midrule
 
 	\multicolumn{9}{l}{\footnotesize \bfseries Memory-handling instructions} \\
 
-	$H$ & $\chi$ & $\sigma$ & ld s, l, p, r$; C$ &  & $H$ & \makecell{\tiny$\chi, r \gets$\\\tiny${H_{D}[l + \chi[s]]}^{p}$} & $\sigma$ & $C$ \\
-	$H$ & $\chi$ & $\sigma$ & ld o, l, p, r$; C$ &  & $H$ & \makecell{\tiny$\chi, r \gets$\\\tiny${H_{D}[l + o]}^{p}$} & $\sigma$ & $C$ \\
-	$H$ & $\chi$ & $\sigma$ & ld s, r, p, d$;C$ &  & $H$ & \makecell{\tiny$\chi, d \gets$\\\tiny${H_{D}[\chi[r] + \chi[s]]}^{p}$} & $\sigma$ & $C$ \\
-	$H$ & $\chi$ & $\sigma$ & ld s, n, p, d$;C$ &  & $H$ & \makecell{\tiny$\chi, d \gets$\\\tiny${H_{D}[\chi[s] + n]}^{p}$} & $\sigma$ & $C$ \\
-	$H$ & $\chi$ & $\sigma$ & st s, n, d$; C$ &  & \makecell{\tiny$H, {H_{D}[\chi[d] + n]}^{8}$\\\tiny$ \gets \chi[s]$} & $\chi$ & $\sigma$ & $C$ \\
-	$H$ & $\chi$ & $\sigma$ & st s, r, d$; C$ &  & \makecell{\tiny$H, {H_{D}[\chi[d] + \chi[r]]}^{8}$\\\tiny$ \gets \chi[s]$} & $\chi$ & $\sigma$ & $C$ \\
-	$H$ & $\chi$ & $\sigma$ & st s, o, l$; C$ &  & \makecell{\tiny$H, {H_{D}[l + o]}^{8}$\\\tiny$ \gets \chi[s]$} & $\chi$ & $\sigma$ & $C$ \\
-	$H$ & $\chi$ & $\sigma$ & st s, r, l$; C$ &  & \makecell{\tiny$H, {H_{D}[l + \chi[o]]}^{8}$\\\tiny$ \gets \chi[s]$} & $\chi$ & $\sigma$ & $C$ \\
+	$H$ & $\chi$ & $\sigma$ & \Inld{s}{l}{p}{r}$; C$ & $\bm{\mapsto}$ & $H$ & \makecell{\tiny$\chi, r \gets {\Enindex{\HD}{l + \Enindex{\chi}{s}}}^{p}$} & $\sigma$ & $C$ \\
+	$H$ & $\chi$ & $\sigma$ & \Inld{o}{l}{p}{r}$; C$ & $\bm{\mapsto}$ & $H$ & \makecell{\tiny$\chi, r \gets {\Enindex{\HD}{l + o}}^{p}$} & $\sigma$ & $C$ \\
+	$H$ & $\chi$ & $\sigma$ & \Inld{s}{r}{p}{d}$;C$ & $\bm{\mapsto}$ & $H$ & \makecell{\tiny$\chi, d \gets {\Enindex{\HD}{\Enindex{\chi}{r} + \Enindex{\chi}{s}}}^{p}$} & $\sigma$ & $C$ \\
+	$H$ & $\chi$ & $\sigma$ & \Inld{s}{n}{p}{d}$;C$ & $\bm{\mapsto}$ & $H$ & \makecell{\tiny$\chi, d \gets {\Enindex{\HD}{\Enindex{\chi}{s} + n}}^{p}$} & $\sigma$ & $C$ \\
+	$H$ & $\chi$ & $\sigma$ & \Inst{s}{n}{d}$; C$ & $\bm{\mapsto}$ & \makecell{\tiny$H, {\Enindex{\HD}{\Enindex{\chi}{d} + n}}^{8} \gets \Enindex{\chi}{s}$} & $\chi$ & $\sigma$ & $C$ \\
+	$H$ & $\chi$ & $\sigma$ & \Inst{s}{r}{d}$; C$ & $\bm{\mapsto}$ & \makecell{\tiny$H, {\Enindex{\HD}{\Enindex{\chi}{d} + \Enindex{\chi}{r}}}^{8} \gets \Enindex{\chi}{s}$} & $\chi$ & $\sigma$ & $C$ \\
+	$H$ & $\chi$ & $\sigma$ & \Inst{s}{o}{l}$; C$ & $\bm{\mapsto}$ & \makecell{\tiny$H, {\Enindex{\HD}{l + o}}^{8} \gets \Enindex{\chi}{s}$} & $\chi$ & $\sigma$ & $C$ \\
+	$H$ & $\chi$ & $\sigma$ & \Inst{s}{r}{l}$; C$ & $\bm{\mapsto}$ & \makecell{\tiny$H, {\Enindex{\HD}{l + \Enindex{\chi}{o}}}^{8} \gets \Enindex{\chi}{s}$} & $\chi$ & $\sigma$ & $C$ \\
 
 	\midrule
 
 	\multicolumn{9}{l}{\footnotesize \bfseries Register instructions} \\
 
-	$H$ & $\chi$ & $\sigma$ & mv s, d$; C$ &  & $H$ & $\chi, d \gets \chi[s]$ & $\sigma$ & $C$ \\
-	$H$ & $\chi$ & $\sigma$ & mv l, r$; C$ &  & $H$ & $\chi, r \gets {H_{C}[l]}^{8}$ & $\sigma$ & $C$ \\
-	$H$ & $\chi$ & $\sigma$ & mv v, r$; C$ &  & $H$ & $\chi, r \gets v$ & $\sigma$ & $C$ \\
+	$H$ & $\chi$ & $\sigma$ & \Inmv{s}{d}$; C$ & $\bm{\mapsto}$ & $H$ & $\chi, d \gets \Enindex{\chi}{s}$ & $\sigma$ & $C$ \\
+	$H$ & $\chi$ & $\sigma$ & \Inmv{l}{r}$; C$ & $\bm{\mapsto}$ & $H$ & $\chi, r \gets {\Enindex{\HC}{l}}^{8}$ & $\sigma$ & $C$ \\
+	$H$ & $\chi$ & $\sigma$ & \Inmv{v}{r}$; C$ & $\bm{\mapsto}$ & $H$ & $\chi, r \gets v$ & $\sigma$ & $C$ \\
 
 	\bottomrule
 
