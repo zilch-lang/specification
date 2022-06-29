@@ -11,22 +11,20 @@
 
 \namespace{nstar:grammar}{%
 %% TYPES
-\makeatletter
-\def\Tformat{\relax\ifmmode\boldmath\else\bfseries\fi\color{OliveGreen}}
-\makeatother
+\def\Tformat#1{\color{OliveGreen}\relax\ifmmode\bm{#1}\else\textbf{#1}\fi}
 %
-\newcommand*\Tunsigned[1]{\ensuremath{\text{\Tformat u#1}}}
-\newcommand*\Tsigned[1]{\ensuremath{\text{\Tformat s#1}}}
+\newcommand*\Tunsigned[1]{\ensuremath{\text{\Tformat{u#1}}}}
+\newcommand*\Tsigned[1]{\ensuremath{\text{\Tformat{s#1}}}}
 \VARIADIC{Tstruct}{\ensuremath}{(}{,\,}{)}{}
 \VARIADIC{Tunion}{\ensuremath}{\langle}{,\,}{\rangle}{}
 \newcommand*\Tbang{\ensuremath{\text{\Tformat !}}}
-\newcommand*\Tptr[1]{\ensuremath{{\Tformat {}^\ast}#1}}
-\newcommand*\Tchar{\ensuremath{\text{\Tformat char}}}
+\newcommand*\Tptr[1]{\ensuremath{{\Tformat{{}^\ast}}#1}}
+\newcommand*\Tchar{\ensuremath{\text{\Tformat{char}}}}
 \newcommand*\Tcontext[3]{\ensuremath{\{ #1 \mid #2 \to #3 \}}}
 \newcommand*\Tforall[2]{\ensuremath{{\Tformat \forall}(#1){\Tformat .}\,{#2}}}
 \newcommand*\Tstack[2]{\ensuremath{#1\,{\Tformat \dblcolon}\,#2}}
 \VARIADIC{Tsstack}{\ensuremath}{}{\,{\Tformat \dblcolon}\,}{}{}
-\newcommand*\Tkind[1]{\ensuremath{\text{\Tformat T#1}}}
+\newcommand*\Tkind[1]{\ensuremath{\text{\Tformat{T#1}}}}
 
 \def\Ts{\T{s}}
 \def\Ta{\T{a}}
