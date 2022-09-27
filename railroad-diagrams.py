@@ -379,6 +379,32 @@ def nstar_struct_constant():
 
   return mk_diagram('structure-constant', inner)
 
+def nstar_cj_triadic():
+  inner = Sequence(
+    Terminal('cjX'),
+    Choice(0, NonTerminal('register'), NonTerminal('integer-value')),
+    Terminal(','),
+    NonTerminal('label-value'),
+    Terminal(','),
+    NonTerminal('label-value')
+  )
+
+  return mk_diagram('triadic-cjX', inner)
+
+def nstar_cj_tetradic():
+  inner = Sequence(
+    Terminal('cjC'),
+    Choice(0, NonTerminal('register'), NonTerminal('integer-value')),
+    Terminal(','),
+    Choice(0, NonTerminal('register'), NonTerminal('integer-value')),
+    Terminal(','),
+    NonTerminal('label-value'),
+    Terminal(','),
+    NonTerminal('label-value')
+  )
+
+  return mk_diagram('tetradic-cjC', inner)
+
 
 ##################################################################################
 ## Zilch
@@ -632,4 +658,4 @@ def zilch_toplevel_function_definition():
 
   return mk_diagram2('toplevel-function', inner)
 
-zilch_toplevel_function_definition().writeSvg(sys.stdout.write)
+nstar_cj_triadic().writeSvg(sys.stdout.write)
