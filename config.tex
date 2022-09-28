@@ -88,10 +88,6 @@
 	\def\theglstoctitle{#2}%
 }
 
-\hypersetup{
-	colorlinks=false
-}
-
 \graphicspath{{./res/}}
 
 \titleformat{\chapter}[block]{\normalfont\LARGE\bfseries}{\thechapter.}{1em}{}
@@ -116,7 +112,7 @@
 
 \hypersetup{
 	colorlinks=true,
-	linkcolor=black,
+	linkcolor=PineGreen,
 	filecolor=black,
 	anchorcolor=black,
 	citecolor=RedViolet,
@@ -160,3 +156,5 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \newcommand{\iseq}{\ensuremath{\overset{\scriptscriptstyle ?}{=}}}
+
+\renewcommand{\thefootnote}{(\arabic{footnote})}
