@@ -1142,13 +1142,13 @@ Note that it does not allow returning to a stack-continuation because this would
 \nstar\ allows to conditionally jump to certain parts of the code.
 The \texttt{cjX} family of terminal instructions (where \texttt{X} stands for a particular condition) is divided into two subfamilies:
 \begin{itemize}
-	\item Triadic instructions, whose conditions uses only the first argument;
-	\item Tetradic instructions, whose conditions are expressed as a boolean relation between the first two arguments.
+	\item Ternary instructions, whose conditions uses only the first argument;
+	\item Quaternary instructions, whose conditions are expressed as a boolean relation between the first two arguments.
 \end{itemize}
 
-\subsubsection{Triadic conditional jumps}\label{subsubsec:nstar-instructionset-terminal-cjX-triadic}
+\subsubsection{Ternary conditional jumps}\label{subsubsec:nstar-instructionset-terminal-cjX-triadic}
 
-Triadic conditional jumps come in two flavors:
+Ternary conditional jumps come in two flavors:
 \begin{itemize}
 	\item \Icjz{a}{m}{n}\ which jumps to \texttt{m} if \texttt{a} evaluates to \texttt{0}, otherwise it jumps to \texttt{n};
 	\item \Icjnz{a}{m}{n}\ is strictly equivalent to \Icjz{a}{n}{m}\ in that it transfers the control flow to \texttt{m} if \texttt{a} evaluates to \texttt{0} else to \texttt{n}.
@@ -1165,7 +1165,7 @@ These instructions share the same grammar and inference rules, and will be abbre
 		}
 	}
 
-	\caption{Grammar for the triadic conditional jumps.}
+	\caption{Grammar for the ternary conditional jumps.}
 	\label{fig:nstar-instructionset-terminal-cjX-triadic-grammar}
 \end{figure}
 
@@ -1183,13 +1183,13 @@ These instructions share the same grammar and inference rules, and will be abbre
 		\end{prooftree}
 	}
 
-	\caption{Type inference rules for the triadic conditional jumps.}
+	\caption{Type inference rules for the ternary conditional jumps.}
 	\label{fig:nstar-instructionset-terminal-cjX-triadic-typerules}
 \end{figure}
 
-\subsubsection{Tetradic conditional jumps}\label{subsubsec:nstar-instructionset-terminal-cjX-tetradic}
+\subsubsection{Quaternary conditional jumps}\label{subsubsec:nstar-instructionset-terminal-cjX-tetradic}
 
-Tetradic conditional jumps allow to jump to different labels depending on the relation bewteen the value of the first two parameters.
+Quaternary conditional jumps allow to jump to different labels depending on the relation bewteen the value of the first two parameters.
 There are a few of these:
 \begin{itemize}
 	\item \Icje{a}{b}{m}{n}\ jumps to \texttt{m} if \texttt{a} and \texttt{b} evaluate to equal values, otherwise it jumps to \texttt{n};
@@ -1201,7 +1201,7 @@ There are a few of these:
 \end{itemize}
 Some of them are redundant and are provided only for convenience.
 
-All these instructions share the same grammar and typerules (they all are refered to as {\Iformat cjC}), present in figures~\ref{fig:nstar-instructionset-terminal-cjX-tetradic-grammar},\ref{fig:nstar-instructionset-terminal-cjX-tetradic-typerules}.
+All these instructions share the same grammar and type inference rules (they all are refered to as {\Iformat cjC}), present in figures~\ref{fig:nstar-instructionset-terminal-cjX-tetradic-grammar},\ref{fig:nstar-instructionset-terminal-cjX-tetradic-typerules}.
 
 \begin{figure}[H]
 	\centering
@@ -1212,7 +1212,7 @@ All these instructions share the same grammar and typerules (they all are refere
 		}
 	}
 
-	\caption{Grammar for the tetradic conditional jumps.}
+	\caption{Grammar for the quaternary conditional jumps.}
 	\label{fig:nstar-instructionset-terminal-cjX-tetradic-grammar}
 \end{figure}
 
@@ -1230,12 +1230,19 @@ All these instructions share the same grammar and typerules (they all are refere
 		\end{prooftree}
 	}
 
-	\caption{Type inference rules for the tetradic conditional jumps.}
+	\caption{Type inference rules for the quaternary conditional jumps.}
 	\label{fig:nstar-instructionset-terminal-cjX-tetradic-typerules}
 \end{figure}
 
 Type inference rules rely on a $\iseq$ binary predicate which filters whether two types can be compared (either for equality or inequality).
 This is required by those instructions as values will need to be compared at runtime to choose which jump to perform.
+
+Given $\top,\bot \in \mathbb{B}$ the symbols for boolean truth and falsity, the $\iseq$ relation can be defined as
+\begin{alignat*}{4}
+	 & \Tunsigned{M} \quad & \iseq & \quad \Tunsigned{N} \quad & = \top \\
+	 & \Tsigned{M}   \quad & \iseq & \quad \Tsigned{N}   \quad & = \top \\
+	 & \cdot         \quad & \iseq & \quad \cdot         \quad & = \bot
+\end{alignat*}
 
 \section{Stack handling instructions}\label{sec:nstar-instructionset-stack}
 
