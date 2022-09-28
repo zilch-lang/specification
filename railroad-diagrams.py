@@ -405,6 +405,47 @@ def nstar_cj_tetradic():
 
   return mk_diagram('tetradic-cjC', inner)
 
+def nstar_shiftX_instruction():
+  inner = Sequence(
+    Terminal('shiftX'),
+    Choice(0, NonTerminal('register'), NonTerminal('integer-value')),
+    Terminal(','),
+    NonTerminal('integer-value'),
+    Terminal(','),
+    NonTerminal('register')
+  )
+
+  return mk_diagram('shiftX-instruction', inner)
+
+def nstar_logical_unary_instruction():
+  inner = Sequence(
+    Choice(
+      0,
+      Terminal('not')
+    ),
+    Choice(0, NonTerminal('register'), NonTerminal('integer-value')),
+    Terminal(','),
+    NonTerminal('register')
+  )
+
+  return mk_diagram('logical-unary-instruction', inner)
+
+def nstar_logical_binary_instruction():
+  inner = Sequence(
+    Choice(
+      1,
+      Terminal('and'),
+      Terminal('or'),
+      Terminal('xor')
+    ),
+    Choice(0, NonTerminal('register'), NonTerminal('integer-value')),
+    Terminal(','),
+    Choice(0, NonTerminal('register'), NonTerminal('integer-value')),
+    Terminal(','),
+    NonTerminal('register')
+  )
+
+  return mk_diagram('logical-binary-instruction', inner)
 
 ##################################################################################
 ## Zilch
@@ -658,4 +699,4 @@ def zilch_toplevel_function_definition():
 
   return mk_diagram2('toplevel-function', inner)
 
-nstar_cj_triadic().writeSvg(sys.stdout.write)
+nstar_logical_binary_instruction().writeSvg(sys.stdout.write)

@@ -17,3 +17,5 @@ _minted-*
 *.bcf
 *.blg
 *.run.xml
+
+res/diagram.svg
