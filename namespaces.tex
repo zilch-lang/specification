@@ -81,6 +81,16 @@
 \definstr[3]{shiftl}
 \definstr[3]{shiftr}
 \definstr[3]{shiftX}
+\definstr[4]{cmvZ}
+\definstr[5]{cmvC}
+\definstr[4]{cmvz}
+\definstr[4]{cmvnz}
+\definstr[5]{cmve}
+\definstr[5]{cmvne}
+\definstr[5]{cmvl}
+\definstr[5]{cmvle}
+\definstr[5]{cmvg}
+\definstr[5]{cmvge}
 
 % Add more instructions here, not below
 
@@ -89,13 +99,13 @@
 
 \namespace{nsam}{
 	\definecolor{kw2}{HTML}{A90D91}
-	\def\Ifmt{\ttfamily\itshape\color{kw2}}
+	\def\Ifmt{\ttfamily\bfseries\color{kw2}}
 
 	\newcommand*\definstr[2][0]{%
 		\ifnum#1=0%
 			\expandafter\newcommand\csname In#2\endcsname{\ensuremath{\text{\Ifmt #2}}}
 		\else%
-			\expandafter\VARIADIC{In#2}{\ttfamily}{\text{\Ifmt #2}\ }{\ }{}{}
+			\expandafter\VARIADIC{In#2}{}{\text{\Ifmt #2}\ }{\ }{}{}
 		\fi%
 	}
 
@@ -117,9 +127,15 @@
 
 	\newcommand*\Enstack[3]{\ensuremath{{#1}^{#2}\,{\Efmt \dblcolon}\,#3}}
 	\newcommand*\Enaddrof[1]{\ensuremath{{\Efmt {}^\&}#1}}
-	\newcommand*\Enindex[2]{\ensuremath{{#1}_{#2}}}
+	\newcommand*\Enindex[2]{\ensuremath{{#1}\left[{#2}\right]}}
 	\newcommand*\Enderef[1]{\ensuremath{{\Efmt {}^\ast}#1}}
+	\newcommand*\Enset[2]{\ensuremath{{#1}\coloneqq{#2}}}
 
 	\def\HC{H^{\scriptscriptstyle C}}
 	\def\HD{H^{\scriptscriptstyle D}}
+
+	%% Notations
+
+	\newcommand*\Enstate[3]{\ensuremath{\left({#1},{#2},{#3}\right)}}
+	\newcommand*\Enconfig[4]{\ensuremath{\left\langle{#1},\Enstate{#2}{#3}{#4}\right\rangle}}
 }{}

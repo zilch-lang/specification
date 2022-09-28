@@ -1812,6 +1812,27 @@ These two are presented in figures~\ref{fig:nstar-instructionset-registers-logic
 	\label{fig:nstar-instructionset-registers-logical-shifts-typerules}
 \end{figure}
 
+\subsection{Conditional moves}\label{subsec:nstar-instructionset-registers-cmvX}
+
+Conditional moves come in two different batches:
+\begin{itemize}
+	\item Quaternary conditional moves, taking only one parameter for the condition;
+	\item Quintary conditional moves, taking two parameters for the condition.
+\end{itemize}
+Each category uses the same grammar and type inference rules for every instruction within.
+
+\subsubsection{Quaternary conditional moves}\label{subsubsec:nstar-instructionset-registers-cmvX-quaternary}
+
+There are two kinds of quaternary conditional moves:
+\begin{itemize}
+	\item \Icmvz{a}{b}{c}{r}\ which acts as \Imv{b}{r}\ if \texttt{a} evaluates to \texttt{0} else as \Imv{c}{r};
+	\item \Icmvnz{a}{b}{c}{r}\ which is exactly the same as \Icmvz{a}{c}{b}{r}\ (it is \Imv{b}{r}\ if \texttt{a} evaluates to \texttt{0} else \Imv{c}{r}).
+\end{itemize}
+
+\subsubsection{Quintary conditional moves}\label{subsubsec:nstar-instructionset-registers-cmvX-quintary}
+
+
+
 \section{Other instructions}\label{sec:nstar-instructionset-other}
 
 \subsection{\texttt{nop}}\label{subsec:nstar-instructionset-other-nop}
@@ -1931,70 +1952,76 @@ These instructions are described in Figure~\ref{fig:nstar-nsam-core-instructions
 
 \section{Operational semantics}\label{sec:nstar-nsam-opsem}
 
-This section describes the operational semantics of the core instructions described in Section~\ref{sec:nstar-nsam-core}~``\nameref{sec:nstar-nsam-core}''. It contains some specific notation as described below:
+This section describes the operational semantics of the core instructions described in Section~\ref{sec:nstar-nsam-core}~``\nameref{sec:nstar-nsam-core}''.
+It contains some specific notation as described below:
 \begin{itemize}
-	\item $\zeta = (H, \chi, \sigma, C)$ is the evaluation context composed of several subcontexts:
+	\item A state $S$ is a triplet $\Enstate{H}{\chi}{\sigma}$ containing:
 	      \begin{itemize}
-		      \item $H = \HC \cup \HD$ is the global heap, composed of two smaller heaps: $\HC$ is the heap containing all the code, as well as labels and $\HD$ is the heap containing any data binding;
-		      \item $\chi$ is the current set of bound registers, associated to their values. It may be the empty set $\cdot$ which means that no register is currently bound (or at least that no register can be read);
-		      \item $\sigma$ is the current stack. It may be the empty stack $\cdot$ or the stack constructor $\Enstack{v}{n}{s}$, which means that there is a value $v$ of size $n$ on top of the stack $s$;
-		      \item $C$ is the code buffer, and contains either no instruction (written as $\cdot$), one instruction or a sequence of multiple instructions, written as $i; I$;
+		      \item the heap $H$, which itself is the union of $\HD$ and $\HC$, respectively the global data heap and the global code heap;
+		      \item the set of register bound $\chi$, associated to their respective values. The empty set is denoted $\cdot$, and union of two sets is denoted using the usual $\cup$;
+		      \item the current stack $\sigma$, which is either the empty stack $\cdot$ or the stack composed of an element of size $n$ and a substack $\Enstack{v}{n}{\sigma^\prime}$;
 	      \end{itemize}
+	\item A configuration $\Enconfig{C}{H}{\chi}{\sigma}$ is a snapshot of the current program with remaining instructions $C$ and current state $S = (H, \chi, \sigma)$.
+	      A sequence of instructions is written $i; C$ while the empty sequence is written $\Box$;
+	\item A reduction step ${\Enconfig{C}{H}{\chi}{\sigma}}\Rightarrow{\zeta}$ transform the configuration $\Enconfig{C}{H}{\chi}{\sigma}$ into $\zeta$ which is either another configuration $\Enconfig{C^\prime}{H^\prime}{\chi^\prime}{\sigma^\prime}$ or a final state $S^\prime$. The reduction relation is defined in table~\ref{table:nstar-nsam-core-opsemantics};
 	\item $v$ always denotes a literal value, $r, s, d$ registers, $l$ a label and $n, p, o$ literal integers;
-	\item A reduction step $\zeta \mapsto \zeta^{\prime}$ is a step taking the context $\zeta$ and outputting the new context $\zeta^{\prime}$ (which may or may not be the same as $\zeta$);
 	\item When multiple operations are defined for a single instruction, the rule matching the above notation rules should be applied;
 \end{itemize}
 
-\begin{xltabular}{\textwidth}{*{4}{>{\scriptsize}c}>{\tiny\bfseries}Y*{4}{>{\scriptsize}c}}
+\begingroup
+\renewcommand\cellset{\renewcommand\arraystretch{0.8}\setlength\extrarowheight{0pt}}
+
+\begin{xltabular}{\linewidth}{>{\scriptsize\raggedleft\arraybackslash}r@{\;}>{\scriptsize}c@{\;}>{\scriptsize\raggedright\arraybackslash}X}
 	\toprule
-	{\footnotesize \bfseries heap} & {\footnotesize \bfseries env} & {\footnotesize \bfseries stack} & {\footnotesize \bfseries code} & $\bm{\mapsto}$ & {\footnotesize \bfseries heap} & {\footnotesize \bfseries env} & {\footnotesize \bfseries stack} & {\footnotesize \bfseries code} \\
+	{\small\bfseries Preconfiguration} & $\Rightarrow$ & {\small\bfseries Postconfiguration} \\
 	\midrule \endhead
 
-	\multicolumn{9}{l}{\footnotesize \bfseries Control-flow instructions} \\
+	${\Enconfig{\Box}{H}{\chi}{\sigma}}$ & $\Rightarrow$ & ${\Enstate{H}{\chi}{\sigma}}$ \\
 
-	$H$ & $\chi$ & $\sigma$ & \Injmp{r}$; C$ & $\bm{\mapsto}$ & $H$ & $\chi$ & $\sigma$ & $\Enderef{\Enindex{\HC}{\Enindex{\chi}{r}}}; C$ \\
-	$H$ & $\chi$ & $\sigma$ & \Injmp{l}$; C$ & $\bm{\mapsto}$ & $H$ & $\chi$ & $\sigma$ & $\Enderef{\Enindex{\HC}{l}}; C$ \\
-	$H$ & $\chi$ & $\sigma$ & \Incjmp{cc}{x}{y}{lt}{lf}$; C$ & $\bm{\mapsto}$ & $H$ & $\chi$ & $\sigma$ & $\Enderef{\Enindex{\HC}{l}}; C$ \\
-	\multicolumn{9}{>{\scriptsize}r}{$l=\begin{cases}lt & \text{iff\ } cc(x, y) = \top\\lf & \text{otherwise}\end{cases}$} \\
-	$H$ & $\chi$ & $\sigma$ & \Inhalt$; C$ & $\bm{\mapsto}$ & $H$ & $\chi$ & $\sigma$ & $\cdot$ \\
+	\multicolumn{3}{l}{\small\bfseries Control-flow instructions} \\
 
-	\midrule
-
-	\multicolumn{9}{l}{\footnotesize \bfseries Stack-handling instructions} \\
-
-	$H$ & $\chi$ & $\sigma$ & \Insalloc{n}$; C$ & $\bm{\mapsto}$ & $H$ & $\chi$ & $\Enstack{\cdot}{n}{\sigma}$ & $C$ \\
-	$H$ & $\chi$ & $\Enstack{\cdot}{n}{\sigma}$ & \Insfree{n}$; C$ & $\bm{\mapsto}$ & $H$ & $\chi$ & $\sigma$ & $C$ \\
-	$H$ & $\chi$ & $\Enstack{\cdot}{n}{\Enstack{v}{p}{\sigma}}$ & \Insld{n}{p}{r}$; C$ & $\bm{\mapsto}$ & $H$ & $\chi, {r}\gets{v}$ & $\Enstack{\cdot}{n}{\Enstack{v}{p}{\sigma}}$ & $C$ \\
-	$H$ & $\chi$ & $\Enstack{\cdot}{n}{\Enstack{\cdot}{p}{\sigma}}$& \Insst{r}{p}{n}$; C$ & $\bm{\mapsto}$ & $H$ & $\chi$ & $\Enstack{\cdot}{n}{\Enstack{\Enindex{\chi}{r}}{p}{\sigma}}$ & $C$ \\
-	$H$ & $\chi$ & $\Enstack{\cdot}{n}{\Enstack{v}{p}{\sigma}}$ & \Insref{n}{p}{r}$; C$ & $\bm{\mapsto}$ & $H$ & $\chi, {r}\gets{\Enaddrof{v}}$ & $\Enstack{\cdot}{n}{\Enstack{v}{p}{\sigma}}$ & $C$ \\
+	${\Enconfig{\Injmp{r}; C}{H}{\chi\cup\{\Enset{r}{v}\}}{\sigma}}$ & $\Rightarrow$ & ${\Enconfig{\Enderef{\Enindex{\HC}{v}}; C}{H}{\chi}{\sigma}}$ \\
+	${\Enconfig{\Injmp{l}; C}{H}{\chi}{\sigma}}$ & $\Rightarrow$ & ${\Enconfig{\Enderef{\Enindex{\HC}{l}}; C}{H}{\chi}{\sigma}}$ \\
+	${\Enconfig{\Incjmp{cc}{a}{b}{l_t}{l_f}; C}{H}{\chi}{\sigma}}$ & $\Rightarrow$ & \makecell[tl]{${\Enconfig{\Injmp{l_t}; C}{H}{\chi}{\sigma}}$\\\tiny\qquad\textbf{iff} $cc(a, b)\Enstate{H}{\chi}{\sigma} = \top$} \\
+	${\Enconfig{\Incjmp{cc}{a}{b}{l_t}{l_f}; C}{H}{\chi}{\sigma}}$ & $\Rightarrow$ & \makecell[tl]{${\Enconfig{\Injmp{l_f}; C}{H}{\chi}{\sigma}}$\\\tiny\qquad\textbf{iff} $cc(a, b)\Enstate{H}{\chi}{\sigma} = \bot$} \\
+	${\Enconfig{\Inhalt}{H}{\chi}{\sigma}}$ & $\Rightarrow$ & ${\Enstate{H}{\chi}{\sigma}}$ \\
 
 	\midrule
+	\multicolumn{3}{l}{\small\bfseries Stack-handling instructions} \\
 
-	\multicolumn{9}{l}{\footnotesize \bfseries Memory-handling instructions} \\
-
-	$H$ & $\chi$ & $\sigma$ & \Inld{s}{l}{p}{r}$; C$ & $\bm{\mapsto}$ & $H$ & \makecell{\tiny$\chi, r \gets {\Enindex{\HD}{l + \Enindex{\chi}{s}}}^{p}$} & $\sigma$ & $C$ \\
-	$H$ & $\chi$ & $\sigma$ & \Inld{o}{l}{p}{r}$; C$ & $\bm{\mapsto}$ & $H$ & \makecell{\tiny$\chi, r \gets {\Enindex{\HD}{l + o}}^{p}$} & $\sigma$ & $C$ \\
-	$H$ & $\chi$ & $\sigma$ & \Inld{s}{r}{p}{d}$;C$ & $\bm{\mapsto}$ & $H$ & \makecell{\tiny$\chi, d \gets {\Enindex{\HD}{\Enindex{\chi}{r} + \Enindex{\chi}{s}}}^{p}$} & $\sigma$ & $C$ \\
-	$H$ & $\chi$ & $\sigma$ & \Inld{s}{n}{p}{d}$;C$ & $\bm{\mapsto}$ & $H$ & \makecell{\tiny$\chi, d \gets {\Enindex{\HD}{\Enindex{\chi}{s} + n}}^{p}$} & $\sigma$ & $C$ \\
-	$H$ & $\chi$ & $\sigma$ & \Inst{s}{n}{d}$; C$ & $\bm{\mapsto}$ & \makecell{\tiny$H, {\Enindex{\HD}{\Enindex{\chi}{d} + n}}^{8} \gets \Enindex{\chi}{s}$} & $\chi$ & $\sigma$ & $C$ \\
-	$H$ & $\chi$ & $\sigma$ & \Inst{s}{r}{d}$; C$ & $\bm{\mapsto}$ & \makecell{\tiny$H, {\Enindex{\HD}{\Enindex{\chi}{d} + \Enindex{\chi}{r}}}^{8} \gets \Enindex{\chi}{s}$} & $\chi$ & $\sigma$ & $C$ \\
-	$H$ & $\chi$ & $\sigma$ & \Inst{s}{o}{l}$; C$ & $\bm{\mapsto}$ & \makecell{\tiny$H, {\Enindex{\HD}{l + o}}^{8} \gets \Enindex{\chi}{s}$} & $\chi$ & $\sigma$ & $C$ \\
-	$H$ & $\chi$ & $\sigma$ & \Inst{s}{r}{l}$; C$ & $\bm{\mapsto}$ & \makecell{\tiny$H, {\Enindex{\HD}{l + \Enindex{\chi}{o}}}^{8} \gets \Enindex{\chi}{s}$} & $\chi$ & $\sigma$ & $C$ \\
+	${\Enconfig{\Insalloc{n}; C}{H}{\chi}{\sigma}}$ & $\Rightarrow$ & ${\Enconfig{C}{H}{\chi}{\Enstack{\cdot}{n}{\sigma}}}$ \\
+	${\Enconfig{\Insfree{n}; C}{H}{\chi}{\Enstack{\cdot}{n}{\sigma}}}$ & $\Rightarrow$ & ${\Enconfig{C}{H}{\chi}{\sigma}}$ \\
+	${\Enconfig{\Insld{n}{p}{r}; C}{H}{3chi}{\Enstack{\cdot}{n}{\Enstack{v}{p}{\sigma}}}}$ & $\Rightarrow$ & ${\Enconfig{C}{H}{\chi\cup \{\Enset{r}{v}\}}{\Enstack{\cdot}{n}{\Enstack{v}{p}{\sigma}}}}$ \\
+	${\Enconfig{\Insst{r}{p}{n}; C}{H}{\chi\cup\{\Enset{r}{v}\}}{\Enstack{\cdot}{n}{\Enstack{\cdot}{p}{\sigma}}}}$ & $\Rightarrow$ & ${\Enconfig{C}{H}{\chi\cup\{\Enset{r}{v}\}}{\Enstack{\cdot}{n}{\Enstack{v}{p}{\sigma}}}}$ \\
+	${\Enconfig{\Insref{n}{p}{r}; C}{H}{\chi}{\Enstack{\cdot}{n}{\Enstack{v}{p}{\sigma}}}}$ & $\Rightarrow$ & ${\Enconfig{C}{H}{\chi\cup\{\Enset{r}{\Enaddrof{v}}\}}{\Enstack{\cdot}{n}{\Enstack{v}{p}{\sigma}}}}$ \\
 
 	\midrule
+	\multicolumn{3}{l}{\small\bfseries Memory-handling instructions} \\
 
-	\multicolumn{9}{l}{\footnotesize \bfseries Register instructions} \\
+	${\Enconfig{\Inld{s}{l}{p}{d}; C}{H}{\chi\cup\{\Enset{s}{o}\}}{\sigma}}$ & $\Rightarrow$ & ${\Enconfig{C}{H}{\chi\cup\{\Enset{s}{o},\Enset{d}{\Enindex{\HD}{l+o}}^p\}}{\sigma}}$ \\
+	${\Enconfig{\Inld{o}{l}{p}{d}; C}{H}{\chi}{\sigma}}$ & $\Rightarrow$ & ${\Enconfig{C}{H}{\chi\cup\{\Enset{d}{\Enindex{\HD}{l+o}}^p\}}{\sigma}}$ \\
+	${\Enconfig{\Inld{s}{r}{p}{d}; C}{H}{\chi\cup\{\Enset{s}{o_s},\Enset{r}{o_r}\}}{\sigma}}$ & $\Rightarrow$ & ${\Enconfig{C}{H}{\chi\cup\{\Enset{s}{o_s},\Enset{r}{o_r},\Enset{d}{\Enindex{\HD}{o_s+o_r}}^p\}}{\sigma}}$ \\
+	${\Enconfig{\Inld{s}{n}{p}{d}; C}{H}{\chi\cup\{\Enset{s}{o}\}}{\sigma}}$ & $\Rightarrow$ & ${\Enconfig{C}{H}{\chi\cup\{\Enset{s}{o},\Enset{d}{\Enindex{\HC}{o+n}^p}\}}{\sigma}}$ \\
+	${\Enconfig{\Inst{s}{n}{d}; C}{H}{\chi\cup\{\Enset{s}{v},\Enset{d}{o}\}}{\sigma}}$ & $\Rightarrow$ & ${\Enconfig{C}{H\cup\{\Enset{\Enindex{\HD}{n+o}^8}{v}\}}{\chi\cup\{\Enset{s}{v},\Enset{d}{o}\}}{\sigma}}$ \\
+	${\Enconfig{\Inst{s}{r}{d}; C}{H}{\chi\cup\{\Enset{s}{o_s},\Enset{r}{o_r},\Enset{d}{v}\}}{\sigma}}$ & $\Rightarrow$ & ${\Enconfig{C}{H\cup\{\Enset{\Enindex{\HD}{o_s+o_r}^8}{v}\}}{\chi\cup\{\Enset{s}{o_s},\Enset{r}{o_r},\Enset{d}{v}\}}{\sigma}}$ \\
+	${\Enconfig{\Inst{s}{o}{l}; C}{H}{\chi\cup\{\Enset{s}{v}\}}{\sigma}}$ & $\Rightarrow$ & ${\Enconfig{C}{H\cup\{\Enset{\Enindex{\HD}{l+o}^8}{v}\}}{\chi\cup\{\Enset{s}{v}\}}{\sigma}}$ \\
+	${\Enconfig{\Inst{s}{r}{l}}{H}{\chi\cup\{\Enset{s}{v},\Enset{r}{o}\}}{\sigma}}$ & $\Rightarrow$ & ${\Enconfig{C}{H\cup\{\Enset{\Enindex{\HD}{l+o}^8}{v}\}}{\chi\cup\{\Enset{s}{v},\Enset{r}{o}\}}{\sigma}}$ \\
 
-	$H$ & $\chi$ & $\sigma$ & \Inmv{s}{d}$; C$ & $\bm{\mapsto}$ & $H$ & $\chi, d \gets \Enindex{\chi}{s}$ & $\sigma$ & $C$ \\
-	$H$ & $\chi$ & $\sigma$ & \Inmv{l}{r}$; C$ & $\bm{\mapsto}$ & $H$ & $\chi, r \gets {\Enindex{\HC}{l}}^{8}$ & $\sigma$ & $C$ \\
-	$H$ & $\chi$ & $\sigma$ & \Inmv{v}{r}$; C$ & $\bm{\mapsto}$ & $H$ & $\chi, r \gets v$ & $\sigma$ & $C$ \\
+	\midrule
+	\multicolumn{3}{l}{\small\bfseries Register instructions} \\
+
+	${\Enconfig{\Inmv{s}{d}; C}{H}{\chi\cup\{\Enset{s}{v}\}}{\sigma}}$ & $\Rightarrow$ & ${\Enconfig{C}{H}{\chi\cup\{\Enset{s}{v},\Enset{d}{v}\}}{\sigma}}$ \\
+	${\Enconfig{\Inmv{l}{d}; C}{H}{\chi}{\sigma}}$ & $\Rightarrow$ & ${\Enconfig{C}{H}{\chi\cup\{\Enset{d}{\Enindex{\HC}{l}^8}\}}{\sigma}}$ \\
+	${\Enconfig{\Inmv{v}{d}; C}{H}{\chi}{\sigma}}$ & $\Rightarrow$ & ${\Enconfig{C}{H}{\chi\cup\{\Enset{d}{v}\}}{\sigma}}$ \\
 
 	\bottomrule
 
 	\caption{Operational semantics for the NASM.}
-	\label{fig:nstar-nsam-core-opsemantics}
+	\label{table:nstar-nsam-core-opsemantics}
 \end{xltabular}
 
+\endgroup
 
+\clearpage
 
 \endgroup
