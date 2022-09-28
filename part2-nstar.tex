@@ -1908,19 +1908,21 @@ These instructions are described in Figure~\ref{fig:nstar-nsam-core-instructions
 
 \begin{longtable}[H]{p{0.45\textwidth}p{0.45\textwidth}}
 	\toprule
-	Instruction       & Description                                                                                                             \\
+	Instruction                     & Description                                                                                                             \\
 	\midrule \endhead
-	\Injmp{l}         & Transfers the control flow to the code address pointed by the label \texttt{l}                                          \\
-	\Injmp{r}         & Transfers the control flow to the code address stored in the register \texttt{r}                                        \\
-	\Insalloc{n}      & Allocates a space of \texttt{n} bytes on top of the stack                                                               \\
-	\Insfree{n}       & Pops a space of \texttt{n} bytes off the top of the stack                                                               \\
-	\Inhalt           & Stops the execution of code by emptying the code buffer                                                                 \\
-	\Inmv{s}{d}       & Moves a value (either a literal value or a value taken from a register) into the destination register \texttt{d}        \\
-	\Insld{n}{s}{r}   & Copies \texttt{s} bytes taken \texttt{n} bytes from the top of the stack into the register \texttt{r}                   \\
-	\Insst{r}{n}      & Copies the value in the register \texttt{r} to \texttt{n} bytes from the top of the stack                               \\
-	\Inld{o}{p}{s}{r} & Copies \texttt{s} bytes at the address \texttt{p + o} into the register \texttt{r}                                      \\
-	\Inst{r}{o}{p}    & Copies the value in the register \texttt{r} into the memory space at the address \texttt{p + o}                         \\
-	\Insref{n}{p}{r}  & Retrieves a pointer to \texttt{p} bytes long data located at \texttt{n} bytes onto the stack in the register \texttt{r} \\
+	\Injmp{l}                       & Transfers the control flow to the code address pointed by the label \texttt{l}                                          \\
+	\Injmp{r}                       & Transfers the control flow to the code address stored in the register \texttt{r}                                        \\
+	\Incjmp{cc}{a}{b}{l$_1$}{l$_2$} & Transfers the control flow to the code address pointed by the label \texttt{l$_1$} if $\texttt{cc(a, b)}=\top$.
+	Otherwise, it transfers the control flow to the code address pointed by the label \texttt{l$_2$}.                                                         \\
+	\Insalloc{n}                    & Allocates a space of \texttt{n} bytes on top of the stack                                                               \\
+	\Insfree{n}                     & Pops a space of \texttt{n} bytes off the top of the stack                                                               \\
+	\Inhalt                         & Stops the execution of code by emptying the code buffer                                                                 \\
+	\Inmv{s}{d}                     & Moves a value (either a literal value or a value taken from a register) into the destination register \texttt{d}        \\
+	\Insld{n}{s}{r}                 & Copies \texttt{s} bytes taken \texttt{n} bytes from the top of the stack into the register \texttt{r}                   \\
+	\Insst{r}{n}                    & Copies the value in the register \texttt{r} to \texttt{n} bytes from the top of the stack                               \\
+	\Inld{o}{p}{s}{r}               & Copies \texttt{s} bytes at the address \texttt{p + o} into the register \texttt{r}                                      \\
+	\Inst{r}{o}{p}                  & Copies the value in the register \texttt{r} into the memory space at the address \texttt{p + o}                         \\
+	\Insref{n}{p}{r}                & Retrieves a pointer to \texttt{p} bytes long data located at \texttt{n} bytes onto the stack in the register \texttt{r} \\
 	\bottomrule
 
 	\caption{The core instructions of the NSAM along with a small description of each one of them.}
@@ -1952,7 +1954,8 @@ This section describes the operational semantics of the core instructions descri
 
 	$H$ & $\chi$ & $\sigma$ & \Injmp{r}$; C$ & $\bm{\mapsto}$ & $H$ & $\chi$ & $\sigma$ & $\Enderef{\Enindex{\HC}{\Enindex{\chi}{r}}}; C$ \\
 	$H$ & $\chi$ & $\sigma$ & \Injmp{l}$; C$ & $\bm{\mapsto}$ & $H$ & $\chi$ & $\sigma$ & $\Enderef{\Enindex{\HC}{l}}; C$ \\
-
+	$H$ & $\chi$ & $\sigma$ & \Incjmp{cc}{x}{y}{lt}{lf}$; C$ & $\bm{\mapsto}$ & $H$ & $\chi$ & $\sigma$ & $\Enderef{\Enindex{\HC}{l}}; C$ \\
+	\multicolumn{9}{>{\scriptsize}r}{$l=\begin{cases}lt & \text{iff\ } cc(x, y) = \top\\lf & \text{otherwise}\end{cases}$} \\
 	$H$ & $\chi$ & $\sigma$ & \Inhalt$; C$ & $\bm{\mapsto}$ & $H$ & $\chi$ & $\sigma$ & $\cdot$ \\
 
 	\midrule
