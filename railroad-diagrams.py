@@ -447,6 +447,47 @@ def nstar_logical_binary_instruction():
 
   return mk_diagram('logical-binary-instruction', inner)
 
+def nstar_cmvZ_quaternary_instruction():
+  inner = Sequence(
+    Choice(
+      0,
+      Terminal('cmvz'),
+      Terminal('cmvnz')
+    ),
+    Choice(0, NonTerminal('register'), NonTerminal('integer-value')),
+    Terminal(','),
+    NonTerminal('register'),
+    Terminal(','),
+    NonTerminal('register'),
+    Terminal(','),
+    NonTerminal('register')
+  )
+
+  return mk_diagram('cmvZ-instruction', inner)
+
+def nstar_cmvX_quaternary_instruction():
+  inner = Sequence(
+    Choice(
+      2,
+      Terminal('cmve'),
+      Terminal('cmvne'),
+      Terminal('cmvl'),
+      Terminal('cmvle'),
+      Terminal('cmvg'),
+      Terminal('cmvge')
+    ),
+    Choice(0, NonTerminal('register'), NonTerminal('integer-value')),
+    Terminal(','),
+    NonTerminal('register'),
+    Terminal(','),
+    NonTerminal('register'),
+    Terminal(','),
+    NonTerminal('register')
+  )
+
+  return mk_diagram('cmvX-instruction', inner)
+
+
 ##################################################################################
 ## Zilch
 ##################################################################################
@@ -699,4 +740,4 @@ def zilch_toplevel_function_definition():
 
   return mk_diagram2('toplevel-function', inner)
 
-nstar_logical_binary_instruction().writeSvg(sys.stdout.write)
+nstar_cmvX_quaternary_instruction().writeSvg(sys.stdout.write)

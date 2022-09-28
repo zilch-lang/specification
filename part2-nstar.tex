@@ -1829,8 +1829,84 @@ There are two kinds of quaternary conditional moves:
 	\item \Icmvnz{a}{b}{c}{r}\ which is exactly the same as \Icmvz{a}{c}{b}{r}\ (it is \Imv{b}{r}\ if \texttt{a} evaluates to \texttt{0} else \Imv{c}{r}).
 \end{itemize}
 
+These instructions are so similar that they share their grammar and type inference rules, as described in figures~\ref{fig:nstar-instructionset-registers-cmvX-quaternary-grammar},\ref{fig:nstar-instructionset-registers-cmvX-quaternary-typerules}.
+
+\begin{figure}[H]
+	\centering
+
+	\framebox[\textwidth][c]{
+		\scalebox{.9}{
+			\includegraphics[width=\linewidth]{nstar/instructions/cmvZ-grammar}
+		}
+	}
+
+	\caption{Grammar for quaternary conditional move instructions.}
+	\label{fig:nstar-instructionset-registers-cmvX-quaternary-grammar}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+
+	\framebox[\textwidth][c]{
+		\begin{prooftree}
+			\hypo{\CodeTypeSequent{\Xi}{\Gamma}{\chi}{\sigma}{\epsilon}{a}{\tau_1}}
+			\hypo{\tau_1 \in\{ \Tunsigned{N}, \Tsigned{N} \}}
+			\infer[no rule, rule margin=1ex]2{\CodeTypeSequent{\Xi}{\Gamma}{\chi}{\sigma}{\epsilon}{b}{\tau_2}\hspace{1.5em}%
+			\CodeTypeSequent{\Xi}{\Gamma}{\chi}{\sigma}{\epsilon}{c}{\tau_2}\hspace{1.5em}%
+			r \neq \epsilon \wedge b \neq \epsilon \wedge c \neq \epsilon}
+			\infer1{\ISequent{\Xi}{\Gamma}{\chi}{\sigma}{\epsilon}{\IcmvZ{a}{b}{c}{r}}{\chi, r : \tau_2}{\sigma}{\epsilon}}
+		\end{prooftree}
+	}
+
+	\caption{Type inference rules for quaternary conditional move instructions.}
+	\label{fig:nstar-instructionset-registers-cmvX-quaternary-typerules}
+\end{figure}
+
 \subsubsection{Quintary conditional moves}\label{subsubsec:nstar-instructionset-registers-cmvX-quintary}
 
+Quintary conditional move instructions come in multiple flavors:
+\begin{itemize}
+	\item \Icmve{a}{b}{c}{d}{r}\ performs \Imv{c}{r}\ if \texttt{a} and \texttt{b} evaluate to the same value otherwise it performs \Imv{d}{r};
+	\item \Icmvne{a}{b}{c}{d}{r}\ is just the same as \Icmve{a}{b}{d}{c}{r};
+	\item \Icmvl{a}{b}{c}{d}{r}\ is reduced to \Imv{c}{r}\ if \texttt{a} is reduced to a value which is stricly less than the value into which \texttt{b} is reduced, else it is reduced to \Imv{d}{r};
+	\item \Icmvge{a}{b}{c}{d}{r}\ is the dual of {\Iformat cmvl}, and can be reduced to simply \Icmvl{b}{a}{d}{c}{r};
+	\item \Icmvle{a}{b}{c}{d}{r}\ is very similar to \Icmvl{a}{b}{c}{d}{r}\ but it also performs \Imv{c}{r}\ if \texttt{a} and \texttt{a} are reduced to the same value;
+	\item \Icmvg{a}{b}{c}{d}{r}\ is the same as \Icmvle{b}{a}{d}{c}{r}.
+\end{itemize}
+
+Grammar and type inference rules for these instructions are provided in the figures~\ref{fig:nstar-instructionset-registers-cmvX-quintary-grammar},\ref{fig:nstar-instructionset-registers-cmvX-quintary-typerules}.
+
+\begin{figure}[H]
+	\centering
+
+	\framebox[\textwidth][c]{
+		\scalebox{.9}{
+			\includegraphics[width=\linewidth]{nstar/instructions/cmvX-grammar}
+		}
+	}
+
+	\caption{Grammar for quintary conditional move instructions.}
+	\label{fig:nstar-instructionset-registers-cmvX-quintary-grammar}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+
+	\framebox[\textwidth][c]{
+		\begin{prooftree}
+			\hypo{\CodeTypeSequent{\Xi}{\Gamma}{\chi}{\sigma}{\epsilon}{a}{\tau_1}}
+			\hypo{\CodeTypeSequent{\Xi}{\Gamma}{\chi}{\sigma}{\epsilon}{b}{\tau_2}}
+			\hypo{\tau_1\iseq\tau_2}
+			\infer[no rule, rule margin=1ex]3{\CodeTypeSequent{\Xi}{\Gamma}{\chi}{\sigma}{\epsilon}{c}{\tau_3}\hspace{1.5em}%
+			\CodeTypeSequent{\Xi}{\Gamma}{\chi}{\sigma}{\epsilon}{d}{\tau_3}\hspace{1.5em}%
+			r \neq \epsilon \wedge c \neq \epsilon \wedge d \neq \epsilon}
+			\infer1{\ISequent{\Xi}{\Gamma}{\chi}{\sigma}{\epsilon}{\IcmvC{a}{b}{c}{d}{r}}{\chi, r : \tau_3}{\sigma}{\epsilon}}
+		\end{prooftree}
+	}
+
+	\caption{Type inference rules for quintary conditional move instructions.}
+	\label{fig:nstar-instructionset-registers-cmvX-quintary-typerules}
+\end{figure}
 
 
 \section{Other instructions}\label{sec:nstar-instructionset-other}
