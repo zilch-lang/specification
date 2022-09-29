@@ -1908,6 +1908,48 @@ Grammar and type inference rules for these instructions are provided in the figu
 	\label{fig:nstar-instructionset-registers-cmvX-quintary-typerules}
 \end{figure}
 
+\subsection{Integer arithmetic instructions}\label{subsec:nstar-instructionset-registers-integerarithmetic}
+
+There are a few kinds of integer arithmetic instructions:
+\begin{itemize}
+	\item \Iadd{a}{b}{r}\ stores the result of \texttt{a + b} inside the register \texttt{r};
+	\item \Isub{a}{b}{r}\ stores the result of \texttt{a - b} inside the register \texttt{r};
+	\item \Imul{a}{b}{r}\ stores the result of \texttt{a * b} inside the register \texttt{r};
+	\item \Idiv{a}{b}{r}\ stores the result of \texttt{a / b} inside the register \texttt{r} (where \texttt{a / b} is the euclidean division).
+\end{itemize}
+These instructions all share the same grammar and type inference rules described in figures~\ref{fig:nstar-instructionset-registers-integerarithmetic-grammar},\ref{fig:nstar-instructionset-registers-integerarithmetic-typerules}.
+
+\begin{figure}[H]
+	\centering
+
+	\framebox[\textwidth][c]{
+		\scalebox{.9}{
+			\includegraphics[width=\linewidth]{nstar/instructions/iarithmetic-grammar}
+		}
+	}
+
+	\caption{Grammar for integer arithmetic instructions.}
+	\label{fig:nstar-instructionset-registers-integerarithmetic-grammar}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+
+	\framebox[\textwidth][c]{
+		\begin{prooftree}
+			\hypo{\CodeTypeSequent{\Xi}{\Gamma}{\chi}{\sigma}{\epsilon}{a}{\tau}}
+			\hypo{\CodeTypeSequent{\Xi}{\Gamma}{\chi}{\sigma}{\epsilon}{b}{\tau}}
+			\hypo{\tau\in\{\Tunsigned{N}, \Tsigned{N}\}}
+			\hypo{r$ is a register$}
+			\hypo{r \neq \epsilon}
+			\infer5{\ISequent{\Xi}{\Gamma}{\chi}{\sigma}{\epsilon}{\Iadd{a}{b}{r}}{\chi, r : \tau}{\sigma}{\epsilon}}
+		\end{prooftree}
+	}
+
+	\caption{Type inference rules for integer arithmetic instructions.}
+	\label{fig:nstar-instructionset-registers-integerarithmetic-typerules}
+\end{figure}
+
 
 \section{Other instructions}\label{sec:nstar-instructionset-other}
 

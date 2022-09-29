@@ -487,6 +487,23 @@ def nstar_cmvX_quaternary_instruction():
 
   return mk_diagram('cmvX-instruction', inner)
 
+def nstar_iarithmetic_instruction():
+  inner = Sequence(
+    Choice(
+      1,
+      Terminal('add'),
+      Terminal('sub'),
+      Terminal('mul'),
+      Terminal('div')
+    ),
+    Choice(0, NonTerminal('register'), NonTerminal('integer-value')),
+    Terminal(','),
+    Choice(0, NonTerminal('register'), NonTerminal('integer-value')),
+    Terminal(','),
+    NonTerminal('register') 
+  )
+
+  return mk_diagram('iarithmetic-instruction', inner)
 
 ##################################################################################
 ## Zilch
@@ -740,4 +757,4 @@ def zilch_toplevel_function_definition():
 
   return mk_diagram2('toplevel-function', inner)
 
-nstar_cmvX_quaternary_instruction().writeSvg(sys.stdout.write)
+nstar_iarithmetic_instruction().writeSvg(sys.stdout.write)
