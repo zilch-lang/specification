@@ -1,4 +1,4 @@
-enum List(a : type) :=
-  val nil : {a} -> List a
-  val cons : {a} -> (a, List a) -> List a
+enum List(@0 a : type) :=
+  val nil : {@0 a} -> List(a)
+  val cons : {@0 a} -> (@1 a, @1 List(a)) -> List(a)
 

@@ -11,10 +11,17 @@ class ZilchLexer(ExtendedRegexLexer):
     tokens = {
         'commentsandwhitespace': [
             (r'\s+', Text),
-            (r'--.*?$', Comment.Single)
+            (r'--.*?$', Comment.Single),
+            (r'\/-', Comment.Multi, 'multi')
+        ],
+        'multi': [
+            # support markdown highlighting?
+            (r'[^-\/]', Comment.Multi),
+            (r'-\/', Comment.Multi, '#pop'),
+            (r'[-\/]', Comment.Multi)
         ],
         'keywords': [
-            (r'\b(forall|∀|def|enum|record|class|impl|alias|case|of|module|fn|foreign|import|export|perm|if|then|else|pattern|where|as|open|let|in|lam)\b', Keyword.Reserved)
+            (r'\b(let|rec|effect|enum|record|where|import|as|open|match|with|type|lam|λ|val|constructor|public|mut|region|assume|do|if|then|else|mutual|true|false|resume|unsafe)\b', Keyword.Reserved)
         ],
         'literals': [
             (r'"[^"]*"', String.Double),
@@ -25,15 +32,17 @@ class ZilchLexer(ExtendedRegexLexer):
             (r'[0-9]+', Number.Integer)
         ],
         'types': [
-            (r'\b(s8|s16|s32|s64|u8|u16|u32|u64)\b', Keyword.Type)
+            (r'\b(s8|s16|s32|s64|u8|u16|u32|u64|char|ptr|ref|𝟏)\b', Keyword.Type),
+            (r'\B(⊤|⊗|&|×|->|→|𝟭|\(\s*\)|⟨\s*⟩)\B', Keyword.Type),
+            (r'@[0-9]+', Comment.Preproc)
         ],
         'operators': [
-            (r'(\:\=|\<\-|\<\:|←|≔|\-\>|→|·)', Operator),
+            (r'(\:\=|≔|=>|⇒)', Operator),
 
-            (r'(\(|\)|\:|\{|\}|\[|\])|,|_', Punctuation)
+            (r'(\(|\)|\:|\{|\})|,|_', Punctuation)
         ],
         'meta-specifier': [
-            (r'#\[.*?\]', Comment.Preproc)
+            (r'#attributes\(.*?\)', Comment.Preproc)
         ],
         'root': [
             include('commentsandwhitespace'),

@@ -1,7 +1,6 @@
-let map-list : Mappeable(List) :=
-  {{ map := map-impl }}
+let map-list : Mappeable(List) := @{ let map := map-impl }
 	where
 		let map-impl (f, l) := match l with
-			nil        -> nil
-      cons(x, l) -> cons(f x, map-impl (f, l))
+			Nil        -> Nil
+      Cons(x, l) -> Cons(f(x), map-impl(f, l))
 

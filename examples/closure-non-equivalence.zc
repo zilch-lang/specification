@@ -1,6 +1,6 @@
 -- Alternative 1
-let f(y : u64, l : list u64) : list u64 := map(lam x -> x + y * 2, l)
+let f(y : u64, l : list(u64)) : list(u64) := map(lam(x) => x + y * 2, l)
 -- Alternative 2
 let mapper(y : u64)(x : u64) : u64 := x + y * 2
-let f(y : u64, l : list u64) : list u64 := map(mapper y, l)
+let f(y : u64, l : list(u64)) : list(u64) := map(mapper(y), l)
 

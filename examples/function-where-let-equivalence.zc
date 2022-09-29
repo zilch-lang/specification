@@ -1,7 +1,7 @@
-let mapPlusOne(l : list u64) : list u64 := map(f, l)
+let mapPlusOne(l : list(u64)) : list(u64) := map(f, l)
   where let f(x) := x + 1
 -- is the same as
-let mapPlusOne(l : list u64) : list u64 :=
+let mapPlusOne(l : list(u64)) : list(u64) :=
   let f(x) := x + 1
   map(f, l)
 

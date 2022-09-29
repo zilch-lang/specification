@@ -1,5 +1,5 @@
-impl map-list : Mappeable(List) :=
-  let map(f, l) := case l of
-    Nil()      -> Nil()
-    Cons(x, l) -> Cons(f x, map(f, l))
+instance map-list : Mappeable(List) :=
+  let map(f, l) := match l with
+    Nil      -> Nil
+    Cons(x, l) -> Cons(f(x), map(f, l))
 
