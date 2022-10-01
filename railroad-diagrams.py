@@ -379,17 +379,16 @@ def nstar_struct_constant():
 
   return mk_diagram('structure-constant', inner)
 
+
 def nstar_cj_triadic():
   inner = Sequence(
     Terminal('cjX'),
     Choice(0, NonTerminal('register'), NonTerminal('integer-value')),
-    Terminal(','),
-    NonTerminal('label-value'),
-    Terminal(','),
-    NonTerminal('label-value')
-  )
+    Terminal(','), NonTerminal('label-value'), Terminal(','),
+    NonTerminal('label-value'))
 
   return mk_diagram('triadic-cjX', inner)
+
 
 def nstar_cj_tetradic():
   inner = Sequence(
@@ -397,113 +396,74 @@ def nstar_cj_tetradic():
     Choice(0, NonTerminal('register'), NonTerminal('integer-value')),
     Terminal(','),
     Choice(0, NonTerminal('register'), NonTerminal('integer-value')),
-    Terminal(','),
-    NonTerminal('label-value'),
-    Terminal(','),
-    NonTerminal('label-value')
-  )
+    Terminal(','), NonTerminal('label-value'), Terminal(','),
+    NonTerminal('label-value'))
 
   return mk_diagram('tetradic-cjC', inner)
+
 
 def nstar_shiftX_instruction():
   inner = Sequence(
     Terminal('shiftX'),
     Choice(0, NonTerminal('register'), NonTerminal('integer-value')),
-    Terminal(','),
-    NonTerminal('integer-value'),
-    Terminal(','),
-    NonTerminal('register')
-  )
+    Terminal(','), NonTerminal('integer-value'), Terminal(','),
+    NonTerminal('register'))
 
   return mk_diagram('shiftX-instruction', inner)
 
+
 def nstar_logical_unary_instruction():
   inner = Sequence(
-    Choice(
-      0,
-      Terminal('not')
-    ),
+    Choice(0, Terminal('not')),
     Choice(0, NonTerminal('register'), NonTerminal('integer-value')),
-    Terminal(','),
-    NonTerminal('register')
-  )
+    Terminal(','), NonTerminal('register'))
 
   return mk_diagram('logical-unary-instruction', inner)
 
+
 def nstar_logical_binary_instruction():
   inner = Sequence(
-    Choice(
-      1,
-      Terminal('and'),
-      Terminal('or'),
-      Terminal('xor')
-    ),
+    Choice(1, Terminal('and'), Terminal('or'), Terminal('xor')),
     Choice(0, NonTerminal('register'), NonTerminal('integer-value')),
     Terminal(','),
     Choice(0, NonTerminal('register'), NonTerminal('integer-value')),
-    Terminal(','),
-    NonTerminal('register')
-  )
+    Terminal(','), NonTerminal('register'))
 
   return mk_diagram('logical-binary-instruction', inner)
 
+
 def nstar_cmvZ_quaternary_instruction():
   inner = Sequence(
-    Choice(
-      0,
-      Terminal('cmvz'),
-      Terminal('cmvnz')
-    ),
+    Choice(0, Terminal('cmvz'), Terminal('cmvnz')),
     Choice(0, NonTerminal('register'), NonTerminal('integer-value')),
-    Terminal(','),
-    NonTerminal('register'),
-    Terminal(','),
-    NonTerminal('register'),
-    Terminal(','),
-    NonTerminal('register')
-  )
+    Terminal(','), NonTerminal('register'), Terminal(','),
+    NonTerminal('register'), Terminal(','), NonTerminal('register'))
 
   return mk_diagram('cmvZ-instruction', inner)
 
+
 def nstar_cmvX_quaternary_instruction():
   inner = Sequence(
-    Choice(
-      2,
-      Terminal('cmve'),
-      Terminal('cmvne'),
-      Terminal('cmvl'),
-      Terminal('cmvle'),
-      Terminal('cmvg'),
-      Terminal('cmvge')
-    ),
+    Choice(2, Terminal('cmve'), Terminal('cmvne'), Terminal('cmvl'),
+           Terminal('cmvle'), Terminal('cmvg'), Terminal('cmvge')),
     Choice(0, NonTerminal('register'), NonTerminal('integer-value')),
-    Terminal(','),
-    NonTerminal('register'),
-    Terminal(','),
-    NonTerminal('register'),
-    Terminal(','),
-    NonTerminal('register')
-  )
+    Terminal(','), NonTerminal('register'), Terminal(','),
+    NonTerminal('register'), Terminal(','), NonTerminal('register'))
 
   return mk_diagram('cmvX-instruction', inner)
 
+
 def nstar_iarithmetic_instruction():
   inner = Sequence(
-    Choice(
-      1,
-      Terminal('add'),
-      Terminal('sub'),
-      Terminal('mul'),
-      Terminal('div')
-    ),
+    Choice(1, Terminal('add'), Terminal('sub'), Terminal('mul'),
+           Terminal('div')),
     Choice(0, NonTerminal('register'), NonTerminal('integer-value')),
     Terminal(','),
     Choice(0, NonTerminal('register'), NonTerminal('integer-value')),
-    Terminal(','),
-    NonTerminal('register') 
-  )
+    Terminal(','), NonTerminal('register'))
 
   return mk_diagram('iarithmetic-instruction', inner)
+
 
 ##################################################################################
 ## Zilch
@@ -513,28 +473,39 @@ def nstar_iarithmetic_instruction():
 def zilch_keywords():
   inner = Choice(
     2,
-    Group(HorizontalChoice(Terminal('import'), Terminal('as')),
-          'module-level'),
+    Group(
+      HorizontalChoice(Terminal('import'), Terminal('as'), Terminal('open')),
+      'module-level'),
     Group(
       Choice(
         1,
         HorizontalChoice(Terminal('open'), Terminal('public'), Terminal('let'),
                          Terminal('rec'), Terminal('val'), Terminal('mut')),
         HorizontalChoice(Terminal('enum'), Terminal('record'),
-                         Terminal('alias'), Terminal('effect'),
-                         Terminal('constructor'))), 'top-level'),
-    Group(
-      HorizontalChoice(Terminal('type'), Terminal('Π'), Terminal('Σ'),
-                       Terminal('region')), 'type-level'),
+                         Terminal('effect'), Terminal('constructor')),
+        HorizontalChoice(Terminal('mutual'), Terminal('assume'))),
+      'top-level'),
+    Group(HorizontalChoice(Terminal('type'), Terminal('region')),
+          'type-level'),
     Group(
       Choice(
-        0,
+        1,
         HorizontalChoice(Terminal('match'), Terminal('with'), Terminal('lam'),
-                         Terminal('where')),
-        HorizontalChoice(Terminal('if'), Terminal('then'), Terminal('else'))),
+                         Terminal('where'), Terminal('λ')),
+        HorizontalChoice(Terminal('if'), Terminal('then'), Terminal('else'),
+                         Terminal('do'), Terminal('true'), Terminal('false')),
+        HorizontalChoice(Terminal('resume'), Terminal('unsafe'))),
       'expression-level'))
 
   return mk_diagram2('keywords', inner)
+
+
+def zilch_identifier():
+  inner = Group(
+    Sequence(Group(NonTerminal('any'), '∉ digit'),
+             ZeroOrMore(NonTerminal('any'))), '∉ keywords')
+
+  return mk_diagram2('identifier', inner)
 
 
 def zilch_special():
@@ -548,7 +519,7 @@ def zilch_special():
                      Terminal('->'), Terminal('→')),
     HorizontalChoice(Terminal('--'), Terminal('/-'), Terminal('-/'),
                      Terminal('/--'), Terminal('_'), Terminal('·'),
-                     Terminal('?')))
+                     Terminal('?'), Terminal('=>'), Terminal('⇒')))
 
   return mk_diagram2('special', inner)
 
@@ -569,19 +540,15 @@ def zilch_whitespaces():
 
 
 def zilch_lambda():
-  inner = Choice(
-    0,
-    Sequence(
-      Terminal('lam'),
-      Choice(
-        1, NonTerminal('identifier'),
-        Sequence(
-          Terminal('('),
-          ZeroOrMore(
-            Sequence(NonTerminal('identifier'),
-                     Optional(Sequence(Terminal(':'), NonTerminal('type')))),
-            Terminal(',')), Terminal(')'))), Terminal('->'), NonTerminal('{'),
-      NonTerminal('expression'), NonTerminal('}')), Terminal('_'))
+  inner = Sequence(
+    Choice(0, Terminal('lam'), Terminal('λ')),
+    OneOrMore(
+      Choice(2, Sequence(Terminal('('), Terminal(')')),
+             NonTerminal('explicit-parameter'),
+             NonTerminal('implicit-parameter'),
+             NonTerminal('instance-parameter'))),
+    Choice(0, Terminal('=>'), Terminal('⇒')), NonTerminal('{'),
+    NonTerminal('expression'), NonTerminal('}'))
 
   return mk_diagram2('lambda', inner)
 
@@ -606,6 +573,111 @@ def zilch_integer():
   return mk_diagram2('integer', inner)
 
 
+def zilch_dependent_type():
+  inner = Sequence(
+    Choice(1, Sequence(Optional(NonTerminal('usage')),
+                       NonTerminal('type-atom')),
+           OneOrMore(NonTerminal('explicit-parameter')),
+           OneOrMore(NonTerminal('implicit-parameter')),
+           OneOrMore(NonTerminal('instance-parameter'))),
+    Choice(
+      2,
+      Terminal('⊗'),
+      Terminal('×'),
+      Terminal('->'),
+      Terminal('→'),
+      Terminal('&'),
+    ), Optional(NonTerminal('effect-row')), NonTerminal('type'))
+
+  return mk_diagram2('dependent-type', inner)
+
+
+def zilch_implicit_parameter():
+  inner = Sequence(
+    Terminal('{'),
+    OneOrMore(
+      Sequence(
+        Optional(NonTerminal('usage')),
+        Choice(
+          1,
+          Sequence(OneOrMore(NonTerminal('identifier')), Terminal(':'),
+                   NonTerminal('type')), NonTerminal('type-atom'))),
+      Terminal(',')), Terminal('}'))
+
+  return mk_diagram2('implicit-parameter', inner)
+
+
+def zilch_implicit_parameter_():
+  inner = Sequence(
+    Terminal('{'),
+    OneOrMore(
+      Sequence(
+        Optional(NonTerminal('usage')),
+        Choice(
+          1,
+          Sequence(OneOrMore(NonTerminal('identifier')), Terminal(':'),
+                   NonTerminal('expression')), NonTerminal('identifier'))),
+      Terminal(',')), Terminal('}'))
+
+  return mk_diagram2('implicit-parameter\'', inner)
+
+
+def zilch_explicit_parameter():
+  inner = Sequence(
+    Terminal('('),
+    OneOrMore(
+      Sequence(
+        Optional(NonTerminal('usage')),
+        Choice(
+          1,
+          Sequence(OneOrMore(NonTerminal('identifier')), Terminal(':'),
+                   NonTerminal('type')), NonTerminal('type-atom')),
+      ), Terminal(',')), Terminal(')'))
+
+  return mk_diagram2('explicit-parameter', inner)
+
+
+def zilch_explicit_parameter_():
+  inner = Sequence(
+    Terminal('('),
+    OneOrMore(
+      Sequence(
+        Optional(NonTerminal('usage')),
+        Choice(
+          1,
+          Sequence(OneOrMore(NonTerminal('identifier')), Terminal(':'),
+                   NonTerminal('type')), NonTerminal('identifier')),
+      ), Terminal(',')), Terminal(')'))
+
+  return mk_diagram2('explicit-parameter\'', inner)
+
+
+def zilch_instance_parameter():
+  inner = Choice(
+    0,
+    Sequence(Terminal('{{'), Optional(NonTerminal('usage')),
+             NonTerminal('identifier'), Terminal(':'), NonTerminal('type'),
+             Terminal('}}')),
+    Sequence(Terminal('⦃'), Optional(NonTerminal('usage')),
+             NonTerminal('identifier'), Terminal(':'), NonTerminal('type'),
+             Terminal('⦄')))
+
+  return mk_diagram2('instance-parameter', inner)
+
+
+def zilch_instance_parameter_():
+  inner = Choice(
+    0,
+    Sequence(Terminal('{{'), Optional(NonTerminal('usage')),
+             NonTerminal('identifier'), Terminal(':'), NonTerminal('type'),
+             Terminal('}}')),
+    Sequence(Terminal('⦃'), Optional(NonTerminal('usage')),
+             NonTerminal('identifier'), Terminal(':'), NonTerminal('type'),
+             Terminal('⦄')))
+
+  return mk_diagram2('instance-parameter\'', inner)
+
+
 def zilch_function_type():
   inner = Sequence(
     Choice(
@@ -620,12 +692,14 @@ def zilch_function_type():
 
 
 def zilch_effect_row():
-  inner = Sequence(
-    Terminal('<'), ZeroOrMore(NonTerminal('type'), Terminal(',')),
+  row = Sequence(
+    ZeroOrMore(NonTerminal('expression-atom'), Terminal(',')),
     Optional(
       Sequence(Terminal('|'),
-               OneOrMore(NonTerminal('identifier'), Terminal(',')))),
-    Terminal('>'))
+               OneOrMore(NonTerminal('identifier'), Terminal(',')))))
+
+  inner = Choice(0, Sequence(Terminal('<'), row, Terminal('>')),
+                 Sequence(Terminal('⟨'), row, Terminal('⟩')))
 
   return mk_diagram2('effect-row', inner)
 
@@ -656,16 +730,15 @@ def zilch_import_group():
 
 def zilch_expression_atom():
   inner = Choice(
-    3, NonTerminal('literal'),
+    2, NonTerminal('literal'),
     Group(
-      Sequence(ZeroOrMore(NonTerminal('identifier'), Terminal('::')),
+      Sequence(NonTerminal('expression'),
+               HorizontalChoice(Terminal('::'), Terminal('∷')),
                NonTerminal('identifier')), 'qualified identifier'),
     Group(
       Sequence(NonTerminal('expression'), Terminal('('),
                ZeroOrMore(NonTerminal('expression'), Terminal(',')),
                Terminal(')')), 'function application'),
-    Group(Sequence(Terminal('?'), Optional(NonTerminal('identifier'))),
-          'typed hole'),
     Group(Sequence(Terminal('('), NonTerminal('expression'), Terminal(')')),
           'parenthesized expression'),
     Group(
@@ -676,19 +749,28 @@ def zilch_expression_atom():
 
 
 def zilch_let_top_level():
-  inner = Sequence(Optional(NonTerminal('meta-attributes')),
-                   Optional(Terminal('public')),
-                   NonTerminal('function-definition'))
+  inner = Sequence(
+    NonTerminal('function-definition'),
+    Optional(
+      Sequence(Terminal('where'), NonTerminal('{'),
+               OneOrMore(NonTerminal('function-definition'), NonTerminal(';')),
+               NonTerminal('}'))))
 
   return mk_diagram2('toplevel-function', inner)
 
 
 def zilch_function_definition():
-  inner = Sequence(Choice(0, Terminal('let'), Terminal('rec')),
-                   Optional(Terminal('mut')), NonTerminal('id'),
-                   ZeroOrMore(NonTerminal('parameter')),
-                   Optional(Sequence(Terminal(':'), NonTerminal('type'))),
-                   Choice(1, Terminal(':='), Terminal('≔')), NonTerminal('expr'))
+  inner = Stack(
+    Sequence(
+      Choice(1, Terminal('let'), Terminal('rec'), Terminal('mut')),
+      Optional(NonTerminal('usage')), NonTerminal('identifier'),
+      ZeroOrMore(
+        Choice(1, NonTerminal('explicit-parameter\''),
+               NonTerminal('implicit-parameter\''),
+               NonTerminal('instance-parameter\'')))),
+    Sequence(Optional(Sequence(Terminal(':'), NonTerminal('expression'))),
+             Choice(1, Terminal(':='), Terminal('≔')),
+             NonTerminal('expression')))
 
   return mk_diagram2('function-definition', inner)
 
@@ -696,7 +778,8 @@ def zilch_function_definition():
 def zilch_param():
   param = Choice(
     0,
-    Sequence(Optional(Choice(0, Terminal('open'), Terminal('mut'))), NonTerminal('id'),
+    Sequence(Optional(Choice(0, Terminal('open'), Terminal('mut'))),
+             NonTerminal('id'),
              Optional(Sequence(Terminal(':'), NonTerminal('type')))),
     Sequence(OneOrMore(NonTerminal('id')), Terminal(':'), NonTerminal('type')))
 
@@ -722,8 +805,8 @@ def zilch_match():
     Terminal('match'), NonTerminal('expression'), Terminal('with'),
     NonTerminal('{'),
     OneOrMore(
-      Sequence(NonTerminal('pattern'), Choice(1, Terminal('->'),
-                                              Terminal('→')),
+      Sequence(NonTerminal('pattern'), Choice(1, Terminal('=>'),
+                                              Terminal('⇒')),
                NonTerminal('expression')), NonTerminal(';')), NonTerminal('}'))
 
   return mk_diagram2('match', inner)
@@ -732,29 +815,88 @@ def zilch_match():
 def zilch_record():
   record = ZeroOrMore(NonTerminal('function-definition'), Terminal(','))
 
-  inner = Choice(1, Sequence(Terminal('{{'), record, Terminal('}}')),
-                 Sequence(Terminal('⦃'), record, Terminal('⦄')))
+  inner = Sequence(Terminal('@{'), record, Terminal('}'))
 
   return mk_diagram2('record', inner)
 
-def zilch_toplevel_function_definition():
+
+def zilch_toplevel_enum():
   inner = Stack(
     Sequence(
-      Optional(NonTerminal('meta-information')),
-      Optional(Terminal('public')),
-      NonTerminal('function-definition')
-    ),
-    Optional(Sequence(
-      Terminal('where'),
-      NonTerminal('{'),
-      OneOrMore(
-        NonTerminal('function-definition'),
-        NonTerminal(';')
-      ),
-      NonTerminal('}')
-    ))
-  )
+      Terminal('enum'), NonTerminal('identifier'),
+      ZeroOrMore(
+        Choice(1, NonTerminal('explicit-parameter\''),
+               NonTerminal('implicit-parameter\''),
+               NonTerminal('instance-parameter\''))), Terminal(':'),
+      NonTerminal('expression')),
+    Sequence(Choice(0, Terminal(':='), Terminal('≔')), NonTerminal('{'),
+             ZeroOrMore(NonTerminal('function-declaration'), NonTerminal(';')),
+             NonTerminal('}')))
+
+  return mk_diagram2('enum', inner)
+
+
+def zilch_toplevel_record():
+  inner = Stack(
+    Sequence(
+      Terminal('record'), NonTerminal('identifier'),
+      ZeroOrMore(
+        Choice(1, NonTerminal('explicit-parameter\''),
+               NonTerminal('implicit-parameter\''),
+               NonTerminal('instance-parameter\''))), Terminal(':'),
+      NonTerminal('expression')),
+    Sequence(
+      Choice(0, Terminal(':='), Terminal('≔')), NonTerminal('{'),
+      Optional(
+        Sequence(Terminal('constructor'), NonTerminal('identifier'),
+                 NonTerminal(';'))),
+      ZeroOrMore(NonTerminal('function-declaration'), NonTerminal(';')),
+      NonTerminal('}')))
+
+  return mk_diagram2('record', inner)
+
+
+def zilch_toplevel_function_definition():
+  inner = Stack(
+    Sequence(Optional(NonTerminal('meta-information')),
+             Optional(Terminal('public')), NonTerminal('function-definition')),
+    Optional(
+      Sequence(Terminal('where'), NonTerminal('{'),
+               OneOrMore(NonTerminal('function-definition'), NonTerminal(';')),
+               NonTerminal('}'))))
 
   return mk_diagram2('toplevel-function', inner)
 
-nstar_iarithmetic_instruction().writeSvg(sys.stdout.write)
+
+def zilch_function_declaration():
+  inner = Sequence(
+    Terminal('val'), Optional(NonTerminal('usage')), NonTerminal('identifier'),
+    ZeroOrMore(
+      Choice(1, NonTerminal('explicit-parameter\''),
+             NonTerminal('implicit-parameter\''),
+             NonTerminal('instance-parameter\''))), Terminal(':'),
+    NonTerminal('expression'))
+
+  return mk_diagram2('function-declaration', inner)
+
+
+def zilch_mutual_definition():
+  inner = Sequence(
+    Terminal('mutual'), NonTerminal('{'),
+    OneOrMore(NonTerminal('toplevel-definition'), NonTerminal(';')),
+    NonTerminal('}'))
+
+  return mk_diagram2('mutual-block', inner)
+
+
+def zilch_toplevel():
+  inner = Sequence(
+    Optional(NonTerminal('meta-attributes')), Optional(Terminal('public')),
+    Choice(2, NonTerminal('toplevel-function'), NonTerminal('enum'),
+           NonTerminal('record'), NonTerminal('function-declaration'),
+           NonTerminal('mutual-block')))
+
+  return mk_diagram2('toplevel-definition', inner)
+
+
+zilch_toplevel().writeSvg(sys.stdout.write)

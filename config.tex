@@ -17,9 +17,18 @@
 
 \input{namespaces}
 
+\SetupFloatingEnvironment{listing}{%
+	name={Listing},
+	fileext=lol}
+
 \let\oldpart\part
 \renewcommand{\partmark}{}
-\renewcommand{\part}[1]{\oldpart{#1}\renewcommand{\partmark}{#1}}
+\renewcommand{\part}[1]{%
+	\oldpart{#1}\renewcommand{\partmark}{#1}%
+	\addcontentsline{lof}{part}{\thepart\hspace{1em}#1}%
+	\addcontentsline{lot}{part}{\thepart\hspace{1em}#1}%
+	\addcontentsline{lol}{part}{\thepart\hspace{1em}#1}%
+}
 
 
 \pagestyle{fancy}
@@ -37,6 +46,10 @@
 \patchcmd{\chapter}{\thispagestyle{plain}}{\thispagestyle{fancy}}{}{}
 \patchcmd{\oldpart}{\thispagestyle{plain}}{\thispagestyle{empty}}{}{}
 
+\renewcommand{\thefigure}{\thepart.\thechapter.\arabic{figure}}
+\renewcommand{\thetable}{\thepart.\thechapter.\arabic{table}}
+\renewcommand{\thelisting}{\thepart.\thechapter.\arabic{listing}}
+
 
 \setlength{\cftpartindent}{0em}
 \setlength{\cftchapindent}{2em}
@@ -44,6 +57,14 @@
 \setlength{\cftsubsecindent}{6em}
 \setlength{\cftsubsubsecindent}{8em}
 
+\newif\iffilpart
+
+\titlecontents{part}[0em]{\addvspace{1em}\large\bfseries}{\filbreak\global\filparttrue\contentslabel{3em}}{}{\hfill\contentspage\nobreak}
+
+\newcommand*\fb{\iffilpart\global\filpartfalse\else\vspace{-\baselineskip}\filbreak\fi}
+\titlecontents{figure}[6em]{}{\fb\contentslabel{4em}}{}{\ \titlerule*[8pt]{.}\contentspage\nobreak}
+\titlecontents{table}[6em]{}{\fb\contentslabel{4em}}{}{\ \titlerule*[8pt]{.}\contentspage\nobreak}
+\titlecontents{listing}[6em]{}{\fb\contentslabel{4em}}{}{\ \titlerule*[8pt]{.}\contentspage\nobreak}
 
 
 \renewcommand\epigraphflush{flushright}
@@ -69,6 +90,7 @@
 	framerule=\fboxrule,
 	framesep=1.5\fboxsep,
 	style=xcode,
+	stripnl=true
 }
 \makesavenoteenv{minted}
 
@@ -158,3 +180,7 @@
 \newcommand{\iseq}{\ensuremath{\overset{\scriptscriptstyle ?}{=}}}
 
 \renewcommand{\thefootnote}{(\arabic{footnote})}
+
+
+\DeclareCaptionFormat{invisible}{\relax}
+\DeclareCaptionStyle{invisible}{format=invisible,labelformat=empty,labelsep=none,textformat=empty,singlelinecheck=no}

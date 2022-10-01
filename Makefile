@@ -9,6 +9,7 @@ SRCS =                      \
 	part2-nstar.tex         	\
 	part3-stdlib.tex        	\
 	toc.tex                 	\
+	preamble.tex              \
 	main.bib
 MAIN = main.tex
 

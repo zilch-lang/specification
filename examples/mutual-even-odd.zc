@@ -1,0 +1,8 @@
+mutual 
+  let even(n : nat) : bool := match n with 
+    Z => true 
+    S(n) => odd(n)
+
+  let odd(n : nat) : bool := match n with 
+    Z => false
+    S(n) => even(n)

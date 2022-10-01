@@ -97,19 +97,16 @@ Lexically distinguishing between both types of symbols is done by only allowing 
 		\parbox{\textwidth}{
 			\centering
 
-			\scalebox{.5}{
-				\includegraphics{zilch/lexicon/keywords}
+			\scalebox{.75}{
+				\includegraphics[width=\linewidth]{zilch/lexicon/keywords}
 			}
 			\\
-			\scalebox{.5}{
-				\includegraphics{zilch/lexicon/special}
+			\scalebox{.8}{
+				\includegraphics[width=\linewidth]{zilch/lexicon/special}
 			}
 			\\
-			\scalebox{.45}{
-				\includegraphics{zilch/lexicon/identifier}
-			}
-			\scalebox{.45}{
-				\includegraphics{zilch/lexicon/symbol}
+			\scalebox{.4}{
+				\includegraphics[width=\linewidth]{zilch/lexicon/identifier}
 			}
 		}
 	}
@@ -165,7 +162,7 @@ They can contain any character (both graphical and whitespaces), but some charac
 These basically have ``shorthands'' defined as escape sequences, each defined in Table~\ref{table:zilch-grammar-lexical-strings-escapesequences}.
 Note that, while double and single quotes may be escaped, these may not necessarily be in respectively character and string literals.
 
-Multiple string literals directly next to each other (as in \verb|"abc" "def"|) are concatenated into one (so \verb|"abcdef"|).
+Multiple string literals directly next to each other (as in \mintinline{\zilchlexer}{"abc" "def"}) are concatenated into one (so \mintinline{\zilchlexer}{"abcdef"}).
 
 \begin{figure}[H]
 	\centering
@@ -208,53 +205,46 @@ Expressions are the basic building block of Zilch.
 \subsection{Lambda abstraction}\label{subsec:zilch-grammar-expressions-lambda}
 
 Lambda abstractions allow creating ``in-place'' anonymous functions.
-For example, both following alternatives are equivalent (because the lambda abstraction does not capture anything there):\\
-\inputminted{\zilchlexer}{examples/captureless-lambda-equivalence.zc}
-\vspace*{\baselineskip}
+For example, both following alternatives are equivalent (because the lambda abstraction does not capture anything there):
+\begin{listing}[H]
+	\inputminted{\zilchlexer}{examples/captureless-lambda-equivalence.zc}
 
-\noindent However, these two are not quite equivalent:\\
-\inputminted{\zilchlexer}{examples/closure-non-equivalence.zc}
-\vspace*{\baselineskip}
+	\captionsetup{style=invisible}
+	\caption{Equivalence of non-capturing lambda with top-level function.}
+\end{listing}
+\vspace*{-\baselineskip}
 
-\noindent Note that lambda abstractions cannot be recursive on their own, they need to be bound using a \texttt{let} declaration.
+\noindent However, these two are not quite equivalent:
+\begin{listing}[H]
+	\inputminted{\zilchlexer}{examples/closure-non-equivalence.zc}
 
-There is also an alternative grammar for lambda abstractions, using wildcards abstractions.
-Sometimes, you have to write \verb|reduce((acc, e) -> acc + e, 0, list)|.
-While functional, this is a bit ugly and can be greatly shortened.
-This is why there are wildcard abstractions: it allows writing \verb|reduce(_ + _, 0, list)| which makes it cleaner looking.
-\verb|_ + _| is really syntactic sugar for \texttt{($x_0$, $x_1$) -> $x_0$ + $x_1$}\footnote{Please be aware that \texttt{\_+\_} and \texttt{\_ + \_} are not actually the same entities: the former is the unapplied binary operator \texttt{+} while the latter is a two parameter lambda.}.
+	\captionsetup{style=invisible}
+	\caption{Non-equivalence of capturing lambda with top-level function.}
+\end{listing}
+\vspace*{-\baselineskip}
 
-A simple rule to convert wildcard abstractions to explicit lambda abstractions is the following: for each wildcard $\cdot_i$ in an expression \verb|e| (assuming from the left to the right), assign an unique identifier $u_i$ and replace the wildcard with it (also increment $i$). If $i \neq 0$ at the end, then replace \verb|e| with the lambda abstraction \texttt{($u_0$, \ldots, $u_i$) -> e[$\cdot_0$\textbackslash$u_0$, \ldots, $\cdot_i$\textbackslash$u_i$]}.
-Some examples are given in Table~\ref{table:zilch-grammar-expressions-lambda-translatewildcard}.
+\begin{infobox}
+	Recursive lambda abstractions are unsupported.
+	If you are feeling the need to have those, simply bind them to \texttt{rec} declaration, such as:
+	\vspace*{\baselineskip}
+
+	\begin{minted}{\zilchlexer}
+		rec mylam := lam(x, y) => mylam(x, y)
+  \end{minted}
+\end{infobox}
 
 \begin{figure}[H]
 	\centering
 
 	\framebox[\textwidth][c]{
-		\scalebox{.5}{
-			\includegraphics{zilch/expression/lambda}
+		\scalebox{.85}{
+			\includegraphics[width=\linewidth]{zilch/expression/lambda}
 		}
 	}
 
 	\caption{Grammar for lambda abstractions.}
 	\label{fig:zilch-gramma-expressions-lambda-grammar}
 \end{figure}
-
-\begin{table}[H]
-	\begin{tabularx}{\textwidth}{YcY}
-		\toprule
-		From                    & \multirow{5}{*}{\textbf{$\rightsquigarrow$}} & To                      \\
-		\midrule
-		\verb|_ + 1| &                                              & \verb|(x0) -> x0 + 1| \\
-		\verb|f(_)| &                                              & \verb|(x0) -> f(x0)| \\
-		\verb|f(_ * 2)| &                                              & \verb|f((x0) -> x0 * 2)| \\
-		\verb|f(_ * 2, _)| &                                              & \verb|(x0) -> f((x1) -> x1 * 2, x0)| \\
-		\bottomrule
-	\end{tabularx}
-
-	\caption{Some examples of wildcard abstraction translation.}
-	\label{table:zilch-grammar-expressions-lambda-translatewildcard}
-\end{table}
 
 \subsection{Conditional}\label{subsec:zilch-grammar-expressions-conditional}
 
@@ -307,8 +297,8 @@ Pattern matching is achieved through the use of a \texttt{match} expression.
 			\scalebox{.5}{
 				\includegraphics{zilch/expression/pattern}
 			}\\
-			\scalebox{.5}{
-				\includegraphics{zilch/expression/match}
+			\scalebox{.9}{
+				\includegraphics[width=\linewidth]{zilch/expression/match}
 			}
 		}
 	}
@@ -320,14 +310,13 @@ Pattern matching is achieved through the use of a \texttt{match} expression.
 \subsection{Record literals}\label{subsec:zilch-grammar-expressions-record}
 
 Record literals allow constructing records in the same fashion as in e.g.\ C.
-The grammar uses the two terminals \verb|{{| and \verb|}}| to distinguish them from applying implicit parameters.
 
 \begin{figure}[H]
 	\centering
 
 	\framebox[\textwidth][c]{
 		\scalebox{.5}{
-			\includegraphics{zilch/expression/record}
+			\includegraphics[width=\linewidth]{zilch/expression/record}
 		}
 	}
 
@@ -341,8 +330,8 @@ The grammar uses the two terminals \verb|{{| and \verb|}}| to distinguish them f
 	\centering
 
 	\framebox[\textwidth][c]{
-		\scalebox{.5}{
-			\includegraphics{zilch/expression/atom}
+		\scalebox{.7}{
+			\includegraphics[width=\linewidth]{zilch/expression/atom}
 		}
 	}
 
@@ -359,46 +348,63 @@ An expression \verb|e| is said to be of type \verb|t| if evaluating it yields (o
 	\centering
 
 	\framebox[\textwidth][c]{
-		\parbox{\textwidth}{
-			\centering
-
-			\scalebox{.5}{
-				\includegraphics{zilch/types/forall}
-			}\\
-			\scalebox{.5}{
-				\includegraphics{zilch/types/application}
-			}\\
-			\scalebox{.5}{
-				\includegraphics{zilch/types/function}
-			}\\
-			\scalebox{.5}{
-				\includegraphics{zilch/types/builtin}
-			}\\
-			\scalebox{.5}{
-				\includegraphics{zilch/types/effect-row}
-			}
+		\scalebox{.5}{
+			\includegraphics{zilch/types/builtin}
 		}
 	}
 
-	\caption{Grammar for types.}
-	\label{fig:zilch-grammar-types-grammar}
+	\caption{Grammar for builtin types.}
+	\label{fig:zilch-grammar-types-builtin-grammar}
 \end{figure}
-
-Every type is also assigned a type (called ``kind'').
-Kind polymorphism is not supported.
 
 \begin{figure}[H]
 	\centering
 
 	\framebox[\textwidth][c]{
-		\scalebox{.5}{
-			\includegraphics{zilch/types/kind}
+		\scalebox{.8}{
+			\includegraphics[width=\linewidth]{zilch/types/effect-row}
 		}
 	}
 
-	\caption{Grammar for kinds.}
-	\label{fig:zilch-grammar-types-kindgrammar}
+	\caption{Grammar for effects rows.}
+	\label{fig:zilch-grammar-types-effectrow-grammar}
 \end{figure}
+
+\begin{figure}[H]
+	\centering
+
+	\framebox[\textwidth][c]{
+		\parbox{\textwidth}{
+			\centering
+
+			\scalebox{.8}{
+				\includegraphics[width=\linewidth]{zilch/types/implicit-parameter}
+			}\\
+			\scalebox{.8}{
+				\includegraphics[width=\linewidth]{zilch/types/explicit-parameter}
+			}\\
+			\scalebox{.8}{
+				\includegraphics[width=\linewidth]{zilch/types/instance-parameter}
+			}\\
+			\scalebox{.85}{
+				\includegraphics[width=\linewidth]{zilch/types/dependent}
+			}
+		}
+	}
+
+	\caption{Grammar for dependent types.}
+	\label{fig:zilch-grammar-types-dependent-grammar}
+\end{figure}
+
+\begin{warningbox}
+	The grammar for dependent types presented in figure~\ref{fig:zilch-grammar-types-dependent-grammar} allows more programs to be parsed than what is actually valid.
+	Here is a list of erroneous syntactic objects:
+	\begin{itemize}
+		\item \texttt{$\otimes$}, \texttt{×} and \texttt{\&} types with implicit or instance parameters;
+		\item \texttt{$\otimes$}, \texttt{×} and \texttt{\&} types with an effect row (unless it is the empty row \texttt{$\langle\rangle$});
+		\item \texttt{\&} types with a multiplicity on any parameter (unless it is the unrestricted multiplicity \texttt{@$\omega$}).
+	\end{itemize}
+\end{warningbox}
 
 \section{Declarations}\label{sec:zilch-grammar-declarations}
 
@@ -420,19 +426,30 @@ Both when the value is of a function type or of a simple value type, the binding
 
 Because functions are first-class in Zilch, both function bindings defined below are completely equivalent (the lambda abstraction does not capture anything here):
 
-\noindent\inputminted{\zilchlexer}{examples/function-value-equivalence.zc}
-\vspace*{\baselineskip}
+\begin{listing}[H]
+	\inputminted{\zilchlexer}{examples/function-value-equivalence.zc}
+
+	\captionsetup{style=invisible}
+	\caption{\texttt{let} with parameters and lambda equivalence.}
+\end{listing}
+\vspace*{-\baselineskip}
 
 Function bindings may additionally be accompanied by \verb|where| blocks, which allow binding local variables in the scope of the expression.
 This is mostly equivalent to putting those bindings at the beginning of a \verb|let-in| block:
 
-\noindent\inputminted{\zilchlexer}{examples/function-where-let-equivalence.zc}
+\begin{listing}[H]
+	\inputminted{\zilchlexer}{examples/function-where-let-equivalence.zc}
 
-Note that recursive function bindings (bindingis calling themselves in their definitions) are only allowed for \textit{functions}, and must be prefixed by \verb|rec| instead of \verb|let|.
+	\captionsetup{style=invisible}
+	\caption{\texttt{where} equivalence with local \texttt{let} bindings.}
+\end{listing}
+\vspace*{-\baselineskip}
 
-Mutable function bindings are only allowed for non-recursive value bindings (i.e. \verb|let mut x : t| is allowed (if \verb|t| is a value type) but neither \verb|rec mut x : t| nor \verb|let mut f : a -> b| are actually valid).
+Note that recursive function bindings (bindings calling themselves in their definitions) are only allowed for \textit{functions}, and must be prefixed by \verb|rec| instead of \verb|let|.
 
-Top-level function bindings can additionnally be prefixed with special meta-attributes (described later in Section~\ref{subsec:zilch-grammar-declarations-meta}).
+Mutable function bindings are only allowed for non-recursive value bindings (i.e. \mintinline{\zilchlexer}{mut x : t := e} is allowed (if \verb|t| is a value type) but neither \mintinline{\zilchlexer}{mut x : t := x} nor \mintinline{\zilchlexer}{mut f(x) := e} are actually valid).
+
+Top-level function bindings can additionnally be prefixed with special meta-attributes (described later in Section~\ref{subsec:zilch-grammar-declarations-meta}~``\nameref{subsec:zilch-grammar-declarations-meta}'').
 
 \begin{figure}[H]
 	\centering
@@ -441,20 +458,36 @@ Top-level function bindings can additionnally be prefixed with special meta-attr
 		\parbox{\textwidth}{
 			\centering
 
-			\scalebox{.45}{
-				\includegraphics{zilch/toplevel/function-definition}
+			\scalebox{.9}{
+				\includegraphics[width=\linewidth]{zilch/toplevel/function-definition}
 			}\\
-			\scalebox{.5}{
-  			\includegraphics{zilch/toplevel/parameter}
+			\scalebox{.85}{
+				\includegraphics[width=\linewidth]{zilch/toplevel/implicit-parameter}
 			}\\
-			\scalebox{.5}{
-				\includegraphics{zilch/toplevel/toplevel-function-definition}
+			\scalebox{.85}{
+				\includegraphics[width=\linewidth]{zilch/toplevel/explicit-parameter}
+			}\\
+			\scalebox{.85}{
+				\includegraphics[width=\linewidth]{zilch/toplevel/instance-parameter}
 			}
 		}
 	}
 
 	\caption{Grammar for value declarations.}
 	\label{fig:zilch-grammar-declarations-value-grammar}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+
+	\framebox[\textwidth][c]{
+		\scalebox{.9}{
+			\includegraphics[width=\linewidth]{zilch/toplevel/toplevel-function-definition}
+		}
+	}
+
+	\caption{Grammar for top-level value definitions.}
+	\label{fig:zilch-grammar-declarations-value-toplevel-grammar}
 \end{figure}
 
 \subsection{Effect definition}\label{subsec:zilch-grammar-declaration-effect}
@@ -493,20 +526,75 @@ Zilch allows defining type aliases to address this issue, leading to code more c
 		\parbox{\textwidth}{
 			\centering
 
-			\scalebox{.5}{
-				\includegraphics{zilch/toplevel/enum-definition}
+			\scalebox{.85}{
+				\includegraphics[width=\linewidth]{zilch/toplevel/enum-definition}
 			}\\
-			\scalebox{.5}{
-				\includegraphics{zilch/toplevel/record-definition}
-			}\\
-			\scalebox{.5}{
-				\includegraphics{zilch/toplevel/alias-definition}
+			\scalebox{.95}{
+				\includegraphics[width=\linewidth]{zilch/toplevel/record-definition}
 			}
 		}
 	}
 
 	\caption{Grammar for new type definitions.}
 	\label{fig:zilch-grammar-declarations-type-grammar}
+\end{figure}
+
+\subsection{Mutually recursive definitions}\label{subsec:zilch-grammar-declarations-mutual}
+
+Top-level bindings can refer to other top-level bindings as long as these are declared beforehand.
+However, sometimes it is useful to define a few functions or data types which are mutually recursive.
+For example, consider the following definitions for the two functions \texttt{even} and \texttt{odd} which return \texttt{true} if the number is even (resp. odd):
+\begin{align*}
+	even(n) & = \begin{cases*}
+		            \mathrm{true} & iff $n = 0$ \\
+		            odd(n - 1)    & otherwise
+	            \end{cases*}  \\
+	odd(n)  & = \begin{cases*}
+		            \mathrm{false} & iff $n = 0$ \\
+		            even(n - 1)    & otherwise
+	            \end{cases*}
+\end{align*}
+
+This can be modeled in Zilch as:
+\begin{listing}[H]
+	\inputminted{\zilchlexer}{examples/mutual-even-odd.zc}
+
+	\captionsetup{style=invisible}
+	\caption{Mutual definitions of \texttt{even} and \texttt{odd}.}
+\end{listing}\vspace*{-\baselineskip}
+Note that without the \texttt{mutual} block, the definition of \texttt{even} would be considered ill, as \texttt{odd} does not exist in the scope yet.
+
+An alternative modeling of this problem is by using \textit{forward declarations} (as in C) to declare the function \texttt{odd} before the function \texttt{even} so that \texttt{even} is allowed to make references to it.
+This would be done as follows:
+\begin{listing}[H]
+	\inputminted{\zilchlexer}{examples/forwarddecls-even-odd.zc}
+
+	\captionsetup{style=invisible}
+	\caption{\texttt{even}/\texttt{odd} with forward declarations.}
+\end{listing}
+\vspace*{-\baselineskip}
+
+\begin{figure}[H]
+	\centering
+
+	\framebox[\textwidth][c]{
+		\scalebox{.95}{
+			\includegraphics[width=\linewidth]{zilch/toplevel/function-declaration}
+		}
+	}
+
+	\caption{Grammar for value forward declarations.}
+	\label{fig:zilch-grammar-declarations-mutual-forwarddecls-grammar}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+
+	\framebox[\textwidth][c]{
+		\scalebox{.6}{
+			\includegraphics[width=\linewidth]{zilch/toplevel/mutual-definition}
+		}
+	}
 \end{figure}
 
 \subsection{Meta-information}\label{subsec:zilch-grammar-declarations-meta}

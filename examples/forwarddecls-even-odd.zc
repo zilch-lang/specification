@@ -1,0 +1,10 @@
+val even(n : nat) : bool
+val odd(n : nat) : bool
+
+let even(n) := match n with 
+  Z => true 
+  S(n) => odd(n)
+
+let odd(n) := match n with 
+  Z => false 
+  S(n) = even(n)

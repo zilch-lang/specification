@@ -17,5 +17,8 @@ _minted-*
 *.bcf
 *.blg
 *.run.xml
+*.lol
+*.lof
+*.lot
 
 res/diagram.svg
