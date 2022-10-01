@@ -31,4 +31,5 @@ clean: $(MAIN) $(SRCS)
 	latexmk $(TEXFLAGS) -C $<
 	-@rm -r _minted-*
 	-@rm $(PDF)
-	-@rm *.ptc *.run.xml *.bbl     # Clean latexmk left-overs
+# Clean latexmk left-overs
+	-@rm *.ptc *.run.xml *.bbl *.aux *.bcf *.blg *.fdb_latexmk *.fls *.glg *.glo *.gls *.ist *.log *.out *.toc *.lol *.lof *.lot

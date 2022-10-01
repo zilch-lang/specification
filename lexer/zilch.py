@@ -32,7 +32,7 @@ class ZilchLexer(ExtendedRegexLexer):
             (r'[0-9]+', Number.Integer)
         ],
         'types': [
-            (r'\b(s8|s16|s32|s64|u8|u16|u32|u64|char|ptr|ref|𝟏)\b', Keyword.Type),
+            (r'\b(s8|s16|s32|s64|u8|u16|u32|u64|char|ptr|ref|𝟏|bool)\b', Keyword.Type),
             (r'\B(⊤|⊗|&|×|->|→|𝟭|\(\s*\)|⟨\s*⟩)\B', Keyword.Type),
             (r'@[0-9]+', Comment.Preproc)
         ],

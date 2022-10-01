@@ -43,9 +43,7 @@ The mainly used notation is described here, but not necessarily everything will 
 	\item Type inference rules
 	      \begin{itemize}
 		      \item $\Gamma$ is the context containing all type-level information such as types of expressions;
-		      \item $\Delta$ is the context containing all kind-level information such as types of types;
-		      \item The typing judgment $\Delta \Vdash \tau : \kappa$ is used to indicate that the type $\tau$ as the kind $\kappa$ given information in the $\Delta$ context;
-		      \item The typing judgment $\Gamma;\Delta \vdash e : \tau \vert \epsilon$ means that $e$ has type $\tau$ in the context $\Gamma, \Delta$ and that evaluating it may yield effects in $\epsilon$;
+		      \item The typing judgment $\Gamma \vdash e : \tau \vert \epsilon$ means that $e$ has type $\tau$ in the context $\Gamma$ and that evaluating it may yield effects in $\epsilon$;
 	      \end{itemize}
 \end{itemize}
 
@@ -283,6 +281,24 @@ However, it does not act the same as simply replacing the variable just like a m
 	\label{fig:zilch-grammar-expressions-letin-grammar}
 \end{figure}
 
+\subsection{Local imports}\label{subsec:zilch-grammar-expressions-import}
+
+One may want to import specific functions from given modules only in the scope of a function as these functions will only be used there.
+This construct allows to scope imports closer to where they actually are used, by allowing the import to be local to an expression which may use it.
+
+\begin{figure}[H]
+	\centering
+
+	\framebox[\textwidth][c]{
+		\scalebox{.5}{
+			\includegraphics[width=\linewidth]{zilch/expression/import}
+		}
+	}
+
+	\caption{Grammar for local import blocks.}
+	\label{fig:zilch-grammar-expressions-import-grammar}
+\end{figure}
+
 \subsection{Pattern matching}\label{subsec:zilch-grammar-expressions-match}
 
 Pattern matching is achieved through the use of a \texttt{match} expression.
@@ -406,14 +422,28 @@ An expression \verb|e| is said to be of type \verb|t| if evaluating it yields (o
 	\end{itemize}
 \end{warningbox}
 
+\begin{figure}[H]
+	\centering
+
+	\framebox[\textwidth][c]{
+		\scalebox{.4}{
+			\includegraphics[width=\linewidth]{zilch/types/universe-level}
+		}
+	}
+
+	\caption{Grammar for universe levels.}
+	\label{fig:zilch-grammar-types-level-grammar}
+\end{figure}
+
 \section{Declarations}\label{sec:zilch-grammar-declarations}
 
 A Zilch module is composed of zero or more declarations.
 There are 3 possible declarations:
 \begin{itemize}
-	\item New type definition
-	\item Effect definition
-	\item Value definition
+	\item New type definition;
+	\item Effect definition;
+	\item Value definition;
+	\item Definition opening.
 \end{itemize}
 
 \noindent Each of them will be syntactically described in this section.
@@ -498,7 +528,18 @@ Some other take a stricter route (e.g. Haskell, Koka, etc) and do not allow side
 
 In Zilch, the algebraic effects route has been taken as it seems to lead to more readable code, and can be compiled more efficiently, and mostly without surprises.
 
-% TODO: include grammar for effects (top-level decl)
+\begin{figure}[H]
+	\centering
+
+	\framebox[\textwidth][c]{
+		\scalebox{.9}{
+			\includegraphics[width=\linewidth]{zilch/toplevel/effect-definition}
+		}
+	}
+
+	\caption{Grammar for effect definitions.}
+	\label{fig:zilch-grammar-declarations-effects-grammar}
+\end{figure}
 
 \subsection{New type definition}\label{subsec:zilch-grammar-declarations-type}
 
@@ -507,8 +548,6 @@ For example, a function returning an unsigned integer may need to indicate some 
 
 \noindent C-style programming languages use special values which are considered invalid as return values (e.g.\ $-1$).
 This doesn't quite work when no return value from the return set is actually invalid, but the function is still expected to be able to indicate failure.
-
-\noindent More evolved programming languages use exceptions, which are not integrated in Zilch.
 
 \noindent This is where custom types come in: it is possible to define a new ``or''-type (called ``enum'' in Zilch) to represent either a return value or no return value (in the case of a failure), usually called ``\texttt{Option}'' or ``\texttt{Maybe}''.
 
@@ -538,6 +577,11 @@ Zilch allows defining type aliases to address this issue, leading to code more c
 	\caption{Grammar for new type definitions.}
 	\label{fig:zilch-grammar-declarations-type-grammar}
 \end{figure}
+
+\begin{warningbox}
+	The expression on the right hand side of the \texttt{:} in the declaration of a \texttt{record} is required to be of the form \texttt{type l} (where \texttt{l} can be anything).
+	Any other expression must be considered invalid.
+\end{warningbox}
 
 \subsection{Mutually recursive definitions}\label{subsec:zilch-grammar-declarations-mutual}
 
@@ -595,6 +639,9 @@ This would be done as follows:
 			\includegraphics[width=\linewidth]{zilch/toplevel/mutual-definition}
 		}
 	}
+
+	\caption{Grammar for mutual block definition.}
+	\label{fig:zilch-grammar-declarations-mutual-block-grammar}
 \end{figure}
 
 \subsection{Meta-information}\label{subsec:zilch-grammar-declarations-meta}
@@ -613,19 +660,24 @@ Any declaration accepts zero or more meta-specifiers, but each specifier is rest
 	\item FFI imports/exports, to either retrieve or give a function defined in another compilation unit (most probably coming from another programming language like C);
 	\item Default effect handlers can be added to any function binding of type \texttt{\{e\} -> \{a\} -> (() -> < eff | e > a) -> e a} (meaning it consumes the effect \verb|eff| given) (implicits may be given in any order).
 	      These are used to remove any additional effects on the \verb|main| function without having to specify each of them.
-	      Note that those handlers are implicitly exported (even when not \verb|public|) and will be used transparently, but still need to be \verb|public| to be used by hand.
+	      Note that those handlers are implicitly internally exported (even when not \verb|public|), but still need to be \verb|public| to be used by hand.
 \end{itemize}
 
 \begin{figure}[H]
 	\centering
 
-	\scalebox{.5}{
-		\includegraphics{zilch/toplevel/meta-information}
-	}\\
-	\scalebox{.5}{
-		\includegraphics{zilch/toplevel/meta-specifier}
+	\framebox[\textwidth][c]{
+		\parbox{\textwidth}{
+			\centering
+
+			\scalebox{.7}{
+				\includegraphics[width=\linewidth]{zilch/toplevel/meta-information}
+			}\\
+			\scalebox{.75}{
+				\includegraphics[width=\linewidth]{zilch/toplevel/meta-specifier}
+			}
+		}
 	}
-	% TODO: add #[handler]
 
 	\caption{Grammar for meta-specifiers.}
 	\label{fig:zilch-grammar-declarations-meta-grammar}
@@ -639,7 +691,7 @@ In Zilch, modules provide grouping, importing and visibility restrictions.
 A Zilch module is declared according to the name and position of the file in the include path.
 For example, if a file is named \verb|Internal.zc| in the directory \verb|Data/Something/A|, then it exports a module \verb|Data::Something::A::Internal|.
 
-It can contain, in this order, many (possibly none) \texttt{import} statements (see Figure~\ref{fig:zilch-grammar-modules-importgrammar}) and any number of declarations as described in Section~\ref{sec:zilch-grammar-declarations}~``\nameref{sec:zilch-grammar-declarations}''.
+It can contain, in any order, many (possibly none) \texttt{import} statements (see Figure~\ref{fig:zilch-grammar-modules-importgrammar}) and any number of declarations as described in Section~\ref{sec:zilch-grammar-declarations}~``\nameref{sec:zilch-grammar-declarations}''.
 
 A module $A$ may export another module $B$, meaning that anything imported from $B$ into $A$'s scope is exported by $A$.
 If a plain function is aliased\footnote{Infix operators cannot be aliased because it would lead to many syntactical problems.} from the import of $B$ in $A$, the new name is exported by $A$ instead of the old one.
@@ -649,11 +701,17 @@ All imports are qualified, unless when \verb|open|ed.
 \begin{figure}[H]
 	\centering
 
-	\scalebox{.5}{
-		\includegraphics{zilch/modules/import}
-	}\\
-	\scalebox{.5}{
-		\includegraphics{zilch/modules/import-group}
+	\framebox[\textwidth][c]{
+		\parbox{\textwidth}{
+			\centering
+
+			\scalebox{.5}{
+				\includegraphics[width=\linewidth]{zilch/modules/import}
+			}\\
+			\scalebox{.95}{
+				\includegraphics[width=\linewidth]{zilch/modules/import-path}
+			}
+		}
 	}
 
 	\caption{Grammar for import statements.}

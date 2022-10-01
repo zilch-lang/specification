@@ -678,19 +678,6 @@ def zilch_instance_parameter_():
   return mk_diagram2('instance-parameter\'', inner)
 
 
-def zilch_function_type():
-  inner = Sequence(
-    Choice(
-      1, NonTerminal('atomic-type'),
-      Sequence(Terminal('('), ZeroOrMore(NonTerminal('type'), Terminal(',')),
-               Terminal(')'))), HorizontalChoice(Terminal('->'),
-                                                 Terminal('→')),
-    Choice(1, Skip(), NonTerminal('identifier'), NonTerminal('effect-row')),
-    NonTerminal('type'))
-
-  return mk_diagram2('function-type', inner)
-
-
 def zilch_effect_row():
   row = Sequence(
     ZeroOrMore(NonTerminal('expression-atom'), Terminal(',')),
@@ -704,46 +691,26 @@ def zilch_effect_row():
   return mk_diagram2('effect-row', inner)
 
 
-def zilch_import():
-  inner = Stack(
-    Sequence(Optional(Terminal('open')), Terminal('import'),
-             OneOrMore(NonTerminal('identifier'), Terminal('::'))),
-    Sequence(
-      Optional(Sequence(Terminal('as'), NonTerminal('identifier'))),
-      Optional(
-        Sequence(Terminal('('), NonTerminal('module-import-group'),
-                 Terminal(')')))))
-
-  return mk_diagram2('module-import', inner)
-
-
-def zilch_import_group():
-  inner = ZeroOrMore(
-    Sequence(
-      Choice(2, Terminal('class'), Terminal('impl'), Terminal('effect'),
-             Skip()), NonTerminal('identifier'),
-      Optional(Sequence(Terminal('as'), NonTerminal('identifier')))),
-    Terminal(','))
-
-  return mk_diagram2('module-import-group', inner)
-
-
 def zilch_expression_atom():
   inner = Choice(
-    2, NonTerminal('literal'),
+    3, NonTerminal('literal'),
     Group(
       Sequence(NonTerminal('expression'),
                HorizontalChoice(Terminal('::'), Terminal('∷')),
                NonTerminal('identifier')), 'qualified identifier'),
     Group(
-      Sequence(NonTerminal('expression'), Terminal('('),
+      Sequence(NonTerminal('expression-atom'), Terminal('('),
                ZeroOrMore(NonTerminal('expression'), Terminal(',')),
                Terminal(')')), 'function application'),
     Group(Sequence(Terminal('('), NonTerminal('expression'), Terminal(')')),
           'parenthesized expression'),
     Group(
       Sequence(NonTerminal('expression'), NonTerminal('symbol'),
-               NonTerminal('expression')), 'infix operator application'))
+               NonTerminal('expression')), 'infix operator application'),
+    Group(
+      HorizontalChoice(Sequence(Terminal('type'), NonTerminal('level')),
+                       Terminal('effect')), 'reserved types'),
+    Group(Terminal('_'), 'infered hole'))
 
   return mk_diagram2('expression-atom', inner)
 
@@ -773,24 +740,6 @@ def zilch_function_definition():
              NonTerminal('expression')))
 
   return mk_diagram2('function-definition', inner)
-
-
-def zilch_param():
-  param = Choice(
-    0,
-    Sequence(Optional(Choice(0, Terminal('open'), Terminal('mut'))),
-             NonTerminal('id'),
-             Optional(Sequence(Terminal(':'), NonTerminal('type')))),
-    Sequence(OneOrMore(NonTerminal('id')), Terminal(':'), NonTerminal('type')))
-
-  inner = Choice(
-    1, Group(Sequence(Terminal('{'), param, Terminal('}')), 'implicit'),
-    Group(Sequence(Terminal('('), param, Terminal(')')), 'explicit'),
-    Group(
-      Sequence(Terminal('{{'), NonTerminal('id'), Terminal(':'),
-               NonTerminal('type'), Terminal('}}')), 'instance record'))
-
-  return mk_diagram2('parameter', inner)
 
 
 def zilch_let_in():
@@ -899,4 +848,83 @@ def zilch_toplevel():
   return mk_diagram2('toplevel-definition', inner)
 
 
-zilch_toplevel().writeSvg(sys.stdout.write)
+def zilch_effect_definition():
+  inner = Stack(
+    Sequence(
+      Terminal('effect'),
+      NonTerminal('identifier'),
+      ZeroOrMore(
+        Choice(1, NonTerminal('explicit-parameter\''),
+               NonTerminal('implicit-parameter\''),
+               NonTerminal('instance-parameter\''))),
+      Terminal(':'),
+      NonTerminal('expression'),
+    ),
+    Sequence(Choice(0, Terminal(':='), Terminal('≔')), NonTerminal('{'),
+             OneOrMore(NonTerminal('function-declaration'), NonTerminal(';')),
+             NonTerminal('}')))
+
+  return mk_diagram2('effect-definition', inner)
+
+
+def zilch_meta_information():
+  inner = Sequence(Terminal('#attributes'), Terminal('('),
+                   ZeroOrMore(NonTerminal('meta-attribute'), Terminal(',')),
+                   Terminal(')'))
+
+  return mk_diagram2('meta-information', inner)
+
+
+def zilch_meta_specifier():
+  inner = Choice(
+    1,
+    Sequence(Terminal('import'), Terminal('('), Choice(0, Terminal('ccall')),
+             Terminal(','), NonTerminal('string'), Terminal(')')),
+    Sequence(Terminal('infix'), Terminal('('),
+             Choice(1, Terminal('left'), Terminal('right'), Terminal('none')),
+             Terminal(','), NonTerminal('integer'), Terminal(')')),
+    Terminal('inline'), Terminal('handler'), Terminal('default'))
+
+  return mk_diagram2('meta-attribute', inner)
+
+
+def zilch_import():
+  inner = Sequence(Optional(Terminal('open')), Terminal('import'),
+                   NonTerminal('import-path'))
+
+  return mk_diagram2('import', inner)
+
+
+def zilch_import_path():
+  inner = Sequence(
+    NonTerminal('identifier'),
+    Optional(
+      Sequence(
+        Choice(0, Terminal('::'), Terminal('∷')),
+        Choice(
+          0, NonTerminal('import-path'),
+          Sequence(Terminal('{'),
+                   OneOrMore(NonTerminal('import-path'), Terminal(',')),
+                   Terminal('}'))))),
+    Optional(Sequence(Terminal('as'), NonTerminal('identifier'))))
+
+  return mk_diagram2('import-path', inner)
+
+
+def zilch_local_import():
+  inner = Sequence(NonTerminal('import'), NonTerminal(';'),
+                   NonTerminal('expression'))
+
+  return mk_diagram2('local-import', inner)
+
+
+def zilch_type_level():
+  inner = Choice(
+    1, Terminal('integer'), NonTerminal('identifier'),
+    Sequence(NonTerminal('level'), Terminal('⊔'), NonTerminal('level')),
+    Sequence(Choice(0, Terminal('lsuc'), Terminal('↑')), NonTerminal('level')))
+
+  return mk_diagram2('level', inner)
+
+
+zilch_type_level().writeSvg(sys.stdout.write)
