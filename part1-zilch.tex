@@ -787,6 +787,11 @@ Type inference rules are proposed in figure~\ref{fig:zilch-staticsem-universes-t
 		\hypo{\TypeSequent{\scale{0}{\Gamma}}{\ell}{0}{\Elevel}{\Etotal}}
 		\infer1[\textsc{[Universe-Suc]}]{\TypeSequent{\scale{0}{\Gamma}}{\Elsuc{\ell}}{0}{\Elevel}{\Etotal}}
 	\end{prooftree}
+	\hspace{1.5em}
+	\begin{prooftree}
+		\hypo{n$ is a natural$}
+		\infer1[\textsc{[Universe-I]}]{\TypeSequent{\scale{0}{\Gamma}}{n}{0}{\Elevel}{\Etotal}}
+	\end{prooftree}
 
 	\caption{Type inference rules for type universes.}
 	\label{fig:zilch-staticsem-universes-typerules}
