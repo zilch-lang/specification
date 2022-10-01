@@ -147,3 +147,20 @@
 	\newcommand*\Enstate[3]{\ensuremath{\left({#1},{#2},{#3}\right)}}
 	\newcommand*\Enconfig[4]{\ensuremath{\left\langle{#1},\Enstate{#2}{#3}{#4}\right\rangle}}
 }{}
+
+\namespace{zilch:rules}{
+\newcommand*\TypeSequent[5]{\ensuremath{{#1}\vdash{#2}:^{#3}{#4}\mid{#5}}}
+\newcommand*\scale[2]{\ensuremath{{#1}{#2}}}
+\newcommand*\add[2]{\ensuremath{{#1}+{#2}}}
+}{}
+
+\namespace{zilch:grammar}{
+	\definecolor{kw3}{HTML}{2CAB26}
+	\def\Ifmt{\color{kw3}}
+
+	\newcommand*\Etype[1]{\ensuremath{\operatorname{\mathsf{\Ifmt type}}{#1}}}
+	\newcommand*\Ellift[1]{\ensuremath{\uparrow {#1}}}
+	\newcommand*\Elsuc[1]{\ensuremath{\operatorname{\mathsf{\Ifmt lsuc}}{#1}}}
+	\newcommand*\Elevel{\ensuremath{\mathsf{\Ifmt level}}}
+	\newcommand*\Etotal{\ensuremath{\langle\rangle}}
+}{}

@@ -1,3 +1,8 @@
+.\begingroup
+\usingnamespace{zilch:grammar}
+\usingnamespace{zilch:rules}
+
+
 \part{The language}\label{part:zilch}
 
 \chapter{Introduction}\label{chap:zilch-introduction}
@@ -43,7 +48,9 @@ The mainly used notation is described here, but not necessarily everything will 
 	\item Type inference rules
 	      \begin{itemize}
 		      \item $\Gamma$ is the context containing all type-level information such as types of expressions;
-		      \item The typing judgment $\Gamma \vdash e : \tau \vert \epsilon$ means that $e$ has type $\tau$ in the context $\Gamma$ and that evaluating it may yield effects in $\epsilon$;
+		      \item The typing judgment $\TypeSequent{\Gamma}{e}{\rho}{\tau}{\epsilon}$ means that $e$ has type $\tau$ with multiplicity $\rho$ in the context $\Gamma$ and that evaluating it may yield effects in $\epsilon$;
+		      \item $\scale{\pi}{\Gamma}$ denotes the scaling (multiplication) of all the multiplicities within $\Gamma$ by $\pi$;
+		      \item $\add{\Gamma_1}{\Gamma_2}$ is pointwise addition between the two contexts $\Gamma_1$ and $\Gamma_2$.
 	      \end{itemize}
 \end{itemize}
 
@@ -723,53 +730,89 @@ All imports are qualified, unless when \verb|open|ed.
 Zilch is statically and strongly typed, meaning that types of expressions are checked at compile-time, and no implicit conversion are performed.
 It also is type-infered, so there is no need to write the exact type of a function (unless in specific ambiguous states, e.g. with constraints).
 
-The type system of Zilch, used to type expressions and types is described in this chapter using typing rules, each accompanied by an informal description.
-Some sections may not contain typing rules just for the sake of simplicity: an informal description will be more descriptive in those cases.
+The type system of Zilch is based off a quantitative dependent type system with non-cumulative universe polymorphism and algebraic effects.
+In short, this means that types are allowed to dependent on runtime values (which are not \texttt{@0}), and that the type \texttt{type l} has a single type which is \texttt{type (↑ l)}.
 
-\section{Types of types}\label{sec:zilch-staticsem-types}
+This chapter will contain type inference rules accompanied by informal descriptions.
+Some of the inference rules may be elided for simplicity, as writing them out would be either too cumbersome or difficult to understand.
+In such case, the informal description will be more furnished to compensate.
 
-In Zilch, not only expressions have types, but types also do (in such case, types of types are called “kinds” and we will refer to that in the next part).
+\section{Types, universes and effects}\label{sec:zilch-staticsem-types}
+
+In Zilch, not only expressions have types, but types also do.
 While this may sound a little bit complex, it in fact allows easily solving a few problems happening in some of other programming languages allowing generic programming:
 \begin{itemize}
-	\item A type may be passed partially applied to a function or a type.
-	\item Type constraints live as inhabitants of other sets of types.
+	\item A type may be passed partially applied to a function or a type;
+	\item Type constraints live as inhabitants of other sets of types;
 	      As such, constraints cannot be passed in place of other types, which would imply weird type system behaviours.
 	\item A partially applied type (in opposition to a fully applied type, called a ``concrete kind'') cannot be given to a function requiring a concrete type.
 \end{itemize}
 
 Types of types are mainly organized in 4 categories:
 \begin{itemize}
-	\item Concrete types, which are denoted as \verb|type| in Zilch, are types which are fully applied to arguments.
+	\item Concrete types, which are denoted as \verb|type l| in Zilch, are types which are fully applied to arguments;
 	\item Partially applied types (also called ``type constructors'') can only be applied to more arguments, but may yield any kind of type.
-	      Just like functions at the expression level, type constructors are written using the arrow syntax \verb|_->_|.
-	\item Type constraints are specific kinds of types allowing to specify bounds on types they depend on.
-	      The set of type constraints is called \verb|constraint|.
+	      Just like functions at the expression level, type constructors are written using the arrow syntax \verb|_->_|;
 	\item Effect types are special kinds of types which are only allowed to specify possible effects when computing a function.
 	      Such types are grouped under the \verb|effect| kind.
 \end{itemize}
 
-Below are described the main inference rules about type kinds.
+Type inference rules are proposed in figure~\ref{fig:zilch-staticsem-universes-typerules} for type universes.
 
 \begin{figure}[H]
 	\centering
+
 	\begin{prooftree}
-		\hypo{\tau\ \text{is atomic}}
-		\infer1[\textsc{[Concrete]}]{\Delta\Vdash\tau : \text{type}}
-	\end{prooftree}
-	\hspace{3em}
-	\begin{prooftree}
-		\hypo{\Delta\Vdash\tau : \kappa\to\kappa^\prime}
-		\hypo{\Delta\Vdash x : \kappa}
-		\infer2[\textsc{[Apply]}]{\Delta\Vdash \tau\ x : \kappa^\prime}
+		\hypo{\TypeSequent{\scale{0}{\Gamma}}{\ell}{0}{\Elevel}{\Etotal}}
+		\hypo{\TypeSequent{\scale{0}{\Gamma}}{\tau}{0}{\Etype{\ell}}{\Etotal}}
+		\infer2[\textsc{[Universe-Lift]}]{\TypeSequent{\scale{0}{\Gamma}}{\Ellift{\tau}}{0}{\Etype({\Elsuc{\ell}})}{\Etotal}}
 	\end{prooftree}
 	\\\vspace{\baselineskip}
 	\begin{prooftree}
-		\infer0[\textsc{[Var]}]{\Gamma,\tau : \kappa;\Delta\Vdash\tau : \kappa}
+		\hypo{\TypeSequent{\scale{0}{\Gamma}}{\ell}{0}{\Elevel}{\Etotal}}
+		\infer1[\textsc{[Universe-F]}]{\TypeSequent{\scale{0}{\Gamma}}{\Etype{\ell}}{0}{\Etype({\Elsuc{\ell}})}{\Etotal}}
+	\end{prooftree}
+	\hspace{1.5em}
+	\begin{prooftree}
+		\infer0[\textsc{[Universe-Var]}]{\TypeSequent{\scale{0}{\Gamma}, \ell :^0 \Elevel}{\ell}{0}{\Elevel}{\Etotal}}
+	\end{prooftree}
+	\\\vspace{\baselineskip}
+	\begin{prooftree}
+		\hypo{\TypeSequent{\scale{0}{\Gamma}}{\ell_1}{0}{\Elevel}{\Etotal}}
+		\hypo{\TypeSequent{\scale{0}{\Gamma}}{\ell_2}{0}{\Elevel}{\Etotal}}
+		\infer2[\textsc{[Universe-$\sqcup$]}]{\TypeSequent{\scale{0}{\Gamma}}{\ell_1 \sqcup \ell_2}{0}{\Elevel}{\Etotal}}
+	\end{prooftree}
+	\\\vspace{\baselineskip}
+	\begin{prooftree}
+		\hypo{\TypeSequent{\scale{0}{\Gamma}}{\ell}{0}{\Elevel}{\Etotal}}
+		\infer1[\textsc{[Universe-Suc]}]{\TypeSequent{\scale{0}{\Gamma}}{\Elsuc{\ell}}{0}{\Elevel}{\Etotal}}
 	\end{prooftree}
 
-	\caption{Typing rules for types of types.}
-	\label{fig:zilch-staticsem-types-typerule}
+	\caption{Type inference rules for type universes.}
+	\label{fig:zilch-staticsem-universes-typerules}
 \end{figure}
+
+
+% \begin{figure}[H]
+% 	\centering
+% 	\begin{prooftree}
+% 		\hypo{\tau\ \text{is atomic}}
+% 		\infer1[\textsc{[Concrete]}]{\Delta\Vdash\tau : \text{type}}
+% 	\end{prooftree}
+% 	\hspace{3em}
+% 	\begin{prooftree}
+% 		\hypo{\Delta\Vdash\tau : \kappa\to\kappa^\prime}
+% 		\hypo{\Delta\Vdash x : \kappa}
+% 		\infer2[\textsc{[Apply]}]{\Delta\Vdash \tau\ x : \kappa^\prime}
+% 	\end{prooftree}
+% 	\\\vspace{\baselineskip}
+% 	\begin{prooftree}
+% 		\infer0[\textsc{[Var]}]{\Gamma,\tau : \kappa;\Delta\Vdash\tau : \kappa}
+% 	\end{prooftree}
+
+% 	\caption{Typing rules for types of types.}
+% 	\label{fig:zilch-staticsem-types-typerule}
+% \end{figure}
 
 \section{Types of expressions}\label{sec:zilch-staticsem-exprs}
 
@@ -861,3 +904,7 @@ There are 4 levels:
 
 
 Module exports follow the same rules, where not specifying which identifiers to export means that nothing is exported by the module by default.
+
+
+
+\endgroup
