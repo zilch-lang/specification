@@ -894,8 +894,28 @@ Type inference rules are proposed in figure~\ref{fig:zilch-staticsem-types-unive
 			\begin{prooftree}
 				\hypo{\TypeSequent{\scale{0}{\Gamma}}{A}{0}{\Etype \ell_1}{\Etotal}}
 				\hypo{\TypeSequent{\Gamma, x :^{\scale{\rho}{\pi}} A}{e}{\pi}{B}{\epsilon}}
-				\hypo{\pi = 0 \Leftrightarrow \epsilon \equiv \Etotal \wedge \epsilon^\prime \equiv \Etotal}
-				\infer3[\textsc{[$\rightarrow$-I]}]{\TypeSequent{\Gamma}{\Elam{x}{\rho}{A}{e}}{\pi}{\Epi{x}{\rho}{A}{\epsilon}{B}}{\epsilon^\prime}}
+				\hypo{\pi = 0 \Rightarrow \epsilon,\epsilon^\prime \equiv \Etotal}
+				\infer3[\textsc{[$\rightarrow$-I$_1$]}]{\TypeSequent{\Gamma}{\Elam{x}{\rho}{A}{e}}{\pi}{\Epi{x}{\rho}{A}{\epsilon}{B}}{\epsilon^\prime}}
+			\end{prooftree}
+			\\\vspace*{\baselineskip}
+			\begin{prooftree}
+				\hypo{\TypeSequent{\Gamma}{e}{\pi}{A}{\epsilon}}
+				\hypo{\pi=0 \Rightarrow \epsilon^\prime \equiv \Etotal}
+				\infer2[\textsc{[$\rightarrow$-I$_2$]}]{\TypeSequent{\Gamma}{\Edo{e}}{\pi}{\Epi{\Eunderscore}{\omega}{\Eone}{\epsilon}{A}}{\epsilon^\prime}}
+			\end{prooftree}
+			\\\vspace*{\baselineskip}
+			\begin{prooftree}
+				\hypo{\TypeSequent{\Gamma}{f}{\rho}{\Epi{y}{\pi}{A}{\epsilon}{B}}{\Etotal}}
+				\hypo{\TypeSequent{\scale{0}{\Gamma}}{x}{0}{A}{\Etotal}}
+				\hypo{\scale{\rho}{\pi} = 0}
+				\hypo{\pi=0 \Rightarrow \epsilon \equiv \Etotal}
+				\infer4[\textsc{[$\rightarrow$-E$_0$]}]{\TypeSequent{\Gamma}{\Eapp{f}{x}}{\pi}{\subst{B}{y}{x}}{\epsilon}}
+			\end{prooftree}
+			\\\vspace*{\baselineskip}
+			\begin{prooftree}
+				\hypo{\TypeSequent{\Gamma_1}{f}{\rho}{\Epi{y}{\pi}{A}{\epsilon}{B}}{\epsilon^\prime}}
+				\hypo{\TypeSequent{\Gamma_2}{x}{1}{A}{\epsilon^\second}}
+				\infer2[\textsc{[$\rightarrow$-E$_1$]}]{\TypeSequent{\add{\Gamma_1}{\scale{\scale{\rho}{\pi}}{\Gamma_2}}}{\Eapp{f}{x}}{\rho}{\subst{B}{y}{x}}{\epsilon,\epsilon^\prime,\epsilon^\second}}
 			\end{prooftree}
 		}
 	}
@@ -904,32 +924,160 @@ Type inference rules are proposed in figure~\ref{fig:zilch-staticsem-types-unive
 	\label{fig:zilch-staticsem-exprs-pi-typerules}
 \end{figure}
 
+The rule \textsc{[$\rightarrow$-I]} may seem quite weird, as creating a lambda does not perform any effect (or it performs the effect $\Etotal$).
+However, we require an effect $\epsilon^\prime$ to be performed by creating a lambda.
+That way, we can also create lambdas in effectful contexts.
+This could also be materialised by defining a subtyping relation $\subtype$ on effects where $\Etotal \subtype \epsilon$ and we can generalise the effect $\epsilon$ in the rule \textsc{[Type-Conv]} (in figure~\ref{fig:zilch-staticsem-multiplicities-conv-typerules}).
+Also, any effect performed by \texttt{e} is lifted to the type of the lambda.
 
-
-\subsection{Lambda abstractions}\label{subsec:zilch-staticsem-exprs-lambda}
-
-Typing rules are not described for expression holes (also called “anonymous lambdas” earlier) because they are syntactically equivalent to explicit lambdas.
-The same rules therefore apply to expression holes.
+\subsection{Multiplicative and additive units}\label{subsec:zilch-staticsem-exprs-units}
 
 \begin{figure}[H]
-	\centering
-	\begin{prooftree}
-		\hypo{\Gamma,x_1 : \nu_1, \ldots,x_n : \nu_n;\Delta\vdash e : \tau\vert\epsilon}
-		\infer1[\textsc{[Lam]}]{\Gamma;\Delta\vdash \text{lam}(x_1,\ldots,x_n)\to e : (\nu_1, \ldots, \nu_n)\to \epsilon\ \tau\vert\epsilon^\prime}
-	\end{prooftree}
+	\framebox[\textwidth][c]{
+		\parbox{\textwidth}{
+			\centering
 
-	\caption{Typing rule for lambda expressions.}
-	\label{fig:zilch-staticsem-exprs-lambda-typerule}
+			\begin{prooftree}
+				\hypo{\TypeSequent{\scale{0}{\Gamma}}{\ell}{0}{\Elevel}{\Etotal}}
+				\infer1[\textsc{$\mathbf{1}$-F}]{\TypeSequent{\scale{0}{\Gamma}}{\Eone}{0}{\Etype \ell}{\Etotal}}
+			\end{prooftree}
+			\hspace{1.5em}
+			\begin{prooftree}
+				\hypo{\TypeSequent{\scale{0}{\Gamma}}{\ell}{0}{\Elevel}{\Etotal}}
+				\infer1[\textsc{$\top$-F}]{\TypeSequent{\scale{0}{\Gamma}}{\Etop}{0}{\Etype \ell}{\Etotal}}
+			\end{prooftree}
+			\\\vspace*{\baselineskip}
+			\begin{prooftree}
+				\hypo{\pi=0 \Rightarrow \epsilon \equiv \Etotal}
+				\infer1[\textsc{[$\mathbf{1}$-I]}]{\TypeSequent{\Gamma}{\Emultunit}{\pi}{\Eone}{\epsilon}}
+			\end{prooftree}
+			\hspace{1.5em}
+			\begin{prooftree}
+				\hypo{\pi=0 \Rightarrow \epsilon \equiv \Etotal}
+				\infer1[\textsc{[$\top$-I]}]{\TypeSequent{\Gamma}{\Eaddunit}{\pi}{\Etop}{\epsilon}}
+			\end{prooftree}
+			\\\vspace*{\baselineskip}
+			\begin{prooftree}
+				\hypo{\TypeSequent{\Gamma_1}{a}{\pi}{\Eone}{\epsilon}}
+				\hypo{\TypeSequent{\Gamma_1, z :^0 \Eone}{B}{0}{\Etype \ell}{\Etotal}}
+				\hypo{\TypeSequent{\Gamma_2}{b}{\pi}{B}{\epsilon^\prime}}
+				\hypo{\pi=0 \Rightarrow \epsilon,\epsilon^\prime \equiv \Etotal}
+				\infer4[\textsc{[$\mathbf{1}$-E]}]{\TypeSequent{\add{\Gamma_1}{\Gamma_2}}{\Emultunitelim{z}{\rho}{a}{b}}{\pi}{\subst{B}{z}{\Emultunit}}{\epsilon,\epsilon^\prime}}
+			\end{prooftree}
+		}
+	}
+
+	\caption{Type inference rules for multiplicative and additive units.}
+	\label{fig:zilch-staticsem-exprs-units-typerules}
 \end{figure}
 
-The expression $e$ in the above type rules is assumed to have the parameters $x_1$ to $x_n$ in scope, else it will not be able to use them.
-As for the effects, because the body of a lambda is not evaluated at the point it is defined, any effect that it would produce is instead transferred
-in the type of the lambda for them to be propagated to the call site (see the typing rules of function application).
-If it produces no effect (i.e. it is a pure/total expression), $\epsilon$ is $\langle\rangle$.
+\subsection{Multiplicative and additive pairs}\label{subsec:zilch-staticsem-exprs-pairs}
 
-Note that on its own, creating a new lambda does not produce any effect.
-But because we want to be able to use lambda expressions in contexts requiring effects, creating a new lambda yields any effect.
-This can also be simulated by requiring that the empty effect $\langle\rangle$ be a subtype of any effect.
+\begin{figure}[H]
+	\framebox[\textwidth][c]{
+		\parbox{\textwidth}{
+			\centering
+
+			\begin{prooftree}
+				\hypo{\TypeSequent{\scale{0}{\Gamma}}{A}{0}{\Etype \ell_1}{\Etotal}}
+				\hypo{\TypeSequent{\scale{0}{\Gamma}, x :^0 \tau_A}{B}{0}{\Etype \ell_2}{\Etotal}}
+				\infer2[\textsc{[$\otimes$-F]}]{\TypeSequent{\scale{0}{\Gamma}}{\Etensor{x}{\rho}{A}{B}}{0}{\Etype(\Elmax{\ell_1}{\ell_2})}{\Etotal}}
+			\end{prooftree}
+			\\\vspace*{\baselineskip}
+			\begin{prooftree}
+				\hypo{\TypeSequent{\scale{0}{\Gamma}}{A}{0}{\Etype \ell_1}{\Etotal}}
+				\hypo{\TypeSequent{\scale{0}{\Gamma}, x :^0 \tau_A}{B}{0}{\Etype \ell_2}{\Etotal}}
+				\infer2[\textsc{[$\&$-F]}]{\TypeSequent{\scale{0}{\Gamma}}{\Eand{x}{A}{B}}{0}{\Etype(\Elmax{\ell_1}{\ell_2})}{\Etotal}}
+			\end{prooftree}
+			\\\vspace*{\baselineskip}
+			\begin{prooftree}
+				\hypo{\TypeSequent{\scale{0}{\Gamma}}{a}{0}{A}{\Etotal}}
+				\hypo{\TypeSequent{\Gamma}{b}{\pi}{\subst{B}{x}{a}}{\epsilon}}
+				\hypo{\scale{\rho}{\pi}=0}
+				\hypo{\pi=0 \Rightarrow \epsilon\equiv\Etotal}
+				\infer4[\textsc{[$\otimes$-I$_0$]}]{\TypeSequent{\scale{0}{\Gamma}}{\Emultpair{a}{b}}{\pi}{\Etensor{x}{\rho}{A}{B}}{\epsilon}}
+			\end{prooftree}
+			\\\vspace*{\baselineskip}
+			\begin{prooftree}
+				\hypo{\TypeSequent{\Gamma_1}{a}{1}{A}{\epsilon}}
+				\hypo{\TypeSequent{\Gamma_2}{b}{\pi}{\subst{B}{x}{a}}{\epsilon^\prime}}
+				\infer2[\textsc{[$\otimes$-I$_1$]}]{\TypeSequent{\add{\scale{\scale{\rho}{\pi}}{\Gamma_1}}{\Gamma_2}}{\Emultpair{a}{b}}{\pi}{\Etensor{x}{\rho}{A}{B}}{\epsilon,\epsilon^\prime}}
+			\end{prooftree}
+			\\\vspace*{\baselineskip}
+			\begin{prooftree}
+				\hypo{\TypeSequent{\Gamma}{a}{\pi}{A}{\epsilon}}
+				\hypo{\TypeSequent{\Gamma}{b}{\pi}{\subst{B}{x}{a}}{\epsilon^\prime}}
+				\hypo{\pi=0 \Rightarrow \epsilon,\epsilon^\prime \equiv \Etotal}
+				\infer3[\textsc{[$\&$-I]}]{\TypeSequent{\Gamma}{\Eaddpair{a}{b}}{\pi}{\Eand{x}{A}{B}}{\epsilon,\epsilon^\prime}}
+			\end{prooftree}
+			\\\vspace*{\baselineskip}
+			\begin{prooftree}
+				\hypo{\TypeSequent{\scale{0}{\Gamma_1}, z :^0 \Etensor{x}{\rho}{A}{B}}{C}{0}{\Etype \ell}{\Etotal}}
+				\hypo{\TypeSequent{\Gamma_1}{m}{\pi}{\Etensor{x}{\rho}{A}{B}}{\epsilon}}
+				\infer[no rule, rule margin=1ex]2{\TypeSequent{\Gamma_2, a :^{\scale{\scale{\varsigma}{\rho}}{\pi}} A, b :^{\scale{\varsigma}{\pi}} \subst{B}{x}{a}}{n}{\pi}{C}{\epsilon^\prime}\hspace{1.5em}%
+				(\pi=0 \Rightarrow \epsilon,\epsilon^\prime \equiv \Etotal) \vee (\varsigma=0 \Rightarrow \epsilon \equiv \Etotal)}
+				\infer1[\textsc{[$\otimes$-E]}]{\TypeSequent{\add{\scale{\varsigma}{\Gamma_1}}{\Gamma_2}}{\Emultpairelim{a}{b}{z}{\varsigma}{m}{n}}{\pi}{\subst{C}{z}{\Emultpair{a}{b}}}{\epsilon,\epsilon^\prime}}
+			\end{prooftree}
+			\\\vspace*{\baselineskip}
+			\begin{prooftree}
+				\hypo{\TypeSequent{\Gamma}{e}{\pi}{\Eand{x}{A}{B}}{\epsilon}}
+				\hypo{\pi=0 \Rightarrow \epsilon \equiv \Etotal}
+				\infer2[\textsc{[$\&$-E$_1$]}]{\TypeSequent{\Gamma}{\Eaccess{e}{1}}{\pi}{A}{\epsilon}}
+			\end{prooftree}
+			\\\vspace*{\baselineskip}
+			\begin{prooftree}
+				\hypo{\TypeSequent{\Gamma}{e}{\pi}{\Eand{x}{A}{B}}{\epsilon}}
+				\hypo{\pi=0 \Rightarrow \epsilon \equiv \Etotal}
+				\infer2[\textsc{[$\&$-E$_2$]}]{\TypeSequent{\Gamma}{\Eaccess{e}{2}}{\pi}{\subst{B}{x}{\Eaccess{e}{1}}}{\epsilon}}
+			\end{prooftree}
+		}
+	}
+
+	\caption{Type inference rules for multiplicative and additive pairs.}
+	\label{fig:zilch-staticsem-exprs-pairs-typerules}
+\end{figure}
+
+\subsection{Booleans}\label{subsec:zilch-staticsem-exprs-booleans}
+
+\begin{figure}[H]
+	\framebox[\textwidth][c]{
+		\parbox{\textwidth}{
+			\centering
+
+			\begin{prooftree}
+				\hypo{\TypeSequent{\scale{0}{\Gamma}}{\ell}{0}{\Elevel}{\Etotal}}
+				\infer1[\textsc{[bool-F]}]{\TypeSequent{\scale{0}{\Gamma}}{\Ebool}{0}{\Etype \ell}{\Etotal}}
+			\end{prooftree}
+			\\\vspace*{\baselineskip}
+			\begin{prooftree}
+				\infer0[\textsc{[bool-I$_1$]}]{\TypeSequent{\Gamma}{\Etrue}{\pi}{\Ebool}{\epsilon}}
+			\end{prooftree}
+			\hspace{1.5em}
+			\begin{prooftree}
+				\infer0[\textsc{[bool-I$_2$]}]{\TypeSequent{\Gamma}{\Efalse}{\pi}{\Ebool}{\epsilon}}
+			\end{prooftree}
+			\\\vspace*{\baselineskip}
+			\begin{prooftree}
+				\hypo{\TypeSequent{\scale{0}{\Gamma}}{c}{0}{\Ebool}{\Etotal}}
+				\hypo{\TypeSequent{\Gamma}{t}{\pi}{A}{\epsilon}}
+				\hypo{\TypeSequent{\Gamma}{e}{\pi}{B}{\epsilon^\prime}}
+				\hypo{\pi=0 \Rightarrow \epsilon,\epsilon^\prime \equiv \Etotal}
+				\infer4[\textsc{[bool-E$_0$]}]{\TypeSequent{\Gamma}{\Eifthenelse{c}{t}{e}}{\pi}{\Eifthenelse{c}{t}{e}}{\epsilon,\epsilon^\prime}}
+			\end{prooftree}
+			\\\vspace*{\baselineskip}
+			\begin{prooftree}
+				\hypo{\TypeSequent{\Gamma_1}{c}{\rho}{\Ebool}{\Etotal}}
+				\hypo{\TypeSequent{\Gamma_2}{t}{1}{A}{\epsilon}}
+				\hypo{\TypeSequent{\Gamma_2}{e}{1}{A}{\epsilon^\prime}}
+				\hypo{\pi=0 \Rightarrow \epsilon,\epsilon^\prime \equiv \Etotal}
+				\infer4[\textsc{[bool-E$_1$]}]{\TypeSequent{\add{\Gamma_1}{\scale{\pi}{\Gamma_2}}}{\Eifthenelse{c}{t}{e}}{\pi}{A}{\epsilon,\epsilon^\prime}}
+			\end{prooftree}
+		}
+	}
+
+	\caption{Type inference rules for booleans.}
+	\label{fig:zilch-staticsem-exprs-booleans-typerules}
+\end{figure}
 
 \subsection{Variables, typed holes and literals}\label{subsec:zilch-staticsem-exprs-vars}
 

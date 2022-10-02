@@ -158,6 +158,8 @@
 \definecolor{kw3}{HTML}{2CAB26}
 \def\Ifmt{\color{kw3}}
 
+\newcommand*\subst[3]{{#1}[{#2}/{#3}]}
+
 \newcommand*\Etype[1]{\ensuremath{\operatorname{\mathsf{\Ifmt type}}{#1}}}
 \newcommand*\Ellift[1]{\ensuremath{\uparrow {#1}}}
 \newcommand*\Elsuc[1]{\ensuremath{\operatorname{\mathsf{\Ifmt lsuc}}{#1}}}
@@ -168,4 +170,22 @@
 \newcommand*\Elam[4]{\ensuremath{\mathsf{\Ifmt \lambda}({#2}\ {#1} : {#3})\mathrel{\mathsf{\Ifmt \Rightarrow}}{#4}}}
 \newcommand*\Eeffect{\ensuremath{\mathsf{\Ifmt effect}}}
 \newcommand*\Eeffectrow[2]{\ensuremath{\mathsf{\Ifmt \langle}{#1}\mathrel{\mathsf{\Ifmt \mid}}{#2}\mathsf{\Ifmt \rangle}}}
+\newcommand*\Eapp[2]{\ensuremath{{#1}({#2})}}
+\newcommand*\Eaddunit{\ensuremath{\mathsf{\Ifmt \langle\rangle}}}
+\newcommand*\Etop{\ensuremath{\mathsf{\Ifmt \top}}}
+\newcommand*\Emultunit{\ensuremath{\mathsf{\Ifmt ()}}}
+\newcommand*\Eone{\ensuremath{\mathsf{\mathbf{\Ifmt 1}}}}
+\newcommand*\Emultunitelim[4]{\ensuremath{\mathsf{\Ifmt let}\ {#2}\ \Emultunit\ \mathsf{\Ifmt as}\ {#1}\mathrel{\mathsf{\Ifmt \coloneqq}}{#3}\mathrel{\mathsf{\Ifmt ;}}{#4}}}
+\newcommand*\Edo[1]{\ensuremath{\mathsf{\Ifmt do}\ {#1}}}
+\newcommand*\Eunderscore{\ensuremath{\mathsf{\Ifmt \underline{\hspace{2mm}}}}}
+\newcommand*\Etensor[4]{\ensuremath{({#2}\ {#1} : {#3})\mathrel{\mathsf{\Ifmt \otimes}}{#4}}}
+\newcommand*\Eand[3]{\ensuremath{({#1} : {#2})\mathrel{\mathsf{\Ifmt \&}}{#3}}}
+\newcommand*\Emultpair[2]{\ensuremath{\mathsf{\Ifmt (}{#1}\mathrel{\mathsf{\Ifmt ,}}{#2}\mathsf{\Ifmt )}}}
+\newcommand*\Eaddpair[2]{\ensuremath{\mathsf{\Ifmt \langle}{#1}\mathrel{\mathsf{\Ifmt ,}}{#2}\mathsf{\Ifmt \rangle}}}
+\newcommand*\Eaccess[2]{\ensuremath{{#1}\mathsf{\Ifmt \dblcolon}{#2}}}
+\newcommand*\Emultpairelim[6]{\ensuremath{\mathsf{\Ifmt let}\ {#4}\ \Emultpair{#1}{#2}\ \mathsf{\Ifmt as}\ {#3}\mathrel{\mathsf{\Ifmt \coloneqq}}{#5}\mathrel{\mathsf{\Ifmt ;}}{#6}}}
+\newcommand*\Ebool{\ensuremath{\mathsf{\Ifmt bool}}}
+\newcommand*\Etrue{\ensuremath{\mathsf{\Ifmt true}}}
+\newcommand*\Efalse{\ensuremath{\mathsf{\Ifmt false}}}
+\newcommand*\Eifthenelse[3]{\ensuremath{\mathsf{\Ifmt if}\ {#1}\ \mathsf{\Ifmt then}\ {#2}\ \mathsf{\Ifmt else}\ {#3}}}
 }{}
