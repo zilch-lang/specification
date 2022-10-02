@@ -731,11 +731,62 @@ Zilch is statically and strongly typed, meaning that types of expressions are ch
 It also is type-infered, so there is no need to write the exact type of a function (unless in specific ambiguous states, e.g. with constraints).
 
 The type system of Zilch is based off a quantitative dependent type system with non-cumulative universe polymorphism and algebraic effects.
-In short, this means that types are allowed to dependent on runtime values (which are not \texttt{@0}), and that the type \texttt{type l} has a single type which is \texttt{type (↑ l)}.
+In short, this means that types are allowed to dependent on runtime values (which are not \texttt{@0}), and that the type \texttt{type l} has a single type which is \texttt{type (lsuc l)}.
 
 This chapter will contain type inference rules accompanied by informal descriptions.
 Some of the inference rules may be elided for simplicity, as writing them out would be either too cumbersome or difficult to understand.
 In such case, the informal description will be more furnished to compensate.
+
+\section{Multiplicities}\label{sec:zilch-staticsem-multiplicities}
+
+The Quantitative Type Theory (QTT for short) relies on usage annotations called ``multiplicities'' to determine the status of a given computation.
+The fragment $0,1,\omega$ is used to model these in Zilch, where:
+\begin{itemize}
+	\item $0$ is the multiplicity of erased expressions, that is expressions which are guaranteed to be fully evaluated at compile time and be completely stripped off the executable code;
+	\item $1$ is the multiplicity of linear expressions, meaning that they can be referenced only once (as in Linear Logic);
+	\item and $\omega$ which is the multiplicity for unrestricted values (which can be used either at compile time or at runtime).
+\end{itemize}
+
+There is a very important typing rule for multiplicities, as presented in figure~\ref{fig:zilch-staticsem-multiplicities-conv-typerules}, which relies on the relation $\leqslant$ defined in figure~\ref{fig:zilch-staticsem-multiplicities-partialorder}, allowing to specialise a multiplicity.
+The $\cong$ relation embodies that two types are equivalent.
+
+\begin{figure}[H]
+	\framebox[\textwidth][c]{
+		\begin{prooftree}
+			\hypo{\rho\in\{0, 1, \omega\}}
+			\infer1{\rho\leqslant\omega}
+		\end{prooftree}
+		\hspace{1.5em}
+		\begin{prooftree}
+			\infer0{0\leqslant 0}
+		\end{prooftree}
+		\hspace{1.5em}
+		\begin{prooftree}
+			\infer0{1\leqslant 1}
+		\end{prooftree}
+	}
+
+	\caption{Definition of the $\leqslant$ relation on multiplicities.}
+	\label{fig:zilch-staticsem-multiplicities-partialorder}
+\end{figure}
+
+In the general sense, if $\pi \leqslant \rho$ then it means that $\pi$ is more specialised than $\rho$, or that the multiplicity $\pi$ can be used in place of $\rho$ at the specific point where this relation holds.
+
+\begin{figure}[H]
+	\centering
+
+	\framebox[\textwidth][c]{
+		\begin{prooftree}
+			\hypo{\TypeSequent{\Gamma}{e}{\rho}{\tau_1}{\epsilon}}
+			\hypo{\tau_1\cong\tau_2}
+			\hypo{\pi \leqslant \rho}
+			\infer3[\textsc{[Type-Conv]}]{\TypeSequent{\Gamma}{e}{\pi}{\tau_2}{\epsilon}}
+		\end{prooftree}
+	}
+
+	\caption{Type inference rules for multiplicity specialisation.}
+	\label{fig:zilch-staticsem-multiplicities-conv-typerules}
+\end{figure}
 
 \section{Types, universes and effects}\label{sec:zilch-staticsem-types}
 
@@ -757,69 +808,103 @@ Types of types are mainly organized in 4 categories:
 	      Such types are grouped under the \verb|effect| kind.
 \end{itemize}
 
-Type inference rules are proposed in figure~\ref{fig:zilch-staticsem-universes-typerules} for type universes.
+Type inference rules are proposed in figure~\ref{fig:zilch-staticsem-types-universes-typerules} for type universes, and in figure~\ref{fig:zilch-staticsem-types-effects-typerules} for algebraic effects.
 
 \begin{figure}[H]
 	\centering
 
-	\begin{prooftree}
-		\hypo{\TypeSequent{\scale{0}{\Gamma}}{\ell}{0}{\Elevel}{\Etotal}}
-		\hypo{\TypeSequent{\scale{0}{\Gamma}}{\tau}{0}{\Etype{\ell}}{\Etotal}}
-		\infer2[\textsc{[Universe-Lift]}]{\TypeSequent{\scale{0}{\Gamma}}{\Ellift{\tau}}{0}{\Etype({\Elsuc{\ell}})}{\Etotal}}
-	\end{prooftree}
-	\\\vspace{\baselineskip}
-	\begin{prooftree}
-		\hypo{\TypeSequent{\scale{0}{\Gamma}}{\ell}{0}{\Elevel}{\Etotal}}
-		\infer1[\textsc{[Universe-F]}]{\TypeSequent{\scale{0}{\Gamma}}{\Etype{\ell}}{0}{\Etype({\Elsuc{\ell}})}{\Etotal}}
-	\end{prooftree}
-	\hspace{1.5em}
-	\begin{prooftree}
-		\infer0[\textsc{[Universe-Var]}]{\TypeSequent{\scale{0}{\Gamma}, \ell :^0 \Elevel}{\ell}{0}{\Elevel}{\Etotal}}
-	\end{prooftree}
-	\\\vspace{\baselineskip}
-	\begin{prooftree}
-		\hypo{\TypeSequent{\scale{0}{\Gamma}}{\ell_1}{0}{\Elevel}{\Etotal}}
-		\hypo{\TypeSequent{\scale{0}{\Gamma}}{\ell_2}{0}{\Elevel}{\Etotal}}
-		\infer2[\textsc{[Universe-$\sqcup$]}]{\TypeSequent{\scale{0}{\Gamma}}{\ell_1 \sqcup \ell_2}{0}{\Elevel}{\Etotal}}
-	\end{prooftree}
-	\\\vspace{\baselineskip}
-	\begin{prooftree}
-		\hypo{\TypeSequent{\scale{0}{\Gamma}}{\ell}{0}{\Elevel}{\Etotal}}
-		\infer1[\textsc{[Universe-Suc]}]{\TypeSequent{\scale{0}{\Gamma}}{\Elsuc{\ell}}{0}{\Elevel}{\Etotal}}
-	\end{prooftree}
-	\hspace{1.5em}
-	\begin{prooftree}
-		\hypo{n$ is a natural$}
-		\infer1[\textsc{[Universe-I]}]{\TypeSequent{\scale{0}{\Gamma}}{n}{0}{\Elevel}{\Etotal}}
-	\end{prooftree}
+	\framebox[\textwidth][c]{
+		\parbox{\textwidth}{
+			\centering
+
+			\begin{prooftree}
+				\hypo{\TypeSequent{\scale{0}{\Gamma}}{\ell}{0}{\Elevel}{\Etotal}}
+				\hypo{\TypeSequent{\scale{0}{\Gamma}}{\tau}{0}{\Etype{\ell}}{\Etotal}}
+				\infer2[\textsc{[Universe-Lift]}]{\TypeSequent{\scale{0}{\Gamma}}{\Ellift{\tau}}{0}{\Etype({\Elsuc{\ell}})}{\Etotal}}
+			\end{prooftree}
+			\\\vspace{\baselineskip}
+			\begin{prooftree}
+				\hypo{\TypeSequent{\scale{0}{\Gamma}}{\ell}{0}{\Elevel}{\Etotal}}
+				\infer1[\textsc{[Universe-F]}]{\TypeSequent{\scale{0}{\Gamma}}{\Etype{\ell}}{0}{\Etype({\Elsuc{\ell}})}{\Etotal}}
+			\end{prooftree}
+			\hspace{1.5em}
+			\begin{prooftree}
+				\infer0[\textsc{[Universe-Var]}]{\TypeSequent{\scale{0}{\Gamma}, \ell :^0 \Elevel}{\ell}{0}{\Elevel}{\Etotal}}
+			\end{prooftree}
+			\\\vspace{\baselineskip}
+			\begin{prooftree}
+				\hypo{\TypeSequent{\scale{0}{\Gamma}}{\ell_1}{0}{\Elevel}{\Etotal}}
+				\hypo{\TypeSequent{\scale{0}{\Gamma}}{\ell_2}{0}{\Elevel}{\Etotal}}
+				\infer2[\textsc{[Universe-$\sqcup$]}]{\TypeSequent{\scale{0}{\Gamma}}{\Elmax{\ell_1}{\ell_2}}{0}{\Elevel}{\Etotal}}
+			\end{prooftree}
+			\\\vspace{\baselineskip}
+			\begin{prooftree}
+				\hypo{\TypeSequent{\scale{0}{\Gamma}}{\ell}{0}{\Elevel}{\Etotal}}
+				\infer1[\textsc{[Universe-Suc]}]{\TypeSequent{\scale{0}{\Gamma}}{\Elsuc{\ell}}{0}{\Elevel}{\Etotal}}
+			\end{prooftree}
+			\hspace{1.5em}
+			\begin{prooftree}
+				\hypo{n$ is a natural$}
+				\infer1[\textsc{[Universe-I]}]{\TypeSequent{\scale{0}{\Gamma}}{n}{0}{\Elevel}{\Etotal}}
+			\end{prooftree}
+		}
+	}
 
 	\caption{Type inference rules for type universes.}
-	\label{fig:zilch-staticsem-universes-typerules}
+	\label{fig:zilch-staticsem-types-universes-typerules}
+\end{figure}
+
+\begin{figure}[H]
+	\framebox[\textwidth][c]{
+		\parbox{\textwidth}{
+			\centering
+
+			\begin{prooftree}
+				\hypo{\TypeSequent{\scale{0}{\Gamma}}{\tau_i}{0}{\Eeffect}{\Etotal}}
+				\hypo{\TypeSequent{\scale{0}{\Gamma}}{e_j}{0}{\Eeffect}{\Etotal}}
+				\infer2[\textsc{[Effect-Row]}]{\TypeSequent{\scale{0}{\Gamma}}{\Eeffectrow{\tau_i}{e_j}}{0}{\Eeffect}{\Etotal}}
+			\end{prooftree}
+			\\\vspace*{\baselineskip}
+			\begin{prooftree}
+				\infer0[\textsc{[Effect-Var]}]{\TypeSequent{\scale{0}{\Gamma}, e :^0 \Eeffect}{e}{0}{\Eeffect}{\Etotal}}
+			\end{prooftree}
+		}
+	}
+
+	\caption{Type inference rules for algebraic effects.}
+	\label{fig:zilch-staticsem-types-effects-typerules}
+\end{figure}
+
+\section{Types of expressions}\label{sec:zilch-staticsem-exprs}
+
+\subsection{Function types and lambda expressions}\label{subsec:zilch-staticsem-exprs-pi}
+
+\begin{figure}[H]
+	\framebox[\textwidth][c]{
+		\parbox{\textwidth}{
+			\centering
+
+			\begin{prooftree}
+				\hypo{\TypeSequent{\scale{0}{\Gamma}}{A}{0}{\Etype \ell_1}{\Etotal}}
+				\hypo{\TypeSequent{\scale{0}{\Gamma}, x :^0 \tau_A}{B}{0}{\Etype \ell_2}{\Etotal}}
+				\hypo{\TypeSequent{\scale{0}{\Gamma}}{\epsilon}{0}{\Eeffect}{\Etotal}}
+				\infer3[\textsc{[$\rightarrow$-F]}]{\TypeSequent{\scale{0}{\Gamma}}{\Epi{x}{\rho}{A}{\epsilon}{B}}{0}{\Etype(\Elmax{\ell_1}{\ell_2})}{\Etotal}}
+			\end{prooftree}
+			\\\vspace*{\baselineskip}
+			\begin{prooftree}
+				\hypo{\TypeSequent{\scale{0}{\Gamma}}{A}{0}{\Etype \ell_1}{\Etotal}}
+				\hypo{\TypeSequent{\Gamma, x :^{\scale{\rho}{\pi}} A}{e}{\pi}{B}{\epsilon}}
+				\hypo{\pi = 0 \Leftrightarrow \epsilon \equiv \Etotal \wedge \epsilon^\prime \equiv \Etotal}
+				\infer3[\textsc{[$\rightarrow$-I]}]{\TypeSequent{\Gamma}{\Elam{x}{\rho}{A}{e}}{\pi}{\Epi{x}{\rho}{A}{\epsilon}{B}}{\epsilon^\prime}}
+			\end{prooftree}
+		}
+	}
+
+	\caption{Type inference rule for function types.}
+	\label{fig:zilch-staticsem-exprs-pi-typerules}
 \end{figure}
 
 
-% \begin{figure}[H]
-% 	\centering
-% 	\begin{prooftree}
-% 		\hypo{\tau\ \text{is atomic}}
-% 		\infer1[\textsc{[Concrete]}]{\Delta\Vdash\tau : \text{type}}
-% 	\end{prooftree}
-% 	\hspace{3em}
-% 	\begin{prooftree}
-% 		\hypo{\Delta\Vdash\tau : \kappa\to\kappa^\prime}
-% 		\hypo{\Delta\Vdash x : \kappa}
-% 		\infer2[\textsc{[Apply]}]{\Delta\Vdash \tau\ x : \kappa^\prime}
-% 	\end{prooftree}
-% 	\\\vspace{\baselineskip}
-% 	\begin{prooftree}
-% 		\infer0[\textsc{[Var]}]{\Gamma,\tau : \kappa;\Delta\Vdash\tau : \kappa}
-% 	\end{prooftree}
-
-% 	\caption{Typing rules for types of types.}
-% 	\label{fig:zilch-staticsem-types-typerule}
-% \end{figure}
-
-\section{Types of expressions}\label{sec:zilch-staticsem-exprs}
 
 \subsection{Lambda abstractions}\label{subsec:zilch-staticsem-exprs-lambda}
 
