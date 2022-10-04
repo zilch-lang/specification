@@ -950,14 +950,14 @@ However it must be present to ensure consistency and non-looping static behavior
 				\infer[no rule, rule margin=1ex]2{\TypeSequent{\scale{0}{\Gamma}}{a}{0}{A}{\Etotal}\hspace{1.5em}%
 				\scale{\pi}{\rho}=0\hspace{1.5em}%
 				\pi = 0 \Rightarrow \epsilon \equiv \Etotal}
-				\infer1[\textsc{[LetIn$_0$]}]{\TypeSequent{\Gamma}{\Eletin{x}{\rho}{A}{a}{b}}{\pi}{B}{\epsilon}}
+				\infer1[\textsc{[LetIn$_0$]}]{\TypeSequent{\Gamma}{\Eletin{x}{\rho}{A}{a}{b}}{\pi}{\subst{B}{x}{a}}{\epsilon}}
 			\end{prooftree}
 			\\\vspace*{\baselineskip}
 			\begin{prooftree}
 				\hypo{\TypeSequent{\scale{0}{\Gamma_1}}{A}{0}{\Etype{\ell}}{\Etotal}}
 				\hypo{\TypeSequent{\Gamma_1, x :^{\scale{\pi}{\rho}} A}{b}{\pi}{B}{\epsilon}}
 				\hypo{\TypeSequent{\Gamma_2}{a}{1}{A}{\epsilon^\prime}}
-				\infer3[\textsc{[LetIn$_1$]}]{\TypeSequent{\add{\Gamma_1}{\scale{\scale{\pi}{\rho}}{\Gamma_2}}}{\Eletin{x}{\rho}{A}{a}{b}}{\pi}{B}{\epsilon,\epsilon^\prime}}
+				\infer3[\textsc{[LetIn$_1$]}]{\TypeSequent{\add{\Gamma_1}{\scale{\scale{\pi}{\rho}}{\Gamma_2}}}{\Eletin{x}{\rho}{A}{a}{b}}{\pi}{\subst{B}{x}{a}}{\epsilon,\epsilon^\prime}}
 			\end{prooftree}
 			\\\vspace*{\baselineskip}
 			\begin{prooftree}
@@ -967,21 +967,42 @@ However it must be present to ensure consistency and non-looping static behavior
 				\scale{\pi}{\rho}=0\hspace{1.5em}%
 				\pi = 0 \Rightarrow \epsilon \equiv \Etotal\hspace{1.5em}
 				\Eterminates{x}}
-				\infer1[\textsc{[RecIn$_0$]}]{\TypeSequent{\Gamma}{\Erecin{x}{\rho}{A}{a}{b}}{\pi}{B}{\epsilon}}
+				\infer1[\textsc{[RecIn$_0$]}]{\TypeSequent{\Gamma}{\Erecin{x}{\rho}{A}{a}{b}}{\pi}{\subst{B}{x}{a}}{\epsilon}}
 			\end{prooftree}
 			\\\vspace*{\baselineskip}
 			\begin{prooftree}
 				\hypo{\TypeSequent{\scale{0}{\Gamma_1}}{A}{0}{\Etype{\ell}}{\Etotal}}
 				\hypo{\TypeSequent{\Gamma_1, x :^{\scale{\pi}{\rho}} A}{b}{\pi}{B}{\epsilon}}
 				\infer[no rule, rule margin=1ex]2{\TypeSequent{\Gamma_2, x :^\omega A}{a}{1}{A}{\epsilon^\prime}\hspace{1.5em}%
-				\neg\Eterminates{x} \Rightarrow \Ediv \in \epsilon^\prime}
-				\infer1[\textsc{[RecIn$_1$]}]{\TypeSequent{\add{\Gamma_1}{\scale{\scale{\pi}{\rho}}{\Gamma_2}}}{\Erecin{x}{\rho}{A}{a}{b}}{\pi}{B}{\epsilon,\epsilon^\prime}}
+				\neg \Eterminates{x} \Rightarrow \Ediv \in \epsilon^\prime}
+				\infer1[\textsc{[RecIn$_1$]}]{\TypeSequent{\add{\Gamma_1}{\scale{\scale{\pi}{\rho}}{\Gamma_2}}}{\Erecin{x}{\rho}{A}{a}{b}}{\pi}{\subst{B}{x}{\Efix{x}{a}}}{\epsilon,\epsilon^\prime}}
 			\end{prooftree}
 		}
 	}
 
 	\caption{Type inference rules for \texttt{let} and \texttt{rec} local bindings.}
 	\label{fig:zilch-staticsem-exprs-local-letin-typerules}
+\end{figure}
+
+\begin{figure}[H]
+	\framebox[\textwidth][c]{
+		\parbox{\textwidth}{
+			\centering
+
+			\begin{prooftree}
+				\hypo{E(\mathsf{eff}) = \{\varsigma_1\ op_1, \varsigma_2\ op_2, \ldots, \varsigma_n\ op_n\}}
+				\hypo{\TypeSequent{\scale{0}{\Gamma_0}}{\mathsf{eff}}{0}{\Eeffect}{\Etotal}}
+				\infer[no rule, rule margin=1ex]2{\TypeSequent{\Gamma_0}{x}{1}{A}{\mathsf{eff}, \epsilon}\hspace{1.5em}%
+				\TypeSequent{\scale{0}{\Gamma_i}}{op_i}{0}{\Efun{\overrightarrow{\rho_i\ A_i}}{\Eeffectrow{\mathsf{eff}}{}}{B_i}}{\Etotal}}
+				\infer[no rule, rule margin=1ex]1{\TypeSequent{\Gamma_i, \Eresume :^{\varsigma_i} \Efun{B_i}{\epsilon_j}{A}, x_k :^{\rho_k} A_k }{e_i}{\pi}{A}{\epsilon_j}\hspace{1.5em}%
+				\pi \neq 0}
+				\infer1[\textsc{[Effect-E]}]{\TypeSequent{\scale{\pi}{\Gamma_0}, \Gamma_i}{\Ewithhnd{\mathsf{eff}}{\varsigma_i}{op_i}{(\overrightarrow{x_k})}{e_i}{x}}{\pi}{A}{\epsilon,\epsilon_j}}
+			\end{prooftree}
+		}
+	}
+
+	\caption{Type inference rules for local effect handlers.}
+	\label{fig:zilch-staticsem-exprs-local-with-typerules}
 \end{figure}
 
 \subsection{Multiplicative and additive units}\label{subsec:zilch-staticsem-exprs-units}
