@@ -930,6 +930,60 @@ That way, we can also create lambdas in effectful contexts.
 This could also be materialised by defining a subtyping relation $\subtype$ on effects where $\Etotal \subtype \epsilon$ and we can generalise the effect $\epsilon$ in the rule \textsc{[Type-Conv]} (in figure~\ref{fig:zilch-staticsem-multiplicities-conv-typerules}).
 Also, any effect performed by \texttt{e} is lifted to the type of the lambda.
 
+\subsection{Local bindings and effect handling}\label{subsec:zilch-staticsem-exprs-local}
+
+The rules \textsc{[RecIn$_0$]} and \textsc{[RecIn$_1$]} rely on a predicate $\Eterminates{x}$ which returns whether the function $x$ is expected to always terminate or not.
+It is important because we disallow erasing function calls which cannot be guaranteed to always terminate (to prevent from making the type-checker loop indefinitely).
+In the case of non-erased terms, we use termination checking to put the builtin $\Ediv$\ effect on functions which may not terminate (which are not \textit{total}).
+
+The predicate $\Eterminates{x}$ is left undefined as it is an implementation detail\footnote{There are many ways to detect termination, either through termination metrics as in ATS, or structural recursion as in Coq or Agda, or just never allow recursion, etc.}.
+However it must be present to ensure consistency and non-looping static behaviors.
+
+\begin{figure}[H]
+	\framebox[\textwidth][c]{
+		\parbox{\textwidth}{
+			\centering
+
+			\begin{prooftree}
+				\hypo{\TypeSequent{\scale{0}{\Gamma}}{A}{0}{\Etype{\ell}}{\Etotal}}
+				\hypo{\TypeSequent{\Gamma, x :^{\scale{\pi}{\rho}} A}{b}{\pi}{B}{\epsilon}}
+				\infer[no rule, rule margin=1ex]2{\TypeSequent{\scale{0}{\Gamma}}{a}{0}{A}{\Etotal}\hspace{1.5em}%
+				\scale{\pi}{\rho}=0\hspace{1.5em}%
+				\pi = 0 \Rightarrow \epsilon \equiv \Etotal}
+				\infer1[\textsc{[LetIn$_0$]}]{\TypeSequent{\Gamma}{\Eletin{x}{\rho}{A}{a}{b}}{\pi}{B}{\epsilon}}
+			\end{prooftree}
+			\\\vspace*{\baselineskip}
+			\begin{prooftree}
+				\hypo{\TypeSequent{\scale{0}{\Gamma_1}}{A}{0}{\Etype{\ell}}{\Etotal}}
+				\hypo{\TypeSequent{\Gamma_1, x :^{\scale{\pi}{\rho}} A}{b}{\pi}{B}{\epsilon}}
+				\hypo{\TypeSequent{\Gamma_2}{a}{1}{A}{\epsilon^\prime}}
+				\infer3[\textsc{[LetIn$_1$]}]{\TypeSequent{\add{\Gamma_1}{\scale{\scale{\pi}{\rho}}{\Gamma_2}}}{\Eletin{x}{\rho}{A}{a}{b}}{\pi}{B}{\epsilon,\epsilon^\prime}}
+			\end{prooftree}
+			\\\vspace*{\baselineskip}
+			\begin{prooftree}
+				\hypo{\TypeSequent{\scale{0}{\Gamma}}{A}{0}{\Etype{\ell}}{\Etotal}}
+				\hypo{\TypeSequent{\Gamma, x :^{\scale{\pi}{\rho}} A}{b}{\pi}{B}{\epsilon}}
+				\infer[no rule, rule margin=1ex]2{\TypeSequent{\scale{0}{\Gamma}, x :^0 A}{a}{0}{A}{\Etotal}\hspace{1.5em}%
+				\scale{\pi}{\rho}=0\hspace{1.5em}%
+				\pi = 0 \Rightarrow \epsilon \equiv \Etotal\hspace{1.5em}
+				\Eterminates{x}}
+				\infer1[\textsc{[RecIn$_0$]}]{\TypeSequent{\Gamma}{\Erecin{x}{\rho}{A}{a}{b}}{\pi}{B}{\epsilon}}
+			\end{prooftree}
+			\\\vspace*{\baselineskip}
+			\begin{prooftree}
+				\hypo{\TypeSequent{\scale{0}{\Gamma_1}}{A}{0}{\Etype{\ell}}{\Etotal}}
+				\hypo{\TypeSequent{\Gamma_1, x :^{\scale{\pi}{\rho}} A}{b}{\pi}{B}{\epsilon}}
+				\infer[no rule, rule margin=1ex]2{\TypeSequent{\Gamma_2, x :^\omega A}{a}{1}{A}{\epsilon^\prime}\hspace{1.5em}%
+				\neg\Eterminates{x} \Rightarrow \Ediv \in \epsilon^\prime}
+				\infer1[\textsc{[RecIn$_1$]}]{\TypeSequent{\add{\Gamma_1}{\scale{\scale{\pi}{\rho}}{\Gamma_2}}}{\Erecin{x}{\rho}{A}{a}{b}}{\pi}{B}{\epsilon,\epsilon^\prime}}
+			\end{prooftree}
+		}
+	}
+
+	\caption{Type inference rules for \texttt{let} and \texttt{rec} local bindings.}
+	\label{fig:zilch-staticsem-exprs-local-letin-typerules}
+\end{figure}
+
 \subsection{Multiplicative and additive units}\label{subsec:zilch-staticsem-exprs-units}
 
 \begin{figure}[H]
@@ -1062,15 +1116,15 @@ Also, any effect performed by \texttt{e} is lifted to the type of the lambda.
 				\hypo{\TypeSequent{\Gamma}{t}{\pi}{A}{\epsilon}}
 				\hypo{\TypeSequent{\Gamma}{e}{\pi}{B}{\epsilon^\prime}}
 				\hypo{\pi=0 \Rightarrow \epsilon,\epsilon^\prime \equiv \Etotal}
-				\infer4[\textsc{[bool-E$_0$]}]{\TypeSequent{\Gamma}{\Eifthenelse{c}{t}{e}}{\pi}{\Eifthenelse{c}{t}{e}}{\epsilon,\epsilon^\prime}}
+				\infer4[\textsc{[bool-E$_0$]}]{\TypeSequent{\Gamma}{\Eifthenelse{c}{t}{e}}{\pi}{\Eifthenelse{c}{A}{B}}{\epsilon,\epsilon^\prime}}
 			\end{prooftree}
 			\\\vspace*{\baselineskip}
 			\begin{prooftree}
-				\hypo{\TypeSequent{\Gamma_1}{c}{\rho}{\Ebool}{\Etotal}}
-				\hypo{\TypeSequent{\Gamma_2}{t}{1}{A}{\epsilon}}
-				\hypo{\TypeSequent{\Gamma_2}{e}{1}{A}{\epsilon^\prime}}
-				\hypo{\pi=0 \Rightarrow \epsilon,\epsilon^\prime \equiv \Etotal}
-				\infer4[\textsc{[bool-E$_1$]}]{\TypeSequent{\add{\Gamma_1}{\scale{\pi}{\Gamma_2}}}{\Eifthenelse{c}{t}{e}}{\pi}{A}{\epsilon,\epsilon^\prime}}
+				\hypo{\TypeSequent{\Gamma_1}{c}{\rho}{\Ebool}{\epsilon}}
+				\hypo{\TypeSequent{\Gamma_2}{t}{1}{A}{\epsilon^\prime}}
+				\hypo{\TypeSequent{\Gamma_2}{e}{1}{A}{\epsilon^\second}}
+				\hypo{\pi=0 \Rightarrow \epsilon,\epsilon^\prime,\epsilon^\second \equiv \Etotal}
+				\infer4[\textsc{[bool-E$_1$]}]{\TypeSequent{\add{\Gamma_1}{\scale{\pi}{\Gamma_2}}}{\Eifthenelse{c}{t}{e}}{\pi}{A}{\epsilon,\epsilon^\prime,\epsilon^\second}}
 			\end{prooftree}
 		}
 	}
@@ -1079,32 +1133,100 @@ Also, any effect performed by \texttt{e} is lifted to the type of the lambda.
 	\label{fig:zilch-staticsem-exprs-booleans-typerules}
 \end{figure}
 
-\subsection{Variables, typed holes and literals}\label{subsec:zilch-staticsem-exprs-vars}
+\subsection{Atomic expressions}\label{subsec:zilch-staticsem-exprs-atoms}
 
 \begin{figure}[H]
-	\centering
+	\framebox[\textwidth][c]{
+		\parbox{\textwidth}{
+			\centering
 
-	\begin{prooftree}
-		\infer0[\textsc{[Var]}]{\Gamma, x : \tau;\Delta\vdash x : \tau\vert\epsilon}
-	\end{prooftree}
-	\hspace{3em}
-	\begin{prooftree}
-		\infer0[\textsc{[Hole]}]{\Gamma;\Delta\vdash \cdot : \tau\vert\epsilon}
-	\end{prooftree}
-	\\\vspace{\baselineskip}
-	\begin{prooftree}
-		\hypo{\tau\in\{\text{u8}, \text{u16}, \text{u32}, \text{u64}\}}
-		\hypo{c\ \text{is an integer literal}}
-		\infer2[\textsc{[Nat]}]{\Gamma;\Delta\vdash c : \tau\vert\epsilon}
-	\end{prooftree}
-	\\\vspace{\baselineskip}
-	\begin{prooftree}
-		\hypo{c\ \text{is a character literal}}
-		\infer1[\textsc{[Char]}]{\Gamma;\Delta\vdash c : \text{char}\vert\epsilon}
-	\end{prooftree}
+			\begin{prooftree}
+				\infer0[\textsc{[Var]}]{\TypeSequent{\Gamma, x :^\pi A}{x}{\pi}{A}{\epsilon}}
+			\end{prooftree}
+		}
+	}
 
-	\caption{Typing rules for variables, typed holes and literals.}
-	\label{fig:zilch-staticsem-exprs-vars-typerule}
+	\caption{Type inference rules for variables.}
+	\label{fig:zilch-staticsem-exprs-atoms-variables-typerules}
+\end{figure}
+
+\begin{figure}[H]
+	\framebox[\textwidth][c]{
+		\parbox{\textwidth}{
+			\centering
+
+			\begin{prooftree}
+				\hypo{\TypeSequent{\scale{0}{\Gamma}}{\ell}{0}{\Elevel}{\Etotal}}
+				\infer1[\textsc{[Natural-F]}]{\TypeSequent{\scale{0}{\Gamma}}{\Eunsigned{N}}{0}{\Etype{\ell}}{\Etotal}}
+			\end{prooftree}
+			\hspace{1.5em}
+			\begin{prooftree}
+				\hypo{\TypeSequent{\scale{0}{\Gamma}}{\ell}{0}{\Elevel}{\Etotal}}
+				\infer1[\textsc{[Integer-F]}]{\TypeSequent{\scale{0}{\Gamma}}{\Esigned{N}}{0}{\Etype{\ell}}{\Etotal}}
+			\end{prooftree}
+			\\\vspace*{\baselineskip}
+			\begin{prooftree}
+				\hypo{n$ is a natural number$}
+				\infer1[\textsc{[Natural-I]}]{\TypeSequent{\Gamma}{n}{\pi}{\Eunsigned{M}}{\epsilon}}
+			\end{prooftree}
+			\hspace{1.5em}
+			\begin{prooftree}
+				\hypo{n$ is a natural number$}
+				\infer1[\textsc{[Integer-I]}]{\TypeSequent{\Gamma}{\pm n}{\pi}{\Esigned{M}}{\epsilon}}
+			\end{prooftree}
+
+		}
+	}
+
+	\caption{Type inference rules for integral atoms.}
+	\label{fig:zilch-staticsem-exprs-atoms-integers-typerules}
+\end{figure}
+
+\begin{figure}[H]
+	\framebox[\textwidth][c]{
+		\parbox{\textwidth}{
+			\centering
+
+			\begin{prooftree}
+				\hypo{\TypeSequent{\scale{0}{\Gamma}}{\ell}{0}{\Elevel}{\Etotal}}
+				\infer1[\textsc{[Char-F]}]{\TypeSequent{\scale{0}{\Gamma}}{\Echar}{0}{\Etype{\ell}}{\Etotal}}
+			\end{prooftree}
+			\hspace{1.5em}
+			\begin{prooftree}
+				\hypo{c$ is a character$}
+				\infer1[\textsc{[Char-I]}]{\TypeSequent{\Gamma}{c}{\pi}{\Echar}{\epsilon}}
+			\end{prooftree}
+		}
+	}
+
+	\caption{Type inference rules for character atoms.}
+	\label{fig:zilch-staticsem-exprs-atoms-characters-typerules}
+\end{figure}
+
+\begin{figure}[H]
+	\framebox[\textwidth][c]{
+		\parbox{\textwidth}{
+			\centering
+
+			\begin{prooftree}
+				\hypo{\TypeSequent{\scale{0}{\Gamma}}{A}{0}{\Etype{\ell}}{\Etotal}}
+				\infer1[\textsc{[Ref-F]}]{\TypeSequent{\scale{0}{\Gamma}}{\Eref{A}}{0}{\Etype{\ell}}{\Etotal}}
+			\end{prooftree}
+			\hspace{1.5em}
+			\begin{prooftree}
+				\hypo{\TypeSequent{\scale{0}{\Gamma}}{A}{0}{\Etype{\ell}}{\Etotal}}
+				\infer1[\textsc{[Ptr-F]}]{\TypeSequent{\scale{0}{\Gamma}}{\Eptr{A}}{0}{\Etype{\ell}}{\Etotal}}
+			\end{prooftree}
+			\\\vspace*{\baselineskip}
+			\begin{prooftree}
+				\hypo{\TypeSequent{\Gamma}{e}{\pi}{A}{\epsilon}}
+				\infer1[\textsc{[Ref-I]}]{\TypeSequent{\Gamma}{\Emkref{e}}{\pi}{\Eref{A}}{\epsilon}} % maybe we want an effect for this?
+			\end{prooftree}
+		}
+	}
+
+	\caption{Type inference rules for references and pointers.}
+	\label{fig:zilch-staticsem-exprs-atoms-ptrrefs-typerules}
 \end{figure}
 
 \section{Module semantics}\label{sec:zilch-staticsem-modules}

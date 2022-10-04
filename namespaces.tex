@@ -188,4 +188,14 @@
 \newcommand*\Etrue{\ensuremath{\mathsf{\Ifmt true}}}
 \newcommand*\Efalse{\ensuremath{\mathsf{\Ifmt false}}}
 \newcommand*\Eifthenelse[3]{\ensuremath{\mathsf{\Ifmt if}\ {#1}\ \mathsf{\Ifmt then}\ {#2}\ \mathsf{\Ifmt else}\ {#3}}}
+\newcommand*\Eunsigned[1]{\ensuremath{\mathsf{\Ifmt u{#1}}}}
+\newcommand*\Esigned[1]{\ensuremath{\mathsf{\Ifmt s{#1}}}}
+\newcommand*\Echar{\ensuremath{\mathsf{\Ifmt char}}}
+\newcommand*\Eref[1]{\ensuremath{\operatorname{\mathsf{\Ifmt ref}}{#1}}}
+\newcommand*\Eptr[1]{\ensuremath{\operatorname{\mathsf{\Ifmt ptr}}{#1}}}
+\newcommand*\Emkref[1]{\ensuremath{\operatorname{\mathsf{\Ifmt \&}}{#1}}}
+\newcommand*\Eletin[5]{\ensuremath{\mathsf{\Ifmt let}\ {#2}\ {#1}\ \mathsf{\Ifmt :}\ {#3}\mathrel{\mathsf{\Ifmt \coloneqq}}{#4}\mathrel{\mathsf{\Ifmt ;}}{#5}}}
+\newcommand*\Erecin[5]{\ensuremath{\mathsf{\Ifmt rec}\ {#2}\ {#1}\ \mathsf{\Ifmt :}\ {#3}\mathrel{\mathsf{\Ifmt \coloneqq}}{#4}\mathrel{\mathsf{\Ifmt ;}}{#5}}}
+\newcommand*\Ediv{\mathsf{\Ifmt div}}
+\newcommand*\Eterminates[1]{\mathsf{terminates?}({#1})}
 }{}
