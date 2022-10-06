@@ -192,14 +192,15 @@
 \newcommand*\Eunsigned[1]{\ensuremath{\mathsf{\Ifmt u{#1}}}}
 \newcommand*\Esigned[1]{\ensuremath{\mathsf{\Ifmt s{#1}}}}
 \newcommand*\Echar{\ensuremath{\mathsf{\Ifmt char}}}
-\newcommand*\Eref[1]{\ensuremath{\operatorname{\mathsf{\Ifmt ref}}{#1}}}
 \newcommand*\Eptr[1]{\ensuremath{\operatorname{\mathsf{\Ifmt ptr}}{#1}}}
-\newcommand*\Emkref[1]{\ensuremath{\operatorname{\mathsf{\Ifmt \&}}{#1}}}
 \newcommand*\Eletin[5]{\ensuremath{\mathsf{\Ifmt let}\ {#2}\ {#1}\ \mathsf{\Ifmt :}\ {#3}\mathrel{\mathsf{\Ifmt \coloneqq}}{#4}\mathrel{\mathsf{\Ifmt ;}}{#5}}}
 \newcommand*\Erecin[5]{\ensuremath{\mathsf{\Ifmt rec}\ {#2}\ {#1}\ \mathsf{\Ifmt :}\ {#3}\mathrel{\mathsf{\Ifmt \coloneqq}}{#4}\mathrel{\mathsf{\Ifmt ;}}{#5}}}
 \newcommand*\Ediv{\ensuremath{\mathsf{\Ifmt div}}}
 \newcommand*\Eterminates[1]{\ensuremath{\mathsf{terminates?}({#1})}}
 \newcommand*\Efix[2]{\ensuremath{\mathsf{\Ifmt fix}({#1})\mathrel{\mathsf{\Ifmt \Rightarrow}}{#2}}}
 \newcommand*\Ewithhnd[6]{\ensuremath{\mathsf{\Ifmt with}\ {#1}\ \mathsf{\Ifmt let}\ {#2}\ {#3}{#4}\mathrel{\mathsf{\Ifmt \coloneqq}}{#5}\mathrel{\mathsf{\Ifmt ;}}{#6}}}
+\newcommand*\Ewith[2]{\ensuremath{\mathsf{\Ifmt with}\ {#1}\mathrel{\mathsf{\Ifmt ;}}{#2}}}
 \newcommand*\Eresume{\ensuremath{\mathsf{\Ifmt resume}}}
+\newcommand*\Ederef[1]{\ensuremath{{}^\mathsf{\Ifmt \ast}{#1}}}
+\newcommand*\Emkptr[1]{\ensuremath{\mathsf{\Ifmt \&}{#1}}}
 }{}

@@ -901,7 +901,7 @@ Type inference rules are proposed in figure~\ref{fig:zilch-staticsem-types-unive
 			\begin{prooftree}
 				\hypo{\TypeSequent{\Gamma}{e}{\pi}{A}{\epsilon}}
 				\hypo{\pi=0 \Rightarrow \epsilon^\prime \equiv \Etotal}
-				\infer2[\textsc{[$\rightarrow$-I$_2$]}]{\TypeSequent{\Gamma}{\Edo{e}}{\pi}{\Epi{\Eunderscore}{\omega}{\Eone}{\epsilon}{A}}{\epsilon^\prime}}
+				\infer2[\textsc{[$\rightarrow$-I$_2$]}]{\TypeSequent{\Gamma}{\Edo{e}}{\pi}{\Efun{\omega\ \Eone}{\epsilon}{A}}{\epsilon^\prime}}
 			\end{prooftree}
 			\\\vspace*{\baselineskip}
 			\begin{prooftree}
@@ -992,11 +992,18 @@ However it must be present to ensure consistency and non-looping static behavior
 			\begin{prooftree}
 				\hypo{E(\mathsf{eff}) = \{\varsigma_1\ op_1, \varsigma_2\ op_2, \ldots, \varsigma_n\ op_n\}}
 				\hypo{\TypeSequent{\scale{0}{\Gamma_0}}{\mathsf{eff}}{0}{\Eeffect}{\Etotal}}
-				\infer[no rule, rule margin=1ex]2{\TypeSequent{\Gamma_0}{x}{1}{A}{\mathsf{eff}, \epsilon}\hspace{1.5em}%
+				\infer[no rule, rule margin=1ex]2{\TypeSequent{\Gamma_0}{e}{1}{A}{\mathsf{eff}, \epsilon}\hspace{1.5em}%
 				\TypeSequent{\scale{0}{\Gamma_i}}{op_i}{0}{\Efun{\overrightarrow{\rho_i\ A_i}}{\Eeffectrow{\mathsf{eff}}{}}{B_i}}{\Etotal}}
-				\infer[no rule, rule margin=1ex]1{\TypeSequent{\Gamma_i, \Eresume :^{\varsigma_i} \Efun{B_i}{\epsilon_j}{A}, x_k :^{\rho_k} A_k }{e_i}{\pi}{A}{\epsilon_j}\hspace{1.5em}%
+				\infer[no rule, rule margin=1ex]1{\TypeSequent{\Gamma_i, \Eresume :^{\varsigma_i} \Efun{B_i}{\epsilon_j}{A}, {x_i}_k :^{{\rho_i}_k} {A_i}_k }{e_i}{\pi}{A}{\epsilon_j}\hspace{1.5em}%
 				\pi \neq 0}
-				\infer1[\textsc{[Effect-E]}]{\TypeSequent{\scale{\pi}{\Gamma_0}, \Gamma_i}{\Ewithhnd{\mathsf{eff}}{\varsigma_i}{op_i}{(\overrightarrow{x_k})}{e_i}{x}}{\pi}{A}{\epsilon,\epsilon_j}}
+				\infer1[\textsc{[Effect-E$_1$]}]{\TypeSequent{\add{\scale{\pi}{\Gamma_0}}{ \sum_i{\Gamma_i}}}{\Ewithhnd{\mathsf{eff}}{\varsigma_i}{op_i}{(\overrightarrow{x_i})}{e_i}{e}}{\pi}{A}{\epsilon,\epsilon_j}}
+			\end{prooftree}
+			\\\vspace*{\baselineskip}
+			\begin{prooftree}
+				\hypo{\TypeSequent{\Gamma_1}{f}{1}{\Efun{(\Efun{\omega\ \Eone}{\Eeffectrow{\mathsf{eff}}{\epsilon}}{A})}{\epsilon}{A}}{\epsilon^\prime}}
+				\hypo{\TypeSequent{\Gamma_2}{e}{1}{A}{\mathsf{eff}, \epsilon^\second}}
+				\hypo{\pi \neq 0}
+				\infer3[\textsc{[Effect-E$_2$]}]{\TypeSequent{\add{\Gamma_1}{\scale{\pi}{\Gamma_2}}}{\Ewith{f}{e}}{\pi}{A}{\epsilon,\epsilon^\prime,\epsilon^\second}}
 			\end{prooftree}
 		}
 	}
@@ -1231,23 +1238,23 @@ However it must be present to ensure consistency and non-looping static behavior
 
 			\begin{prooftree}
 				\hypo{\TypeSequent{\scale{0}{\Gamma}}{A}{0}{\Etype{\ell}}{\Etotal}}
-				\infer1[\textsc{[Ref-F]}]{\TypeSequent{\scale{0}{\Gamma}}{\Eref{A}}{0}{\Etype{\ell}}{\Etotal}}
+				\infer1[\textsc{[Ptr-F]}]{\TypeSequent{\scale{0}{\Gamma}}{\Eptr{A}}{0}{\Etype{\ell}}{\Etotal}}
 			\end{prooftree}
 			\hspace{1.5em}
 			\begin{prooftree}
-				\hypo{\TypeSequent{\scale{0}{\Gamma}}{A}{0}{\Etype{\ell}}{\Etotal}}
-				\infer1[\textsc{[Ptr-F]}]{\TypeSequent{\scale{0}{\Gamma}}{\Eptr{A}}{0}{\Etype{\ell}}{\Etotal}}
+				\hypo{\TypeSequent{\Gamma}{p}{\pi}{\Eptr{A}}{\epsilon}}
+				\infer1[\textsc{[Ptr-E]}]{\TypeSequent{\Gamma}{\Ederef{p}}{\pi}{A}{\epsilon}}
 			\end{prooftree}
 			\\\vspace*{\baselineskip}
 			\begin{prooftree}
 				\hypo{\TypeSequent{\Gamma}{e}{\pi}{A}{\epsilon}}
-				\infer1[\textsc{[Ref-I]}]{\TypeSequent{\Gamma}{\Emkref{e}}{\pi}{\Eref{A}}{\epsilon}} % maybe we want an effect for this?
-			\end{prooftree}
+				\infer1[\textsc{[Ptr-I]}]{\TypeSequent{\Gamma}{\Emkptr{e}}{\pi}{\Eptr{A}}{\epsilon}}
+			\end{prooftree} % do we really want to allow this?
 		}
 	}
 
-	\caption{Type inference rules for references and pointers.}
-	\label{fig:zilch-staticsem-exprs-atoms-ptrrefs-typerules}
+	\caption{Type inference rules for pointers.}
+	\label{fig:zilch-staticsem-exprs-atoms-ptr-typerules}
 \end{figure}
 
 \section{Module semantics}\label{sec:zilch-staticsem-modules}
