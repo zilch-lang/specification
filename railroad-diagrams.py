@@ -519,7 +519,9 @@ def zilch_special():
                      Terminal('->'), Terminal('→')),
     HorizontalChoice(Terminal('--'), Terminal('/-'), Terminal('-/'),
                      Terminal('/--'), Terminal('_'), Terminal('·'),
-                     Terminal('?'), Terminal('=>'), Terminal('⇒')))
+                     Terminal('=>'), Terminal('⇒')),
+    HorizontalChoice(Terminal('⊗'), Terminal('×'), Terminal('&'),
+                     Terminal('⟨'), Terminal('⟩')))
 
   return mk_diagram2('special', inner)
 
@@ -710,7 +712,8 @@ def zilch_expression_atom():
     Group(
       HorizontalChoice(Sequence(Terminal('type'), NonTerminal('level')),
                        Terminal('effect')), 'reserved types'),
-    Group(Terminal('_'), 'infered hole'))
+    Group(Terminal('_'), 'infered hole'),
+    Group(Sequence(Terminal('&'), NonTerminal('identifier')), 'by-ref'))
 
   return mk_diagram2('expression-atom', inner)
 
@@ -818,13 +821,15 @@ def zilch_toplevel_function_definition():
 
 
 def zilch_function_declaration():
-  inner = Sequence(
-    Terminal('val'), Optional(NonTerminal('usage')), NonTerminal('identifier'),
-    ZeroOrMore(
-      Choice(1, NonTerminal('explicit-parameter\''),
-             NonTerminal('implicit-parameter\''),
-             NonTerminal('instance-parameter\''))), Terminal(':'),
-    NonTerminal('expression'))
+  inner = Stack(
+    Sequence(Optional('opaque'), Terminal('val'),
+             Optional(NonTerminal('usage')), NonTerminal('identifier')),
+    Sequence(
+      ZeroOrMore(
+        Choice(1, NonTerminal('explicit-parameter\''),
+               NonTerminal('implicit-parameter\''),
+               NonTerminal('instance-parameter\''))), Terminal(':'),
+      NonTerminal('expression')))
 
   return mk_diagram2('function-declaration', inner)
 
@@ -927,4 +932,42 @@ def zilch_type_level():
   return mk_diagram2('level', inner)
 
 
-zilch_type_level().writeSvg(sys.stdout.write)
+def zilch_mult_product_intro():
+  inner = Sequence(Terminal('('),
+                   OneOrMore(NonTerminal('expression'), Terminal(',')),
+                   Terminal(')'))
+
+  return mk_diagram2('mult-product-intro', inner)
+
+
+def zilch_add_product_intro():
+  body = OneOrMore(NonTerminal('expression'), Terminal(','))
+
+  inner = Choice(1, Sequence(Terminal('<'), body, Terminal('>')),
+                 Sequence(Terminal('⟨'), body, Terminal('⟩')))
+
+  return mk_diagram2('add-product-intro', inner)
+
+
+def zilch_add_product_elim():
+  inner = Sequence(NonTerminal('expression'),
+                   HorizontalChoice(Terminal('::'), Terminal('∷')),
+                   NonTerminal('integer'))
+
+  return mk_diagram2('add-product-elim', inner)
+
+
+def zilch_mult_product_elim():
+  inner = Stack(
+    Sequence(Terminal('let'), Terminal('('),
+             OneOrMore(NonTerminal('identifier'), Terminal(',')),
+             Terminal(')'),
+             Optional(Sequence(Terminal('as'), NonTerminal('identifier')))),
+    Sequence(Choice(0, Terminal(':='), Terminal('≔')),
+             NonTerminal('expression'), NonTerminal(';'),
+             NonTerminal('expression')))
+
+  return mk_diagram2('mult-product-elim', inner)
+
+
+zilch_mult_product_elim().writeSvg(sys.stdout.write)

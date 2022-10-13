@@ -1,0 +1,5 @@
+let test(x) := &x
+let test2(x) := 
+  let () := compute(&x + 3)
+  x
+let test3(x) := &x + 56

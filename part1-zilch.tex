@@ -362,6 +362,71 @@ Record literals allow constructing records in the same fashion as in e.g.\ C.
 	\label{fig:zilch-grammar-expressions-atom-grammar}
 \end{figure}
 
+The by-ref operator \texttt{\&id} is only allowed if it appears within the top-most application in a \texttt{let} local binding.
+For example, these uses of the by-ref operator are valid:
+\begin{listing}[H]
+	\inputminted{\zilchlexer}{examples/correct-byref.zc}
+
+	\captionsetup{style=invisible}
+	\caption{Correct usage of by-ref operator.}
+\end{listing}
+\vspace*{-\baselineskip}
+
+Hoewver, these uses are invalid:
+\begin{listing}[H]
+	\inputminted{\zilchlexer}{examples/incorrect-byref.zc}
+
+	\captionsetup{style=invisible}
+	\caption{Incorrect usage of by-ref operator.}
+\end{listing}
+\vspace*{-\baselineskip}
+In \texttt{test2}, the by-ref operator is in fact used in the application of \texttt{+} (recall that \texttt{a + b} is \texttt{\_+\_(a, b)}), which is not the top-most application in this local binding.
+
+\subsection{Additive and multiplicative pairs}\label{subsec:zilch-grammar-expressions-pairs}
+
+Pairs are separated into two distinct types, following LTT\footnote{Linear Type Theory}, to encode whether the two elements must be used or if only one is expected to be consumed.
+It is possible to consume a single element from an additive pair, while all the elements must be consumed in a multiplicative pair.
+
+\begin{figure}[H]
+	\centering
+
+	\framebox[\textwidth][c]{
+		\parbox{\textwidth}{
+			\centering
+
+			\scalebox{.5}{
+				\includegraphics[width=\linewidth]{zilch/expression/pair-mult-intro}
+			}\\
+			\scalebox{.8}{
+				\includegraphics[width=\linewidth]{zilch/expression/pair-mult-elim}
+			}
+		}
+	}
+
+	\caption{Grammar for multiplicative pairs and eliminator.}
+	\label{fig:zilch-grammar-expressions-pairs-mult-grammar}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+
+	\framebox[\textwidth][c]{
+		\parbox{\textwidth}{
+			\centering
+
+			\scalebox{.5}{
+				\includegraphics[width=\linewidth]{zilch/expression/pair-add-intro}
+			}\\
+			\scalebox{.6}{
+				\includegraphics[width=\linewidth]{zilch/expression/pair-add-elim}
+			}
+		}
+	}
+
+	\caption{Grammar for additive pairs and eliminator.}
+	\label{fig:zilch-grammar-expressions-pairs-add-grammar}
+\end{figure}
+
 \section{Types}\label{sec:zilch-grammar-types}
 
 Types lie at the same level as expressions, but are put in a separate section for comprehensiveness sake.
@@ -445,7 +510,7 @@ An expression \verb|e| is said to be of type \verb|t| if evaluating it yields (o
 \section{Declarations}\label{sec:zilch-grammar-declarations}
 
 A Zilch module is composed of zero or more declarations.
-There are 3 possible declarations:
+There are 4 possible declarations:
 \begin{itemize}
 	\item New type definition;
 	\item Effect definition;
@@ -565,6 +630,12 @@ And some other times, using a specific type is not semantically clear enough.
 For example, what does a \texttt{u64} mean as input to a function?
 Zilch allows defining type aliases to address this issue, leading to code more clear.
 
+When using the Foreign Function Interface (FFI), we may also want to interface with types.
+However, types do not necessarily exist in the FFI, so they cannot be dynamically checked.
+Moreover, some types usually defined in C (such as \texttt{FILE}) are very much implementation dependent, and it is not a good idea to rewrite them in Zilch.
+In such cases, we can define \texttt{opaque} erased types (and only erased types, functions cannot be \texttt{opaque}) which can only be passed around behind pointers\footnote{Because the size of the type is unknown at compile-time, it is not possible to statically allocate enough memory on the stack to pass opaque data for function calls. However, if they are necessarily found behind pointers, we can just allocate the size of the pointer onto the stack.}.
+An opaque type is of an unknown size which is guaranteed to be greater than 0.
+
 \begin{figure}[H]
 	\centering
 
@@ -596,14 +667,14 @@ Top-level bindings can refer to other top-level bindings as long as these are de
 However, sometimes it is useful to define a few functions or data types which are mutually recursive.
 For example, consider the following definitions for the two functions \texttt{even} and \texttt{odd} which return \texttt{true} if the number is even (resp. odd):
 \begin{align*}
-	even(n) & = \begin{cases*}
-		            \mathrm{true} & iff $n = 0$ \\
-		            odd(n - 1)    & otherwise
-	            \end{cases*}  \\
-	odd(n)  & = \begin{cases*}
-		            \mathrm{false} & iff $n = 0$ \\
-		            even(n - 1)    & otherwise
-	            \end{cases*}
+	\operatorname{even}(n) & = \begin{cases*}
+		                           \mathrm{true}             & iff $n = 0$ \\
+		                           \operatorname{odd}(n - 1) & otherwise
+	                           \end{cases*}  \\
+	\operatorname{odd}(n)  & = \begin{cases*}
+		                           \mathrm{false}             & iff $n = 0$ \\
+		                           \operatorname{even}(n - 1) & otherwise
+	                           \end{cases*}
 \end{align*}
 
 This can be modeled in Zilch as:
@@ -629,7 +700,7 @@ This would be done as follows:
 	\centering
 
 	\framebox[\textwidth][c]{
-		\scalebox{.95}{
+		\scalebox{.8}{
 			\includegraphics[width=\linewidth]{zilch/toplevel/function-declaration}
 		}
 	}

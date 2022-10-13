@@ -1,0 +1,7 @@
+let test(x) := 
+  let () := compute(&x)
+  x
+let test2(x) :=
+  let (a, b, c) := compute(1, 2, 3, &x)
+  a + b + c + x
+

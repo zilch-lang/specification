@@ -39,7 +39,9 @@ class ZilchLexer(ExtendedRegexLexer):
         'operators': [
             (r'(\:\=|≔|=>|⇒)', Operator),
 
-            (r'(\(|\)|\:|\{|\})|,|_', Punctuation)
+            (r'(\(|\)|\:|\{|\})|,|_', Punctuation),
+
+            (r'(&)(\S*)', bygroups(Keyword.Reserved, Text))
         ],
         'meta-specifier': [
             (r'#attributes\(.*?\)', Comment.Preproc)
