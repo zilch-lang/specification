@@ -483,7 +483,7 @@ def zilch_keywords():
                          Terminal('rec'), Terminal('val'), Terminal('mut')),
         HorizontalChoice(Terminal('enum'), Terminal('record'),
                          Terminal('effect'), Terminal('constructor')),
-        HorizontalChoice(Terminal('mutual'), Terminal('assume'))),
+        HorizontalChoice(Terminal('mutual'), Terminal('assume'), Terminal('opaque'))),
       'top-level'),
     Group(HorizontalChoice(Terminal('type'), Terminal('region')),
           'type-level'),
@@ -970,4 +970,4 @@ def zilch_mult_product_elim():
   return mk_diagram2('mult-product-elim', inner)
 
 
-zilch_mult_product_elim().writeSvg(sys.stdout.write)
+zilch_keywords().writeSvg(sys.stdout.write)
