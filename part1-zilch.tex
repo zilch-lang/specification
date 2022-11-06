@@ -802,7 +802,7 @@ Zilch is statically and strongly typed, meaning that types of expressions are ch
 It also is type-infered, so there is no need to write the exact type of a function (unless in specific ambiguous states, e.g. with constraints).
 
 The type system of Zilch is based off a quantitative dependent type system with non-cumulative universe polymorphism and algebraic effects.
-In short, this means that types are allowed to dependent on runtime values (which are not \texttt{@0}), and that the type \texttt{type l} has a single type which is \texttt{type (lsuc l)}.
+In short, this means that types are allowed to be dependent on runtime values (which are not \texttt{@0}), and that the type \texttt{type l} has a single type which is \texttt{type (lsuc l)}.
 
 This chapter will contain type inference rules accompanied by informal descriptions.
 Some of the inference rules may be elided for simplicity, as writing them out would be either too cumbersome or difficult to understand.
@@ -1363,6 +1363,52 @@ There are 4 levels:
 
 
 Module exports follow the same rules, where not specifying which identifiers to export means that nothing is exported by the module by default.
+
+\section{A few notes}\label{sec:zilch-staticsem-notes}
+
+Static semantics are described for a subset of the Zilch programming language known as the ``core''.
+The ``core'' is a dependently- and quantitatively- typed lambda calculus with effects and universe polymorphism where all functions have a single argument.
+
+Although typing rules are described only for the ``core'', it is very easy to translate the surface language (Zilch) to the ``core''.
+Just for the sake of comprehensiveness, it is assumed that mixfix expressions are already reduced to simple function applications (i.e. that given the mixfix operator \texttt{\_+\_}, \texttt{1 + 2} is translated into \texttt{\_+\_(1, 2)}).
+
+\def\D#1{{\color{black}\mathcal{D}(}{\surface{#1}}{\color{black})}}
+The translation from a surface CST $\surface{A}$ into a core AST $\core{B}$ is defined by the relation $\D{A} \equiv \core{B}$ as below.
+Imports and meta-attributes may be handled any way.
+
+\begin{description}[itemindent=0pt,left=0pt]
+	\item[For expressions]
+		\begin{align*}
+			\D{\lambda() \Rightarrow e}                                        & \equiv \core{\D{\lambda(\omega\ \_ : \mathbf{1}) \Rightarrow e}}                                                                       \\
+			\D{\lambda(\vec{\rho\ x : A}) \Rightarrow e}                       & \equiv \core{\lambda(\rho_0\ x_0 : \D{A_0}) \Rightarrow \ldots \Rightarrow \lambda(\rho_n\ x_n : \D{A_n}) \Rightarrow \D{e}}           \\
+			\D{f(\vec{x})}                                                     & \equiv \core{\D{f}(\D{x_0})(\ldots)(\D{x_n})}                                                                                          \\
+			\D{() \to e}                                                       & \equiv \core{\D{(\omega\ \_ : \mathbf{1}) \to e}}                                                                                      \\
+			\D{(\vec{\rho\ x : A}) \to e}                                      & \equiv \core{(\rho_0\ x_0 : \D{A_0}) \to \ldots \to (\rho_n\ x_n : \D{A_n}) \to \D{e}}                                                 \\
+			\D{if\ c\ then\ t\ else\ e}                                        & \equiv \core{if\ \D{c}\ then\ \D{t}\ else\ \D{e}}                                                                                      \\
+			\D{(\vec{\rho\ x : A}) \otimes B}                                  & \equiv \core{(\rho_0\ x_0 : \D{A_0}) \otimes \ldots \otimes (\rho_n\ x_n : \D{A_n}) \otimes \D{B}}                                     \\
+			\D{()}                                                             & \equiv \core{()}                                                                                                                       \\
+			\D{(e)}                                                            & \equiv \core{\D{e}}                                                                                                                    \\
+			\D{(x_0, x_1, \ldots, x_n)}                                        & \equiv \core{(\D{x_0}, (\D{x_1}, (\ldots, (\D{x_{n-1}}, \D{x_n})\ldots))}                                                              \\
+			\D{let\ (\vec{x}) \coloneqq e; f}                                  & \equiv \core{let\ (x_0, \__0) \coloneqq \D{e};\ldots; let\ (x_{n-1},x_n) \coloneqq \__{n-1}; \D{f}}                                    \\
+			\D{(\vec{x : A}) \mathbin{\&} B}                                   & \equiv \core{(x_0 : \D{A_0}) \mathbin{\&} \ldots \mathbin{\&} (x_n : \D{A_n}) \mathbin{\&} \D{B}}                                      \\
+			\D{\langle\rangle}                                                 & \equiv \core{\langle\rangle}                                                                                                           \\
+			\D{\langle e\rangle}                                               & \equiv \core{\D{e}}                                                                                                                    \\
+			\D{\langle x_0, x_1, \ldots, x_n\rangle}                           & \equiv \core{\langle\D{x_0}, \langle\D{x_1}, \langle\ldots, \langle\D{x_{n-1}}, \D{x_n}\rangle\ldots\rangle\rangle}                    \\
+			\D{let\ \rho\ f(\vec{\sigma\ x : A}) : \epsilon\ B \coloneqq e; g} & \equiv \core{let\ \rho\ f : \D{(\vec{\sigma\ x : A}) \to \epsilon\ B} \coloneqq \D{\lambda(\vec{\sigma\ x : A}) \Rightarrow e}; \D{g}} \\
+			\D{rec\ \rho\ f(\vec{\sigma\ x : A}) : \epsilon\ B \coloneqq e; g} & \equiv \core{rec\ \rho\ f : \D{(\vec{\sigma\ x : A}) \to \epsilon\ B} \coloneqq \D{\lambda(\vec{\sigma\ x : A}) \Rightarrow e}; \D{g}} \\
+			\D{let\ \rho\ x \coloneqq f(\vec{x}, \&a, \vec{y}); e}             & \equiv \core{\D{let\ \rho\ (a, x) \coloneqq f(\vec{x}, a, \vec{y}); e}}                                                                \\
+			\D{e}                                                              & \equiv \core{e}                                                                                                                        \\
+		\end{align*}
+
+	\item[For the top-level]
+		\begin{align*}
+			\D{let\ \rho\ f(\vec{\sigma\ x : A}) : \epsilon\ B \coloneqq e} & \equiv \core{let\ \rho\ f : \D{\vec{(\sigma\ x : A)} \to \epsilon\ B} \coloneqq \D{\lambda(\vec{\sigma\ x : A}) \Rightarrow e}} \\
+			\D{rec\ \rho\ f(\vec{\sigma\ x : A}) : \epsilon\ B \coloneqq e} & \equiv \core{rec\ \rho\ f : \D{\vec{(\sigma\ x : A)} \to \epsilon\ B} \coloneqq \D{\lambda(\vec{\sigma\ x : A}) \Rightarrow e}} \\
+			\D{val\ \rho\ f(\vec{\sigma\ x : A}) : \epsilon\ B}             & \equiv \core{val\ \rho\ f : (\sigma_0\ x_0 : \D{A_0}) \to \ldots \to (\sigma_n\ x_n : \D{A_n}) \to \epsilon\ \D{B}}             \\
+		\end{align*}
+\end{description}
+
+\let\D\undefined
 
 
 
