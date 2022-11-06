@@ -1331,7 +1331,7 @@ However it must be present to ensure consistency and non-looping static behavior
 \section{Module semantics}\label{sec:zilch-staticsem-modules}
 
 Let $I$ be a set of paths denoted as $\{ p_1, p_2, \ldots, p_n \}$ called the ``include path''.
-Multiple relative paths referencing the same directory (e.g. \verb|../dir| and \verb|.|, assuming the current working directory is called \verb|dir|) are considered equal.
+Paths are compared after being normalized, meaning that \verb|.| and \verb|dir/..| are equal (they are both normalized to the current directory).
 
 A Zilch module is identified from one of the roots in the include path.
 For example, a file \verb|src/Language/X/Parser.zc| with the include path $\{ \text{src} \}$ will have \verb|Language::X::Parser| as a module name.
@@ -1341,28 +1341,23 @@ When importing a module into the current scope, several cases may arise:
 	\item The module name does not correspond to a file accessible from the include path.
 	      In such case, an error must be thrown and compilation must be stopped.
 	\item The module name corresponds to multiple files in the include path.
-	      Handling this is left unspecified as several options are available.
+	      Handling this is left unspecified as several options are available.\footnote{One may choose to select an arbitrary file, or error out.}
 	\item The module name corresponds to only one file in the include path.
 \end{itemize}
 
+One must be careful about importing non-module elements.
+Because everything in Zilch is scoped, imports can also reference elements which are deeply nested within other elements (e.g. an \verb|enum| constructor).
+For example, given the file \verb|A/B/C.zc| containing an \verb|public enum A := ...|, it is allowed to \verb|import A::B::C::A|.
+As a result, import resolution becomes a little more difficult: the above case must hold for any path denoted by the import (at least one of \verb|A.zc|, \verb|A/B.zc|, \verb|A/B/C.zc|, \verb|A/B/C/A.zc| must exist).
+If the import path is partially matched, the remaining part is considered to reference an arbitrarily deeply nested element, which must therefore exist in scope.
+Note that only \verb|public| elements can be imported.
+
 Imports are qualified by default.
-This means that all imports do not populate the current scope, unless explicitly opened.
+This means that all imports do not populate the current scope, unless explicitly \verb|open|ed.
 Imports can also be aliased, where an aliased qualified import simply populates another name.
-When unqualified, an alias provides a qualified way of accessing to the module's identifiers in case of scope conflict (when two imported modules have a common identifier).
+When unqualified, an alias provides a qualified way of accessing the module's identifiers in case of scope conflict (when two imported modules have a common identifier).
 
 Imported identifiers can also be aliased locally, only if they do not refer to operators.
-
-Identifiers are separated by level, meaning importing the name (and definition) of, for example, an effect needs to be explicitly stated.
-There are 4 levels:
-\begin{itemize}
-	\item The \verb|class| level, used to import type classes and their members in the current scope.
-	\item The \verb|effect| level, importing effect names as well as their members.
-	\item The \verb|impl| level, which locally imports a given typeclass implementation (Note that the typeclass needs to be in scoped).
-	\item The default level, used to import functions, global variables and types.
-\end{itemize}
-
-
-Module exports follow the same rules, where not specifying which identifiers to export means that nothing is exported by the module by default.
 
 \section{A few notes}\label{sec:zilch-staticsem-notes}
 
