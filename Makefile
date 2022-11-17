@@ -23,6 +23,9 @@ all: $(PDF)
 
 rebuild: clean $(PDF)
 
+book: $(PDF)
+	latexmk -interaction=batchmode -jobname="book" -pdf book.tex
+
 %.pdf: $(MAIN) $(SRCS)
 	latexmk $(TEXFLAGS) -pdf $<
 
