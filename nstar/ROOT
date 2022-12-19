@@ -1,0 +1,35 @@
+session VM (main) in VM = NStar +
+  sessions
+    HOL
+    "HOL-Library"
+    NStar
+  theories
+    VMState
+    ExecInstr
+    FullExec
+
+session TypeCheck (main) in TypeCheck = NStar +
+  sessions
+    HOL
+    "HOL-Library"
+    NStar
+  theories
+    Types
+    TCState
+    TCInstr
+    FullTC
+
+session NStar (main) = HOL +
+  sessions
+    HOL
+  theories
+    Instr (global)
+    Registers (global)
+    Values (global)
+
+session Props in Properties = NStar +
+  sessions
+    VM
+    TypeCheck
+  theories
+    TypeCheck
