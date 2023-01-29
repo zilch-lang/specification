@@ -192,7 +192,7 @@
 \newcommand*\Eunsigned[1]{\ensuremath{\mathsf{\Ifmt u{#1}}}}
 \newcommand*\Esigned[1]{\ensuremath{\mathsf{\Ifmt s{#1}}}}
 \newcommand*\Echar{\ensuremath{\mathsf{\Ifmt char}}}
-\newcommand*\Eptr[1]{\ensuremath{\operatorname{\mathsf{\Ifmt ptr}}{#1}}}
+\newcommand*\Eref[2]{\ensuremath{\operatorname{\mathsf{\Ifmt ref}}{#1}\;\mathsf{\Ifmt @}\;{#2}}}
 \newcommand*\Eletin[5]{\ensuremath{\mathsf{\Ifmt let}\ {#2}\ {#1}\ \mathsf{\Ifmt :}\ {#3}\mathrel{\mathsf{\Ifmt \coloneqq}}{#4}\mathrel{\mathsf{\Ifmt ;}}{#5}}}
 \newcommand*\Erecin[5]{\ensuremath{\mathsf{\Ifmt rec}\ {#2}\ {#1}\ \mathsf{\Ifmt :}\ {#3}\mathrel{\mathsf{\Ifmt \coloneqq}}{#4}\mathrel{\mathsf{\Ifmt ;}}{#5}}}
 \newcommand*\Ediv{\ensuremath{\mathsf{\Ifmt div}}}
@@ -201,8 +201,9 @@
 \newcommand*\Ewithhnd[6]{\ensuremath{\mathsf{\Ifmt with}\ {#1}\ \mathsf{\Ifmt let}\ {#2}\ {#3}{#4}\mathrel{\mathsf{\Ifmt \coloneqq}}{#5}\mathrel{\mathsf{\Ifmt ;}}{#6}}}
 \newcommand*\Ewith[2]{\ensuremath{\mathsf{\Ifmt with}\ {#1}\mathrel{\mathsf{\Ifmt ;}}{#2}}}
 \newcommand*\Eresume{\ensuremath{\mathsf{\Ifmt resume}}}
-\newcommand*\Ederef[1]{\ensuremath{{}^\mathsf{\Ifmt \ast}{#1}}}
-\newcommand*\Emkptr[1]{\ensuremath{\mathsf{\Ifmt !}{#1}}}
+\newcommand*\Ederef[1]{\ensuremath{\mathsf{\Ifmt !}{#1}}}
+\newcommand*\Emkref[1]{\ensuremath{\mathsf{\Ifmt \&}{#1}}}
+\newcommand*\Eregion{\ensuremath{\mathsf{\Ifmt region}}}
 
 \newcommand*\surface[1]{\ensuremath{{\color{Fuchsia}\mathsf{#1}}}}
 \newcommand*\core[1]{\ensuremath{{\color{WildStrawberry}\mathsf{#1}}}}

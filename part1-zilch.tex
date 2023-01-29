@@ -362,25 +362,27 @@ Record literals allow constructing records in the same fashion as in e.g.\ C.
 	\label{fig:zilch-grammar-expressions-atom-grammar}
 \end{figure}
 
-The by-ref operator \texttt{\&id} is only allowed if it appears within the top-most application in a \texttt{let} local binding.
-For example, these uses of the by-ref operator are valid:
-\begin{listing}[H]
-	\inputminted{\zilchlexer}{examples/correct-byref.zc}
+% NOTE: &x now denotes making a reference
+%
+% The by-ref operator \texttt{\&id} is only allowed if it appears within the top-most application in a \texttt{let} local binding.
+% For example, these uses of the by-ref operator are valid:
+% \begin{listing}[H]
+% 	\inputminted{\zilchlexer}{examples/correct-byref.zc}
 
-	\captionsetup{style=invisible}
-	\caption{Correct usage of by-ref operator.}
-\end{listing}
-\vspace*{-\baselineskip}
+% 	\captionsetup{style=invisible}
+% 	\caption{Correct usage of by-ref operator.}
+% \end{listing}
+% \vspace*{-\baselineskip}
 
-Hoewver, these uses are invalid:
-\begin{listing}[H]
-	\inputminted{\zilchlexer}{examples/incorrect-byref.zc}
+% Hoewver, these uses are invalid:
+% \begin{listing}[H]
+% 	\inputminted{\zilchlexer}{examples/incorrect-byref.zc}
 
-	\captionsetup{style=invisible}
-	\caption{Incorrect usage of by-ref operator.}
-\end{listing}
-\vspace*{-\baselineskip}
-In \texttt{test2}, the by-ref operator is in fact used in the application of \texttt{+} (recall that \texttt{a + b} is \texttt{\_+\_(a, b)}), which is not the top-most application in this local binding.
+% 	\captionsetup{style=invisible}
+% 	\caption{Incorrect usage of by-ref operator.}
+% \end{listing}
+% \vspace*{-\baselineskip}
+% In \texttt{test2}, the by-ref operator is in fact used in the application of \texttt{+} (recall that \texttt{a + b} is \texttt{\_+\_(a, b)}), which is not the top-most application in this local binding.
 
 \subsection{Additive and multiplicative pairs}\label{subsec:zilch-grammar-expressions-pairs}
 
@@ -1007,7 +1009,7 @@ The rules \textsc{[RecIn$_0$]} and \textsc{[RecIn$_1$]} rely on a predicate $\Et
 It is important because we disallow erasing function calls which cannot be guaranteed to always terminate (to prevent from making the type-checker loop indefinitely).
 In the case of non-erased terms, we use termination checking to put the builtin $\Ediv$\ effect on functions which may not terminate (which are not \textit{total}).
 
-The predicate $\Eterminates{x}$ is left undefined as it is an implementation detail\footnote{There are many ways to detect termination, either through termination metrics as in ATS, or structural recursion as in Coq or Agda, or just never allow recursion, etc.}.
+The predicate $\Eterminates{x}$ is left undefined as it is an implementation detail\footnote{There are many ways to detect termination, either through termination metrics as in ATS, or structural recursion as in Coq or Agda, or just never allow recursion, etc. There are many ways to handle this and none is objectively better than all others.}.
 However it must be present to ensure consistency and non-looping static behaviors.
 
 \begin{figure}[H]
@@ -1309,22 +1311,23 @@ However it must be present to ensure consistency and non-looping static behavior
 
 			\begin{prooftree}
 				\hypo{\TypeSequent{\scale{0}{\Gamma}}{A}{0}{\Etype{\ell}}{\Etotal}}
-				\infer1[\textsc{[Ptr-F]}]{\TypeSequent{\scale{0}{\Gamma}}{\Eptr{A}}{0}{\Etype{\ell}}{\Etotal}}
+				\hypo{\TypeSequent{\scale{0}{\Gamma}}{\rho}{0}{\Eregion}{\Etotal}}
+				\infer2[\textsc{[Ref-F]}]{\TypeSequent{\scale{0}{\Gamma}}{\Eref{A}{\rho}}{0}{\Etype{\ell}}{\Etotal}}
 			\end{prooftree}
 			\hspace{1.5em}
 			\begin{prooftree}
-				\hypo{\TypeSequent{\Gamma}{p}{\pi}{\Eptr{A}}{\epsilon}}
-				\infer1[\textsc{[Ptr-E]}]{\TypeSequent{\Gamma}{\Ederef{p}}{\pi}{A}{\epsilon}}
+				\hypo{\TypeSequent{\Gamma}{p}{\pi}{\Eref{A}{\rho}}{\epsilon}}
+				\infer1[\textsc{[Ref-E]}]{\TypeSequent{\Gamma}{\Ederef{p}}{\pi}{A}{\epsilon}}
 			\end{prooftree}
 			\\\vspace*{\baselineskip}
 			\begin{prooftree}
 				\hypo{\TypeSequent{\Gamma}{e}{\pi}{A}{\epsilon}}
-				\infer1[\textsc{[Ptr-I]}]{\TypeSequent{\Gamma}{\Emkptr{e}}{\pi}{\Eptr{A}}{\epsilon}}
-			\end{prooftree} % do we really want to allow this?
+				\infer1[\textsc{[Ref-I]}]{\TypeSequent{\Gamma}{\Emkref{e}}{\pi}{\Eref{A}{\rho}}{\epsilon}}
+			\end{prooftree}
 		}
 	}
 
-	\caption{Type inference rules for pointers.}
+	\caption{Type inference rules for references.}
 	\label{fig:zilch-staticsem-exprs-atoms-ptr-typerules}
 \end{figure}
 
@@ -1374,32 +1377,33 @@ Imports and meta-attributes may be handled any way.
 \begin{description}[itemindent=0pt,left=0pt]
 	\item[For expressions]
 		\begin{align*}
-			\D{\lambda() \Rightarrow e}                                        & \equiv \core{\D{\lambda(\omega\ \_ : \mathbf{1}) \Rightarrow e}}                                                                       \\
-			\D{\lambda(\vec{\rho\ x : A}) \Rightarrow e}                       & \equiv \core{\lambda(\rho_0\ x_0 : \D{A_0}) \Rightarrow \ldots \Rightarrow \lambda(\rho_n\ x_n : \D{A_n}) \Rightarrow \D{e}}           \\
-			\D{f(\vec{x})}                                                     & \equiv \core{\D{f}(\D{x_0})(\ldots)(\D{x_n})}                                                                                          \\
-			\D{() \to e}                                                       & \equiv \core{\D{(\omega\ \_ : \mathbf{1}) \to e}}                                                                                      \\
-			\D{(\vec{\rho\ x : A}) \to e}                                      & \equiv \core{(\rho_0\ x_0 : \D{A_0}) \to \ldots \to (\rho_n\ x_n : \D{A_n}) \to \D{e}}                                                 \\
-			\D{if\ c\ then\ t\ else\ e}                                        & \equiv \core{if\ \D{c}\ then\ \D{t}\ else\ \D{e}}                                                                                      \\
-			\D{(\vec{\rho\ x : A}) \otimes B}                                  & \equiv \core{(\rho_0\ x_0 : \D{A_0}) \otimes \ldots \otimes (\rho_n\ x_n : \D{A_n}) \otimes \D{B}}                                     \\
-			\D{()}                                                             & \equiv \core{()}                                                                                                                       \\
-			\D{(e)}                                                            & \equiv \core{\D{e}}                                                                                                                    \\
-			\D{(x_0, x_1, \ldots, x_n)}                                        & \equiv \core{(\D{x_0}, (\D{x_1}, (\ldots, (\D{x_{n-1}}, \D{x_n})\ldots))}                                                              \\
-			\D{let\ (\vec{x}) \coloneqq e; f}                                  & \equiv \core{let\ (x_0, \__0) \coloneqq \D{e};\ldots; let\ (x_{n-1},x_n) \coloneqq \__{n-1}; \D{f}}                                    \\
-			\D{(\vec{x : A}) \mathbin{\&} B}                                   & \equiv \core{(x_0 : \D{A_0}) \mathbin{\&} \ldots \mathbin{\&} (x_n : \D{A_n}) \mathbin{\&} \D{B}}                                      \\
-			\D{\langle\rangle}                                                 & \equiv \core{\langle\rangle}                                                                                                           \\
-			\D{\langle e\rangle}                                               & \equiv \core{\D{e}}                                                                                                                    \\
-			\D{\langle x_0, x_1, \ldots, x_n\rangle}                           & \equiv \core{\langle\D{x_0}, \langle\D{x_1}, \langle\ldots, \langle\D{x_{n-1}}, \D{x_n}\rangle\ldots\rangle\rangle}                    \\
-			\D{let\ \rho\ f(\vec{\sigma\ x : A}) : \epsilon\ B \coloneqq e; g} & \equiv \core{let\ \rho\ f : \D{(\vec{\sigma\ x : A}) \to \epsilon\ B} \coloneqq \D{\lambda(\vec{\sigma\ x : A}) \Rightarrow e}; \D{g}} \\
-			\D{rec\ \rho\ f(\vec{\sigma\ x : A}) : \epsilon\ B \coloneqq e; g} & \equiv \core{rec\ \rho\ f : \D{(\vec{\sigma\ x : A}) \to \epsilon\ B} \coloneqq \D{\lambda(\vec{\sigma\ x : A}) \Rightarrow e}; \D{g}} \\
-			\D{let\ \rho\ x \coloneqq f(\vec{x}, \&a, \vec{y}); e}             & \equiv \core{\D{let\ \rho\ (a, x) \coloneqq f(\vec{x}, a, \vec{y}); e}}                                                                \\
-			\D{e}                                                              & \equiv \core{e}                                                                                                                        \\
+			\D{\lambda() \Rightarrow e}                                             & \equiv \core{\D{\lambda(\omega\ \_ : \mathbf{1}) \Rightarrow e}}                                                                                 \\
+			\D{\lambda(\overline{\rho\ x : A}) \Rightarrow e}                       & \equiv \core{\lambda(\rho_0\ x_0 : \D{A_0}) \Rightarrow \ldots \Rightarrow \lambda(\rho_n\ x_n : \D{A_n}) \Rightarrow \D{e}}                     \\
+			\D{f(\overline{x})}                                                     & \equiv \core{\D{f}(\D{x_0})(\ldots)(\D{x_n})}                                                                                                    \\
+			\D{() \to e}                                                            & \equiv \core{\D{(\omega\ \_ : \mathbf{1}) \to e}}                                                                                                \\
+			\D{(\overline{\rho\ x : A}) \to e}                                      & \equiv \core{(\rho_0\ x_0 : \D{A_0}) \to \ldots \to (\rho_n\ x_n : \D{A_n}) \to \D{e}}                                                           \\
+			\D{if\ c\ then\ t\ else\ e}                                             & \equiv \core{if\ \D{c}\ then\ \D{t}\ else\ \D{e}}                                                                                                \\
+			\D{(\overline{\rho\ x : A}) \otimes B}                                  & \equiv \core{(\rho_0\ x_0 : \D{A_0}) \otimes \ldots \otimes (\rho_n\ x_n : \D{A_n}) \otimes \D{B}}                                               \\
+			\D{()}                                                                  & \equiv \core{()}                                                                                                                                 \\
+			\D{(e)}                                                                 & \equiv \core{\D{e}}                                                                                                                              \\
+			\D{(x_0, x_1, \ldots, x_n)}                                             & \equiv \core{(\D{x_0}, (\D{x_1}, (\ldots, (\D{x_{n-1}}, \D{x_n})\ldots))}                                                                        \\
+			\D{let\ (\overline{x}) \coloneqq e; f}                                  & \equiv \core{let\ (x_0, \__0) \coloneqq \D{e};\ldots; let\ (x_{n-1},x_n) \coloneqq \__{n-1}; \D{f}}                                              \\
+			\D{(\overline{x : A}) \mathbin{\&} B}                                   & \equiv \core{(x_0 : \D{A_0}) \mathbin{\&} \ldots \mathbin{\&} (x_n : \D{A_n}) \mathbin{\&} \D{B}}                                                \\
+			\D{\langle\rangle}                                                      & \equiv \core{\langle\rangle}                                                                                                                     \\
+			\D{\langle e\rangle}                                                    & \equiv \core{\D{e}}                                                                                                                              \\
+			\D{\langle x_0, x_1, \ldots, x_n\rangle}                                & \equiv \core{\langle\D{x_0}, \langle\D{x_1}, \langle\ldots, \langle\D{x_{n-1}}, \D{x_n}\rangle\ldots\rangle\rangle}                              \\
+			\D{let\ \rho\ f(\overline{\sigma\ x : A}) : \epsilon\ B \coloneqq e; g} & \equiv \core{let\ \rho\ f : \D{(\overline{\sigma\ x : A}) \to \epsilon\ B} \coloneqq \D{\lambda(\overline{\sigma\ x : A}) \Rightarrow e}; \D{g}} \\
+			\D{rec\ \rho\ f(\overline{\sigma\ x : A}) : \epsilon\ B \coloneqq e; g} & \equiv \core{rec\ \rho\ f : \D{(\overline{\sigma\ x : A}) \to \epsilon\ B} \coloneqq \D{\lambda(\overline{\sigma\ x : A}) \Rightarrow e}; \D{g}} \\
+			% \D{let\ \rho\ x \coloneqq f(\overline{x}, \&a, \overline{y}); e}        & \equiv \core{\D{let\ \rho\ (a, x) \coloneqq f(\overline{x}, a, \overline{y}); e}}                                                                \\
+			% TODO: change \& to something else
+			\D{e}                                                                   & \equiv \core{e}                                                                                                                                  \\
 		\end{align*}
 
 	\item[For the top-level]
 		\begin{align*}
-			\D{let\ \rho\ f(\vec{\sigma\ x : A}) : \epsilon\ B \coloneqq e} & \equiv \core{let\ \rho\ f : \D{\vec{(\sigma\ x : A)} \to \epsilon\ B} \coloneqq \D{\lambda(\vec{\sigma\ x : A}) \Rightarrow e}} \\
-			\D{rec\ \rho\ f(\vec{\sigma\ x : A}) : \epsilon\ B \coloneqq e} & \equiv \core{rec\ \rho\ f : \D{\vec{(\sigma\ x : A)} \to \epsilon\ B} \coloneqq \D{\lambda(\vec{\sigma\ x : A}) \Rightarrow e}} \\
-			\D{val\ \rho\ f(\vec{\sigma\ x : A}) : \epsilon\ B}             & \equiv \core{val\ \rho\ f : (\sigma_0\ x_0 : \D{A_0}) \to \ldots \to (\sigma_n\ x_n : \D{A_n}) \to \epsilon\ \D{B}}             \\
+			\D{let\ \rho\ f(\overline{\sigma\ x : A}) : \epsilon\ B \coloneqq e} & \equiv \core{let\ \rho\ f : \D{\overline{(\sigma\ x : A)} \to \epsilon\ B} \coloneqq \D{\lambda(\overline{\sigma\ x : A}) \Rightarrow e}} \\
+			\D{rec\ \rho\ f(\overline{\sigma\ x : A}) : \epsilon\ B \coloneqq e} & \equiv \core{rec\ \rho\ f : \D{\overline{(\sigma\ x : A)} \to \epsilon\ B} \coloneqq \D{\lambda(\overline{\sigma\ x : A}) \Rightarrow e}} \\
+			\D{val\ \rho\ f(\overline{\sigma\ x : A}) : \epsilon\ B}             & \equiv \core{val\ \rho\ f : (\sigma_0\ x_0 : \D{A_0}) \to \ldots \to (\sigma_n\ x_n : \D{A_n}) \to \epsilon\ \D{B}}                       \\
 		\end{align*}
 \end{description}
 
